@@ -1,3 +1,3 @@
 # LostArtifacts
 
-A mod for the game Hollow Knight.
+A Hollow Knight mod that adds a new method of upgrading the nail.
