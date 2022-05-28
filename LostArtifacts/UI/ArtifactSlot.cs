@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace LostArtifactsUI
+namespace LostArtifacts.UI
 {
     public class ArtifactSlot : Button
     {
@@ -82,10 +82,10 @@ namespace LostArtifactsUI
             SetTraits();
 
             //Update settings
-            if(id == 0) LostArtifacts.LostArtifacts.Settings.slotHandle = button.id;
-            if(id == 1) LostArtifacts.LostArtifacts.Settings.slotBladeL = button.id;
-            if(id == 2) LostArtifacts.LostArtifacts.Settings.slotBladeR = button.id;
-            if(id == 3) LostArtifacts.LostArtifacts.Settings.slotHead = button.id;
+            if(id == 0) LostArtifacts.Settings.slotHandle = button.id;
+            if(id == 1) LostArtifacts.Settings.slotBladeL = button.id;
+            if(id == 2) LostArtifacts.Settings.slotBladeR = button.id;
+            if(id == 3) LostArtifacts.Settings.slotHead = button.id;
 
             equipped = true;
         }
@@ -102,10 +102,10 @@ namespace LostArtifactsUI
             SetTraits();
 
             //Update settings
-            if(id == 0) LostArtifacts.LostArtifacts.Settings.slotHandle = -1;
-            if(id == 1) LostArtifacts.LostArtifacts.Settings.slotBladeL = -1;
-            if(id == 2) LostArtifacts.LostArtifacts.Settings.slotBladeR = -1;
-            if(id == 3) LostArtifacts.LostArtifacts.Settings.slotHead = -1;
+            if(id == 0) LostArtifacts.Settings.slotHandle = -1;
+            if(id == 1) LostArtifacts.Settings.slotBladeL = -1;
+            if(id == 2) LostArtifacts.Settings.slotBladeR = -1;
+            if(id == 3) LostArtifacts.Settings.slotHead = -1;
 
             equipped = false;
         }

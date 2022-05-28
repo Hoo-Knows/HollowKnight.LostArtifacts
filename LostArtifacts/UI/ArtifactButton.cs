@@ -2,11 +2,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace LostArtifactsUI
+namespace LostArtifacts.UI
 {
 	public class ArtifactButton : Button
 	{
-		public LostArtifacts.Artifact artifact;
+		public Artifact artifact;
 		public bool choosing;
 		public bool equipped;
 		public int id;
@@ -27,35 +27,35 @@ namespace LostArtifactsUI
 			else gameObject.GetComponent<Image>().sprite = ArtifactManager.Instance.empty;
 
 			//Check if already equipped
-			if(LostArtifacts.LostArtifacts.Settings.slotHandle == id ||
-				LostArtifacts.LostArtifacts.Settings.slotBladeL == id ||
-				LostArtifacts.LostArtifacts.Settings.slotBladeR == id ||
-				LostArtifacts.LostArtifacts.Settings.slotHead == id)
+			if(LostArtifacts.Settings.slotHandle == id ||
+				LostArtifacts.Settings.slotBladeL == id ||
+				LostArtifacts.Settings.slotBladeR == id ||
+				LostArtifacts.Settings.slotHead == id)
 			{
 				gameObject.GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f);
 			}
-			if(LostArtifacts.LostArtifacts.Settings.slotHead == id && !equipped)
+			if(LostArtifacts.Settings.slotHead == id && !equipped)
 			{
 				slot = ArtifactManager.Instance.slotHead;
 				ArtifactManager.Instance.slotHead.button = this;
 				ArtifactManager.Instance.slotHead.Equip();
 				equipped = true;
 			}
-			if(LostArtifacts.LostArtifacts.Settings.slotBladeR == id && !equipped)
+			if(LostArtifacts.Settings.slotBladeR == id && !equipped)
 			{
 				slot = ArtifactManager.Instance.slotBladeR;
 				ArtifactManager.Instance.slotBladeR.button = this;
 				ArtifactManager.Instance.slotBladeR.Equip();
 				equipped = true;
 			}
-			if(LostArtifacts.LostArtifacts.Settings.slotBladeL == id && !equipped)
+			if(LostArtifacts.Settings.slotBladeL == id && !equipped)
 			{
 				slot = ArtifactManager.Instance.slotBladeL;
 				ArtifactManager.Instance.slotBladeL.button = this;
 				ArtifactManager.Instance.slotBladeL.Equip();
 				equipped = true;
 			}
-			if(LostArtifacts.LostArtifacts.Settings.slotHandle == id && !equipped)
+			if(LostArtifacts.Settings.slotHandle == id && !equipped)
 			{
 				slot = ArtifactManager.Instance.slotHandle;
 				ArtifactManager.Instance.slotHandle.button = this;
@@ -156,8 +156,8 @@ namespace LostArtifactsUI
 						artifact.level = 3;
 						break;
 				}
-				artifact.Activate();
 				artifact.active = true;
+				artifact.Activate();
 			}
 
 			equipped = true;

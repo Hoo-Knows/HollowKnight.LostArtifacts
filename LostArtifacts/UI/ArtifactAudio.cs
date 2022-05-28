@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace LostArtifactsUI
+namespace LostArtifacts.UI
 {
     public class ArtifactAudio : MonoBehaviour
     {

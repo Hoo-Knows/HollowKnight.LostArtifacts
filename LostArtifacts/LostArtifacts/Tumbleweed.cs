@@ -44,7 +44,7 @@ namespace LostArtifacts
 		{
 			if(hitInstance.AttackType == AttackTypes.Nail)
 			{
-				StopCoroutine(SpeedControl());
+				StopAllCoroutines();
 				StartCoroutine(SpeedControl());
 			}
 			orig(self, hitInstance);
@@ -69,6 +69,11 @@ namespace LostArtifacts
 		{
 			LostArtifacts.Instance.Log("Deactivating " + traitName);
 			On.HealthManager.Hit -= HealthManagerHit;
+			HeroController.instance.RUN_SPEED = runSpeed;
+			HeroController.instance.RUN_SPEED_CH = runSpeedCh;
+			HeroController.instance.RUN_SPEED_CH_COMBO = runSpeedChCombo;
+			HeroController.instance.WALK_SPEED = walkSpeed;
+			HeroController.instance.UNDERWATER_SPEED = underwaterSpeed;
 		}
 	}
 }

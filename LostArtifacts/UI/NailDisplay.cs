@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LostArtifactsUI
+namespace LostArtifacts.UI
 {
     public class NailDisplay : MonoBehaviour
     {

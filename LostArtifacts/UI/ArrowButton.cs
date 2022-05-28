@@ -1,7 +1,7 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace LostArtifactsUI
+namespace LostArtifacts.UI
 {
 	public class ArrowButton : Button
 	{

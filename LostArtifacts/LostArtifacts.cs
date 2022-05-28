@@ -16,7 +16,7 @@ namespace LostArtifacts
 
 		private GameObject prefabUI;
 		private string iconPath;
-		LostArtifactsUI.ArtifactManager artifactManager;
+		private UI.ArtifactManager artifactManager;
 
 		public GameObject artifactsGO;
 		public GameObject artifactsUI;
@@ -34,7 +34,7 @@ namespace LostArtifacts
 			return Settings;
 		}
 
-		public override string GetVersion() => "0.1.1.0";
+		public override string GetVersion() => "1.1.1b";
 
 		public LostArtifacts() : base("LostArtifacts")
 		{
@@ -69,15 +69,17 @@ namespace LostArtifacts
 			Log("Initializing");
 
 			//Add artifacts
-			iconPath = Path.Combine(AssemblyUtils.getCurrentDirectory(), "Icons");
-			IoUtils.EnsureDirectory(iconPath);
-
 			artifactsGO = new GameObject("Artifacts GO");
 			UnityEngine.Object.DontDestroyOnLoad(artifactsGO);
 
-			artifactManager = artifactsUI.GetComponentInChildren<LostArtifactsUI.ArtifactManager>();
+			//Create icons directory if it doesn't exist
+			iconPath = Path.Combine(AssemblyUtils.getCurrentDirectory(), "Icons");
+			IoUtils.EnsureDirectory(iconPath);
+
+			artifactManager = artifactsUI.GetComponentInChildren<UI.ArtifactManager>();
 			artifactManager.AddArtifact<TravelersGarment>();
 			artifactManager.AddArtifact<Tumbleweed>();
+			artifactManager.AddArtifact<ChargedCrystal>();
 
 			On.HeroController.Start += HeroControllerStart;
 			On.QuitToMenu.Start += QuitToMenuStart;
@@ -90,6 +92,7 @@ namespace LostArtifacts
 		private void HeroControllerStart(On.HeroController.orig_Start orig, HeroController self)
 		{
 			orig(self);
+			//Activate artifacts if they are equipped
 			foreach(Artifact artifact in artifactManager.artifacts)
 			{
 				if(artifact == null || artifact.active) continue;
@@ -101,8 +104,8 @@ namespace LostArtifacts
 				if(Settings.slotHead == artifact.id) artifact.level = 3;
 				if(artifact.level > 0)
 				{
-					artifact.Activate();
 					artifact.active = true;
+					artifact.Activate();
 				}
 			}
 		}
@@ -159,6 +162,7 @@ namespace LostArtifacts
 
 			name = Regex.Replace(name, @"[^0-9a-zA-Z\._]", "");
 			string path = Path.Combine(iconPath, name + ".png");
+			//Extract sprite from Resources if it doesn't exist
 			if(!File.Exists(path))
 			{
 				try

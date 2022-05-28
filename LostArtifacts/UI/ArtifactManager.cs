@@ -2,12 +2,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace LostArtifactsUI
+namespace LostArtifacts.UI
 {
     public class ArtifactManager : MonoBehaviour
     {
         public static ArtifactManager Instance;
-        public LostArtifacts.Artifact[] artifacts;
+        public Artifact[] artifacts;
         public Transform parent;
 
         public ArtifactButton defaultButton;
@@ -34,7 +34,7 @@ namespace LostArtifactsUI
         private void Awake()
         {
             Instance = this;
-            artifacts = new LostArtifacts.Artifact[20];
+            artifacts = new Artifact[20];
             parent = gameObject.transform.parent;
 
             defaultButton = parent.Find("Canvas/Artifacts/Artifact 0").gameObject.GetComponent<ArtifactButton>();
@@ -54,6 +54,9 @@ namespace LostArtifactsUI
 
         public void OnEnable()
 		{
+            //Update nail level
+            nailLevel = PlayerData.instance.GetInt("nailSmithUpgrades");
+
             //Set selected stuff
             prevEventSystem = EventSystem.current;
             EventSystem.current = eventSystem;
@@ -61,9 +64,11 @@ namespace LostArtifactsUI
 
             //Update UI
             ArtifactCursor.Instance.UpdatePos();
-            if(artifacts[0] != null && artifacts[0].unlocked)
+            if(artifacts[selectedButton.id] != null && artifacts[selectedButton.id].unlocked)
             {
-                SetArtifactPanel(artifacts[0].name, artifacts[0].sprite, artifacts[0].description);
+                SetArtifactPanel(artifacts[selectedButton.id].name, 
+                    artifacts[selectedButton.id].sprite, 
+                    artifacts[selectedButton.id].description);
             }
             else
             {
@@ -95,11 +100,11 @@ namespace LostArtifactsUI
             }
         }
 
-        public void AddArtifact<T>() where T : LostArtifacts.Artifact
+        public void AddArtifact<T>() where T : Artifact
         {
-            LostArtifacts.Artifact artifact = LostArtifacts.LostArtifacts.Instance.artifactsGO.AddComponent<T>();
+            Artifact artifact = LostArtifacts.Instance.artifactsGO.AddComponent<T>();
             artifact.Initialize();
-            artifact.sprite = LostArtifacts.LostArtifacts.Instance.GetArtifactSprite(artifact.name);
+            artifact.sprite = LostArtifacts.Instance.GetArtifactSprite(artifact.name);
             artifacts[artifact.id] = artifact;
         }
 
@@ -117,12 +122,12 @@ namespace LostArtifactsUI
 
         public void Left()
         {
-            LostArtifacts.LostArtifacts.Instance.pageFSM.SendEvent("LEFT");
+            LostArtifacts.Instance.pageFSM.SendEvent("LEFT");
         }
 
         public void Right()
         {
-            LostArtifacts.LostArtifacts.Instance.pageFSM.SendEvent("RIGHT");
+            LostArtifacts.Instance.pageFSM.SendEvent("RIGHT");
         }
 
         public void Update()

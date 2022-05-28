@@ -338,4 +338,7 @@
 	<ItemGroup>
 		<EmbeddedResource Include="Resources\Tumbleweed.png" />
 	</ItemGroup>
+    <ItemGroup>
+		<EmbeddedResource Include="Resources\ChargedCrystal.png" />
+	</ItemGroup>
 </Project>
