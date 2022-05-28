@@ -16,7 +16,6 @@ namespace LostArtifactsUI
 
 		public override void OnSelect(BaseEventData eventData)
 		{
-			ArtifactManager.Instance.selectedButton = null;
 			if(alt)
 			{
 				if(left) ArtifactManager.Instance.Left();

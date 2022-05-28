@@ -8,11 +8,14 @@ namespace LostArtifactsUI
     {
         public static ArtifactManager Instance;
         public LostArtifacts.Artifact[] artifacts;
-        private Transform parent;
+        public Transform parent;
 
         public ArtifactButton defaultButton;
         public ArtifactButton selectedButton;
-        public ArtifactSlot defaultSlot;
+        public ArtifactSlot slotHandle;
+        public ArtifactSlot slotBladeL;
+        public ArtifactSlot slotBladeR;
+        public ArtifactSlot slotHead;
 
         private EventSystem prevEventSystem;
         public EventSystem eventSystem;
@@ -37,7 +40,10 @@ namespace LostArtifactsUI
             defaultButton = parent.Find("Canvas/Artifacts/Artifact 0").gameObject.GetComponent<ArtifactButton>();
             selectedButton = defaultButton;
 
-            defaultSlot = parent.Find("Canvas/Nail Panel/Slot Handle/Artifact Handle").gameObject.GetComponent<ArtifactSlot>();
+            slotHandle = parent.Find("Canvas/Nail Panel/Slot Handle/Artifact Handle").gameObject.GetComponent<ArtifactSlot>();
+            slotBladeL = parent.Find("Canvas/Nail Panel/Slot Blade L/Artifact Blade L").gameObject.GetComponent<ArtifactSlot>();
+            slotBladeR = parent.Find("Canvas/Nail Panel/Slot Blade R/Artifact Blade R").gameObject.GetComponent<ArtifactSlot>();
+            slotHead = parent.Find("Canvas/Nail Panel/Slot Head/Artifact Head").gameObject.GetComponent<ArtifactSlot>();
 
             eventSystem = parent.Find("EventSystem").gameObject.GetComponent<EventSystem>();
 
@@ -51,7 +57,7 @@ namespace LostArtifactsUI
             //Set selected stuff
             prevEventSystem = EventSystem.current;
             EventSystem.current = eventSystem;
-			eventSystem.SetSelectedGameObject(defaultButton.gameObject);
+			eventSystem.SetSelectedGameObject(selectedButton.gameObject);
 
             //Update UI
             ArtifactCursor.Instance.UpdatePos();
@@ -91,7 +97,7 @@ namespace LostArtifactsUI
 
         public void AddArtifact<T>() where T : LostArtifacts.Artifact
         {
-            LostArtifacts.Artifact artifact = gameObject.AddComponent<T>();
+            LostArtifacts.Artifact artifact = LostArtifacts.LostArtifacts.Instance.artifactsGO.AddComponent<T>();
             artifact.Initialize();
             artifact.sprite = LostArtifacts.LostArtifacts.Instance.GetArtifactSprite(artifact.name);
             artifacts[artifact.id] = artifact;

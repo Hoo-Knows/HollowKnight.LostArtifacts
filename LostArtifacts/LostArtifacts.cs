@@ -10,21 +10,31 @@ using System.Text.RegularExpressions;
 
 namespace LostArtifacts
 {
-	public class LostArtifacts : Mod, IGlobalSettings<Settings>
+	public class LostArtifacts : Mod, ILocalSettings<Settings>
 	{
 		public static LostArtifacts Instance;
 
 		private GameObject prefabUI;
 		private string iconPath;
+		LostArtifactsUI.ArtifactManager artifactManager;
 
+		public GameObject artifactsGO;
 		public GameObject artifactsUI;
 		public PlayMakerFSM pageFSM;
 
 		public static Settings Settings { get; set; } = new Settings();
-		public void OnLoadGlobal(Settings s) => Settings = s;
-		public Settings OnSaveGlobal() => Settings;
+		public void OnLoadLocal(Settings s)
+		{
+			Log("Loading Lost Artifacts settings");
+			Settings = s;
+		}
+		public Settings OnSaveLocal()
+		{
+			Log("Saving Lost Artifacts settings");
+			return Settings;
+		}
 
-		public override string GetVersion() => "1.0.0";
+		public override string GetVersion() => "0.1.1.0";
 
 		public LostArtifacts() : base("LostArtifacts")
 		{
@@ -52,36 +62,63 @@ namespace LostArtifacts
 				"Artifacts",
 				"artifactsUnlocked",
 				EditInventory);
-
-			//Add artifacts
-			iconPath = Path.Combine(AssemblyUtils.getCurrentDirectory(), "Artifact Icons");
-			IoUtils.EnsureDirectory(iconPath);
-
-			LostArtifactsUI.ArtifactManager artifactManager = artifactsUI.GetComponentInChildren<LostArtifactsUI.ArtifactManager>();
-			artifactManager.AddArtifact<TravelersGarment>();
-			artifactManager.AddArtifact<Tumbleweed>();
-
-			foreach(Artifact artifact in artifactManager.artifacts)
-			{
-				if(artifact == null) continue;
-
-				if(Settings.slotHandle == artifact.id || Settings.slotBladeL == artifact.id
-					|| Settings.slotBladeR == artifact.id || Settings.slotHead == artifact.id)
-				{
-					//artifact.Activate();
-					//artifact.active = true;
-				}
-			}
 		}
 
 		public override void Initialize(Dictionary<string, Dictionary<string, GameObject>> preloadedObjects)
 		{
 			Log("Initializing");
 
+			//Add artifacts
+			iconPath = Path.Combine(AssemblyUtils.getCurrentDirectory(), "Icons");
+			IoUtils.EnsureDirectory(iconPath);
+
+			artifactsGO = new GameObject("Artifacts GO");
+			UnityEngine.Object.DontDestroyOnLoad(artifactsGO);
+
+			artifactManager = artifactsUI.GetComponentInChildren<LostArtifactsUI.ArtifactManager>();
+			artifactManager.AddArtifact<TravelersGarment>();
+			artifactManager.AddArtifact<Tumbleweed>();
+
+			On.HeroController.Start += HeroControllerStart;
+			On.QuitToMenu.Start += QuitToMenuStart;
 			ModHooks.LanguageGetHook += LanguageGetHook;
 			ModHooks.GetPlayerBoolHook += GetPlayerBoolHook;
 
 			Log("Initialized");
+		}
+
+		private void HeroControllerStart(On.HeroController.orig_Start orig, HeroController self)
+		{
+			orig(self);
+			foreach(Artifact artifact in artifactManager.artifacts)
+			{
+				if(artifact == null || artifact.active) continue;
+
+				artifact.level = 0;
+				if(Settings.slotHandle == artifact.id) artifact.level = 1;
+				if(Settings.slotBladeL == artifact.id) artifact.level = 2;
+				if(Settings.slotBladeR == artifact.id) artifact.level = 2;
+				if(Settings.slotHead == artifact.id) artifact.level = 3;
+				if(artifact.level > 0)
+				{
+					artifact.Activate();
+					artifact.active = true;
+				}
+			}
+		}
+
+		private IEnumerator QuitToMenuStart(On.QuitToMenu.orig_Start orig, QuitToMenu self)
+		{
+			orig(self);
+			foreach(Artifact artifact in artifactManager.artifacts)
+			{
+				if(artifact == null || !artifact.active) continue;
+
+				artifact.Deactivate();
+				artifact.level = 0;
+				artifact.active = false;
+			}
+			yield break;
 		}
 
 		private void EditInventory(GameObject page)
@@ -159,14 +196,8 @@ namespace LostArtifacts
 
 		private bool GetPlayerBoolHook(string name, bool orig)
 		{
-			if(name == "artifactsUnlocked") return true;
+			if(name == "artifactsUnlocked") return PlayerData.instance.GetInt("nailSmithUpgrades") > 0;
 			return orig;
-		}
-
-		public void Unload()
-		{
-			ModHooks.LanguageGetHook -= LanguageGetHook;
-			ModHooks.GetPlayerBoolHook -= GetPlayerBoolHook;
 		}
 	}
 }

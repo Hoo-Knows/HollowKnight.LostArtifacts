@@ -1,8 +1,6 @@
-﻿using Modding;
-
-namespace LostArtifacts
+﻿namespace LostArtifacts
 {
-	public class Settings : ModHooksGlobalSettings
+	public class Settings
 	{
 		public int slotHandle { get; set; } = -1;
 		public int slotBladeL { get; set; } = -1;

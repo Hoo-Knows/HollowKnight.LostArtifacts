@@ -8,8 +8,8 @@ namespace LostArtifactsUI
     {
         public ArtifactButton button;
         public bool unlocked;
+        public int id;
 
-        private int id;
         private Sprite sprite;
         private bool equipped;
         private readonly string[] names = new string[] { "Handle", "Blade L", "Blade R", "Head" };
@@ -38,7 +38,7 @@ namespace LostArtifactsUI
             unlocked = ArtifactManager.Instance.nailLevel > id;
             gameObject.GetComponent<Image>().sprite = unlocked ? sprite : ArtifactManager.Instance.locked;
 
-            ResetTraits();
+            SetTraits();
         }
 
         public override void OnSelect(BaseEventData eventData)
@@ -79,9 +79,13 @@ namespace LostArtifactsUI
             gameObject.GetComponent<Image>().sprite = button.artifact.sprite;
 
             //Update trait panel
-            GameObject.Find(names[id] + " Name").GetComponent<Text>().text =
-                names[id] + " - " + button.artifact.traitName + " " + level[id];
-            GameObject.Find(names[id] + " Description").GetComponent<Text>().text = button.artifact.traitDescription;
+            SetTraits();
+
+            //Update settings
+            if(id == 0) LostArtifacts.LostArtifacts.Settings.slotHandle = button.id;
+            if(id == 1) LostArtifacts.LostArtifacts.Settings.slotBladeL = button.id;
+            if(id == 2) LostArtifacts.LostArtifacts.Settings.slotBladeR = button.id;
+            if(id == 3) LostArtifacts.LostArtifacts.Settings.slotHead = button.id;
 
             equipped = true;
         }
@@ -91,19 +95,34 @@ namespace LostArtifactsUI
             //Reset sprite
             gameObject.GetComponent<Image>().sprite = ArtifactManager.Instance.empty;
 
-            //Update trait panel
-            ResetTraits();
-
-            //Reset artifactGO
+            //Reset button
             button = null;
+
+            //Update trait panel
+            SetTraits();
+
+            //Update settings
+            if(id == 0) LostArtifacts.LostArtifacts.Settings.slotHandle = -1;
+            if(id == 1) LostArtifacts.LostArtifacts.Settings.slotBladeL = -1;
+            if(id == 2) LostArtifacts.LostArtifacts.Settings.slotBladeR = -1;
+            if(id == 3) LostArtifacts.LostArtifacts.Settings.slotHead = -1;
 
             equipped = false;
         }
 
-        private void ResetTraits()
+        private void SetTraits()
         {
-            GameObject.Find(names[id] + " Name").GetComponent<Text>().text = names[id] + " - " + (unlocked ? "None" : "Locked");
-            GameObject.Find(names[id] + " Description").GetComponent<Text>().text = "";
+            if(button != null)
+			{
+                GameObject.Find(names[id] + " Name").GetComponent<Text>().text =
+                    names[id] + " - " + button.artifact.traitName + " " + level[id];
+                GameObject.Find(names[id] + " Description").GetComponent<Text>().text = button.artifact.traitDescription;
+            }
+			else
+			{
+                GameObject.Find(names[id] + " Name").GetComponent<Text>().text = names[id] + " - " + (unlocked ? "None" : "Locked");
+                GameObject.Find(names[id] + " Description").GetComponent<Text>().text = "";
+            }
         }
     }
 }

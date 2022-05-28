@@ -12,12 +12,13 @@ namespace LostArtifacts
         public string traitDescription;
         public Sprite sprite;
         public bool active;
+		public int level;
 
 		public abstract void Initialize();
 
 		public virtual void Activate()
 		{
-			LostArtifacts.Instance.Log("Activating " + name);
+			LostArtifacts.Instance.Log("Activating " + traitName);
 			On.HealthManager.Hit += HealthManagerHit;
 		}
 
@@ -25,14 +26,14 @@ namespace LostArtifacts
 		{
 			if(hitInstance.AttackType == AttackTypes.Nail)
 			{
-				LostArtifacts.Instance.Log("Hit enemy with " + name);
+				LostArtifacts.Instance.Log("Hit enemy with " + traitName);
 			}
 			orig(self, hitInstance);
 		}
 
 		public virtual void Deactivate()
 		{
-			LostArtifacts.Instance.Log("Deactivating " + name);
+			LostArtifacts.Instance.Log("Deactivating " + traitName);
 			On.HealthManager.Hit -= HealthManagerHit;
 		}
 	}
