@@ -34,7 +34,7 @@ namespace LostArtifacts
 			return Settings;
 		}
 
-		public override string GetVersion() => "1.1.1b";
+		public override string GetVersion() => "1.1.2b";
 
 		public LostArtifacts() : base("LostArtifacts")
 		{

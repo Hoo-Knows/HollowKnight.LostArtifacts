@@ -35,7 +35,7 @@ namespace LostArtifacts
 			runSpeedChCombo = HeroController.instance.RUN_SPEED_CH_COMBO;
 			walkSpeed = HeroController.instance.WALK_SPEED;
 			underwaterSpeed = HeroController.instance.UNDERWATER_SPEED;
-			multiplier = 0.15f * level + 1;
+			multiplier = 0.1f * level + 1;
 
 			On.HealthManager.Hit += HealthManagerHit;
 		}

@@ -326,9 +326,6 @@
       <HintPath>$(HollowKnightRefs)/UnityEngine.XRModule.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\.gitignore" />
-  </ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="Resources\artifactsui" />
 	</ItemGroup>

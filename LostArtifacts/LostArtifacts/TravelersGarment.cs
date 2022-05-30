@@ -15,7 +15,7 @@ namespace LostArtifacts
 			name = "Traveler's Garment";
 			description = "A small cloth from a traveler who braved the wasteland beyond to reach Hallownest. It carries the aura of its former owner.";
 			traitName = "Resilience";
-			traitDescription = "Increases damage based on the player’s velocity over the past 3 seconds";
+			traitDescription = "Increases damage based on the player’s average horizontal velocity";
 			active = false;
 			level = 0;
 		}
@@ -24,7 +24,7 @@ namespace LostArtifacts
 		{
 			LostArtifacts.Instance.Log("Activating " + traitName);
 
-			velocityArray = new float[300];
+			velocityArray = new float[500];
 			StartCoroutine(VelocityTracker());
 			On.HealthManager.Hit += HealthManagerHit;
 		}
@@ -43,10 +43,11 @@ namespace LostArtifacts
 			int i = 0;
 			while(active)
 			{
-				yield return new WaitForSeconds(0.01f);
+				yield return new WaitForSeconds(0.001f);
 
-				if(i >= 300) i = 0;
-				velocityArray[i] = HeroController.instance.gameObject.GetComponent<Rigidbody2D>().velocity.magnitude;
+				if(i >= 500) i = 0;
+				velocityArray[i] = Mathf.Abs(HeroController.instance.gameObject.GetComponent<Rigidbody2D>().velocity.x);
+				i++;
 			}
 			yield break;
 		}
@@ -58,19 +59,21 @@ namespace LostArtifacts
 			{
 				sum += velocity;
 			}
-			return sum / 300f;
+			return sum / 500f;
 		}
 
 		private float GetMultiplier()
 		{
-			float multiplier = Mathf.Max(1f, Mathf.Min(125f * GetAverageVelocity() + 1f, 2.5f));
+			float vel = GetAverageVelocity();
+			float multiplier = 30.5f / (1f + 440f * Mathf.Exp(-0.53f * vel));
+			if(vel >= 15.31f) multiplier = -20.05f + 10f * Mathf.Log(vel - 3.2f, 1.7f);
 
 			//Apply level multiplier
 			if(level == 1) multiplier *= 1f;
 			if(level == 2) multiplier *= 1.1f;
-			if(level == 3) multiplier *= 1.25f;
+			if(level == 3) multiplier *= 1.2f;
 
-			return multiplier;
+			return multiplier / 100f + 1f;
 		}
 
 		public override void Deactivate()

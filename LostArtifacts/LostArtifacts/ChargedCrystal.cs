@@ -25,8 +25,8 @@ namespace LostArtifacts
 			LostArtifacts.Instance.Log("Activating " + traitName);
 
 			if(level == 1) multiplier = 1.1f;
-			if(level == 2) multiplier = 1.25f;
-			if(level == 3) multiplier = 1.5f;
+			if(level == 2) multiplier = 1.2f;
+			if(level == 3) multiplier = 1.4f;
 
 			On.HealthManager.Hit += HealthManagerHit;
 		}
@@ -40,9 +40,7 @@ namespace LostArtifacts
 					hitInstance.Source.name.Contains("Hit L") ||
 					hitInstance.Source.name.Contains("Hit R"))
 				{
-					LostArtifacts.Instance.Log("Orig damage " + hitInstance.DamageDealt);
 					hitInstance.DamageDealt = (int)(hitInstance.DamageDealt * multiplier);
-					LostArtifacts.Instance.Log("Increased damage to " + hitInstance.DamageDealt);
 				}
 			}
 			orig(self, hitInstance);
