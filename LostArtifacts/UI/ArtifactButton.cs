@@ -77,6 +77,10 @@ namespace LostArtifacts.UI
 		{
 			ArtifactAudio.Instance.Play(ArtifactAudio.Instance.select);
 
+			//Set selected
+			ArtifactManager.Instance.selected = gameObject;
+			ArtifactManager.Instance.selectedButton = this;
+
 			//Move cursor
 			ArtifactCursor.Instance.UpdatePos();
 
@@ -89,9 +93,6 @@ namespace LostArtifacts.UI
 			{
 				ArtifactManager.Instance.SetArtifactPanel("", ArtifactManager.Instance.empty, "");
 			}
-
-			//Set ArtifactManager's selected button
-			ArtifactManager.Instance.selectedButton = this;
 		}
 
 		public void Confirm()
@@ -126,7 +127,7 @@ namespace LostArtifacts.UI
 		public void Equip()
 		{
 			//Set slot
-			slot = ArtifactManager.Instance.eventSystem.currentSelectedGameObject.GetComponent<ArtifactSlot>();
+			slot = ArtifactManager.Instance.selected.GetComponent<ArtifactSlot>();
 
 			//Reset position
 			choosing = false;

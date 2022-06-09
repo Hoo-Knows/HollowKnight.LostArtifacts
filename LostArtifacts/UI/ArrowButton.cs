@@ -16,10 +16,13 @@ namespace LostArtifacts.UI
 
 		public override void OnSelect(BaseEventData eventData)
 		{
+			//Set selected
+			ArtifactManager.Instance.selected = gameObject;
+
 			if(alt)
 			{
-				if(left) ArtifactManager.Instance.Left();
-				else ArtifactManager.Instance.Right();
+				if(left) LostArtifacts.Instance.pageFSM.SendEvent("LEFT");
+				else LostArtifacts.Instance.pageFSM.SendEvent("RIGHT");
 			}
 
 			ArtifactAudio.Instance.Play(ArtifactAudio.Instance.select);
@@ -33,8 +36,8 @@ namespace LostArtifacts.UI
 
 		public void Confirm()
 		{
-			if(left) ArtifactManager.Instance.Left();
-			else ArtifactManager.Instance.Right();
+			if(left) LostArtifacts.Instance.pageFSM.SendEvent("LEFT");
+			else LostArtifacts.Instance.pageFSM.SendEvent("RIGHT");
 		}
 	}
 }

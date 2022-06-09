@@ -14,7 +14,7 @@ namespace LostArtifacts.UI
 
 		public void UpdatePos()
 		{
-			GameObject selected = ArtifactManager.Instance.eventSystem.currentSelectedGameObject;
+			GameObject selected = ArtifactManager.Instance.selected;
 
 			if(selected == null)
 			{

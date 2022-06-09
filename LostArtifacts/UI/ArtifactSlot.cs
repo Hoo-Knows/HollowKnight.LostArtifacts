@@ -43,6 +43,9 @@ namespace LostArtifacts.UI
 
         public override void OnSelect(BaseEventData eventData)
         {
+            //Set selected
+            ArtifactManager.Instance.selected = gameObject;
+
             ArtifactAudio.Instance.Play(ArtifactAudio.Instance.select);
 
             ArtifactCursor.Instance.UpdatePos();

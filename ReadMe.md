@@ -9,7 +9,7 @@ A mod that adds **lost artifacts** scattered all across Hallownest. After obtain
 ## List of Artifacts and Traits
 - Traveler’s Garment (Dirtmouth)
 	- A small piece of clothing from a traveler who braved the wasteland beyond to reach Hallownest. It carries the aura of its former owner.
-	- Resilience - Increases damage based on the player’s velocity over the past 3 seconds
+	- Resilience - Increases damage based on the player’s average horizontal velocity
 - Tumbleweed (Howling Cliffs)
 	- These little weeds have been tumbling about the Howling Cliffs for as long as anyone can remember. Anything that touches one will become as swift as the wind itself.
 	- Windswept - Hitting an enemy increases movement speed for 5 seconds
@@ -24,3 +24,10 @@ A mod that adds **lost artifacts** scattered all across Hallownest. After obtain
 - Lush Moss (Greenpath)
 	- This piece of moss came from the Massive Moss Charger. It represents the moss chargers' will to recover their moss, no matter how many times it is destroyed.
 	- Nature’s Aura - Heals a mask after a certain amount of hits
+- Noxious Shroom (Fungal Wastes)
+	- Found only in the deepest recesses of the Fungal Wastes, these mushrooms have extremely concentrated toxins. 
+	- Toxic - hitting an enemy releases a spore cloud that can spread to other enemies
+- Cryingrock (City of Tears)
+	- Fallen - take one extra damage, but increase damage for 3 seconds after getting hit
+- Totem Shard (Soul Sanctum)
+	- Soulful - deal increased damage for 3 seconds after healing; Deep Focus buffs the damage increase

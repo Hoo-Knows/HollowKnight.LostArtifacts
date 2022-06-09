@@ -21,7 +21,7 @@ namespace LostArtifacts
 			name = "Tumbleweed";
 			description = "These little weeds have been tumbling about the Howling Cliffs for as long as anyone can remember. Anything that touches one will become as swift as the wind itself.";
 			traitName = "Windswept";
-			traitDescription = "Hitting an enemy increases movement speed for 5 seconds";
+			traitDescription = "Striking an enemy increases movement speed for 5 seconds";
 			active = false;
 			level = 0;
 		}
