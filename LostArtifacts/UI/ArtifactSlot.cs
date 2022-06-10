@@ -118,8 +118,8 @@ namespace LostArtifacts.UI
             if(button != null)
 			{
                 GameObject.Find(names[id] + " Name").GetComponent<Text>().text =
-                    names[id] + " - " + button.artifact.traitName + " " + level[id];
-                GameObject.Find(names[id] + " Description").GetComponent<Text>().text = button.artifact.traitDescription;
+                    names[id] + " - " + button.artifact.TraitName() + " " + level[id];
+                GameObject.Find(names[id] + " Description").GetComponent<Text>().text = button.artifact.TraitDescription();
             }
 			else
 			{

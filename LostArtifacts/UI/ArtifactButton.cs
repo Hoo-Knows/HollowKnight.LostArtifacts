@@ -6,10 +6,10 @@ namespace LostArtifacts.UI
 {
 	public class ArtifactButton : Button
 	{
+		public int id;
 		public Artifact artifact;
 		public bool choosing;
 		public bool equipped;
-		public int id;
 
 		private ArtifactSlot slot;
 		private Vector3 pos;
@@ -17,14 +17,14 @@ namespace LostArtifacts.UI
 		protected override void Start()
 		{
 			id = int.Parse(name.Split(new char[] { ' ' })[1]);
-			pos = gameObject.transform.localPosition;
-
-			artifact = ArtifactManager.Instance.artifacts[id];
+			artifact = LostArtifacts.Instance.artifacts[id];
 			choosing = false;
 			equipped = false;
 
 			if(artifact != null && artifact.unlocked) gameObject.GetComponent<Image>().sprite = artifact.sprite;
 			else gameObject.GetComponent<Image>().sprite = ArtifactManager.Instance.empty;
+
+			pos = gameObject.transform.localPosition;
 
 			//Check if already equipped
 			if(LostArtifacts.Settings.slotHandle == id ||
@@ -87,7 +87,7 @@ namespace LostArtifacts.UI
 			//Update artifact panel
 			if(artifact != null && artifact.unlocked)
 			{
-				ArtifactManager.Instance.SetArtifactPanel(artifact.name, artifact.sprite, artifact.description);
+				ArtifactManager.Instance.SetArtifactPanel(artifact.Name(), artifact.sprite, artifact.Description());
 			}
 			else
 			{
@@ -157,7 +157,6 @@ namespace LostArtifacts.UI
 						artifact.level = 3;
 						break;
 				}
-				artifact.active = true;
 				artifact.Activate();
 			}
 
@@ -179,8 +178,6 @@ namespace LostArtifacts.UI
 			if(artifact != null && artifact.active)
 			{
 				artifact.Deactivate();
-				artifact.level = 0;
-				artifact.active = false;
 			}
 
 			equipped = false;

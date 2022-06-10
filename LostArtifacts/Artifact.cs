@@ -4,37 +4,34 @@ namespace LostArtifacts
 {
     public abstract class Artifact : MonoBehaviour
     {
-        public int id;
-        public bool unlocked;
-        public new string name;
-        public string description;
-        public string traitName;
-        public string traitDescription;
-        public Sprite sprite;
-        public bool active;
-		public int level;
+        public bool unlocked { get; set; }
+        public bool active { get; set; }
+        public int level { get; set; }
+        public Sprite sprite { get; set; }
 
-		public abstract void Initialize();
+        public abstract int ID();
+        public abstract string Name();
+        public abstract string Description();
+        public abstract string TraitName();
+        public abstract string TraitDescription();
 
-		public virtual void Activate()
+        public virtual void Activate()
 		{
-			LostArtifacts.Instance.Log("Activating " + traitName);
-			On.HealthManager.Hit += HealthManagerHit;
-		}
+            LostArtifacts.Instance.Log("Activating " + TraitName() + " " + new string('I', level));
+            active = true;
+        }
 
-		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
+        public virtual void Deactivate()
 		{
-			if(hitInstance.AttackType == AttackTypes.Nail)
-			{
-				LostArtifacts.Instance.Log("Hit enemy with " + traitName);
-			}
-			orig(self, hitInstance);
-		}
+            LostArtifacts.Instance.Log("Deactivating " + TraitName() + " " + new string('I', level));
+            active = false;
+            level = 0;
+        }
 
-		public virtual void Deactivate()
+        public void Unlock()
 		{
-			LostArtifacts.Instance.Log("Deactivating " + traitName);
-			On.HealthManager.Hit -= HealthManagerHit;
+            unlocked = true;
+            LostArtifacts.Settings.unlocked[ID()] = true;
 		}
 	}
 }

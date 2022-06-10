@@ -8,7 +8,6 @@ namespace LostArtifacts.UI
     public class ArtifactManager : MonoBehaviour
     {
         public static ArtifactManager Instance;
-        public Artifact[] artifacts;
         public Transform parent;
 
         public ArtifactButton defaultButton;
@@ -36,7 +35,6 @@ namespace LostArtifacts.UI
         private void Awake()
         {
             Instance = this;
-            artifacts = new Artifact[20];
             parent = gameObject.transform.parent;
 
             defaultButton = parent.Find("Canvas/Artifacts/Artifact 0").gameObject.GetComponent<ArtifactButton>();
@@ -63,14 +61,16 @@ namespace LostArtifacts.UI
             //Set selected
             selected = selectedButton.gameObject;
             eventSystem.SetSelectedGameObject(selected);
+            selectedButton.Select();
 
-			//Update UI
-			ArtifactCursor.Instance.UpdatePos();
-            if(artifacts[selectedButton.id] != null && artifacts[selectedButton.id].unlocked)
+            //Update UI
+            ArtifactCursor.Instance.UpdatePos();
+            LostArtifacts la = LostArtifacts.Instance;
+            if(la.artifacts[selectedButton.id] != null && la.artifacts[selectedButton.id].unlocked)
             {
-                SetArtifactPanel(artifacts[selectedButton.id].name, 
-                    artifacts[selectedButton.id].sprite, 
-                    artifacts[selectedButton.id].description);
+                SetArtifactPanel(la.artifacts[selectedButton.id].Name(),
+                    la.artifacts[selectedButton.id].sprite,
+                    la.artifacts[selectedButton.id].Description());
             }
             else
             {
@@ -81,19 +81,6 @@ namespace LostArtifacts.UI
         public void OnDisable()
 		{
 			ArtifactCursor.Instance.UpdatePos();
-        }
-
-        public void AddArtifact<T>() where T : Artifact
-        {
-            Artifact artifact = LostArtifacts.Instance.artifactsGO.AddComponent<T>();
-            artifact.Initialize();
-            artifact.sprite = LostArtifacts.Instance.GetArtifactSprite(artifact.name);
-            artifacts[artifact.id] = artifact;
-        }
-
-        public void ToggleArtifact(int id)
-        {
-            artifacts[id].unlocked = !artifacts[id].unlocked;
         }
 
         public void SetArtifactPanel(string name, Sprite sprite, string description)
@@ -141,10 +128,6 @@ namespace LostArtifacts.UI
                 selected = selected.GetComponent<Button>().FindSelectableOnRight().gameObject;
                 eventSystem.SetSelectedGameObject(selected);
             }
-            //if(Input.GetButtonDown(InputHandler.Instance.GetButtonBindingForAction(InputHandler.Instance.inputActions.up).ToString()))
-            //{
-            //    LostArtifacts.Instance.Log("button up pressed");
-            //}
         }
 
         private bool GetKeyDown(InControl.PlayerAction key)

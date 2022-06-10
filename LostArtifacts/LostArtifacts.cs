@@ -16,9 +16,9 @@ namespace LostArtifacts
 
 		private GameObject prefabUI;
 		private string iconPath;
-		private UI.ArtifactManager artifactManager;
 
 		public GameObject artifactsGO;
+		public Artifact[] artifacts;
 		public GameObject artifactsUI;
 		public PlayMakerFSM pageFSM;
 
@@ -34,7 +34,7 @@ namespace LostArtifacts
 			return Settings;
 		}
 
-		public override string GetVersion() => "1.1.2b";
+		public override string GetVersion() => AssemblyUtils.GetAssemblyVersionHash();
 
 		public LostArtifacts() : base("LostArtifacts")
 		{
@@ -70,19 +70,20 @@ namespace LostArtifacts
 
 			//Add artifacts
 			artifactsGO = new GameObject("Artifacts GO");
+			artifacts = new Artifact[20];
 			UnityEngine.Object.DontDestroyOnLoad(artifactsGO);
 
 			//Create icons directory if it doesn't exist
 			iconPath = Path.Combine(AssemblyUtils.getCurrentDirectory(), "Icons");
 			IoUtils.EnsureDirectory(iconPath);
 
-			artifactManager = artifactsUI.GetComponentInChildren<UI.ArtifactManager>();
-			artifactManager.AddArtifact<TravelersGarment>();
-			artifactManager.AddArtifact<Tumbleweed>();
-			artifactManager.AddArtifact<ChargedCrystal>();
+			AddArtifact<TravelersGarment>();
+			AddArtifact<PavingStone>();
+			AddArtifact<Tumbleweed>();
+			AddArtifact<ChargedCrystal>();
 
 			On.HeroController.Start += HeroControllerStart;
-			On.QuitToMenu.Start += QuitToMenuStart;
+			On.HeroController.OnDisable += HeroControllerOnDisable;
 			ModHooks.LanguageGetHook += LanguageGetHook;
 			ModHooks.GetPlayerBoolHook += GetPlayerBoolHook;
 
@@ -91,37 +92,38 @@ namespace LostArtifacts
 
 		private void HeroControllerStart(On.HeroController.orig_Start orig, HeroController self)
 		{
-			orig(self);
 			//Activate artifacts if they are equipped
-			foreach(Artifact artifact in artifactManager.artifacts)
+			orig(self);
+			foreach(Artifact artifact in artifacts)
 			{
 				if(artifact == null || artifact.active) continue;
 
+				//Ensure that an artifact is locked/unlocked
+				if(Settings.unlocked[artifact.ID()]) artifact.Unlock();
+
+				//Activate artifact
 				artifact.level = 0;
-				if(Settings.slotHandle == artifact.id) artifact.level = 1;
-				if(Settings.slotBladeL == artifact.id) artifact.level = 2;
-				if(Settings.slotBladeR == artifact.id) artifact.level = 2;
-				if(Settings.slotHead == artifact.id) artifact.level = 3;
+				if(Settings.slotHandle == artifact.ID()) artifact.level = 1;
+				if(Settings.slotBladeL == artifact.ID()) artifact.level = 2;
+				if(Settings.slotBladeR == artifact.ID()) artifact.level = 2;
+				if(Settings.slotHead == artifact.ID()) artifact.level = 3;
 				if(artifact.level > 0)
 				{
-					artifact.active = true;
 					artifact.Activate();
 				}
 			}
 		}
 
-		private IEnumerator QuitToMenuStart(On.QuitToMenu.orig_Start orig, QuitToMenu self)
+		private void HeroControllerOnDisable(On.HeroController.orig_OnDisable orig, HeroController self)
 		{
-			orig(self);
-			foreach(Artifact artifact in artifactManager.artifacts)
+			//Deactivate artifacts
+			foreach(Artifact artifact in artifacts)
 			{
 				if(artifact == null || !artifact.active) continue;
 
 				artifact.Deactivate();
-				artifact.level = 0;
-				artifact.active = false;
 			}
-			yield break;
+			orig(self);
 		}
 
 		private void EditInventory(GameObject page)
@@ -140,28 +142,38 @@ namespace LostArtifacts
 			pageFSM.AddTransition("Artifacts", "RIGHT", "Move Pane R");
 
 			//Set inventory active
-			pageFSM.AddCustomAction("Artifacts", () =>
-			{
-				artifactsUI.SetActive(true);
-			});
+			pageFSM.AddCustomAction("Artifacts", () => artifactsUI.SetActive(true));
 
 			//Set inventory inactive
-			pageFSM.InsertCustomAction("Move Pane L", () => artifactsUI.SetActive(false), 0);
-			pageFSM.InsertCustomAction("Move Pane R", () => artifactsUI.SetActive(false), 0);
-			GameManager.instance.inventoryFSM.InsertCustomAction("Close", () =>
-			{
-				artifactsUI.SetActive(false);
-				//Needed or else the UI will break when closing the inventory while on the artifacts tab
-				pageFSM.SetState("Init");
-			}, 0);
+			pageFSM.InsertCustomAction("Move Pane L", () => CloseInventory(false), 0);
+			pageFSM.InsertCustomAction("Move Pane R", () => CloseInventory(false), 0);
+			GameManager.instance.inventoryFSM.InsertCustomAction("Close", () => CloseInventory(true), 0);
+			GameManager.instance.inventoryFSM.InsertCustomAction("Damage Close", () => CloseInventory(true), 0);
+			GameManager.instance.inventoryFSM.InsertCustomAction("R Lock Close", () => CloseInventory(true), 0);
 		}
 
-		public Sprite GetArtifactSprite(string name)
+		private void CloseInventory(bool full)
+		{
+			artifactsUI.SetActive(false);
+			//Needed if closing the inventory while on the Artifacts tab
+			if(full) pageFSM.SetState("Init");
+		}
+
+		public void AddArtifact<T>() where T : Artifact
+		{
+			Artifact artifact = artifactsGO.AddComponent<T>();
+			artifact.sprite = GetArtifactSprite(artifact.Name());
+			artifact.unlocked = Settings.unlocked[artifact.ID()];
+			artifacts[artifact.ID()] = artifact;
+		}
+
+		private Sprite GetArtifactSprite(string name)
 		{
 			Texture2D texture = TextureUtils.createTextureOfColor(64, 64, Color.clear);
 
 			name = Regex.Replace(name, @"[^0-9a-zA-Z\._]", "");
 			string path = Path.Combine(iconPath, name + ".png");
+
 			//Extract sprite from Resources if it doesn't exist
 			if(!File.Exists(path))
 			{
@@ -179,7 +191,7 @@ namespace LostArtifacts
 			return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 64f);
 		}
 
-		public void ExtractSprite(string name)
+		private void ExtractSprite(string name)
 		{
 			string path = Path.Combine(iconPath, name + ".png");
 
