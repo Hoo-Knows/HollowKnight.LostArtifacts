@@ -6,6 +6,14 @@ namespace LostArtifacts
 {
 	public class Tumbleweed : Artifact
 	{
+		public override int ID() => 7;
+		public override string Name() => "Tumbleweed";
+		public override string Description() => "These little weeds have been tumbling about the Howling Cliffs for as " +
+			"long as anyone can remember. Anything imbued with its power will become as swift as the wind itself.";
+		public override string Levels() => "+10%, +20%, +30% speed";
+		public override string TraitName() => "Windswept";
+		public override string TraitDescription() => "Striking an enemy increases movement speed for 5 seconds";
+
 		private float RUN_SPEED;
 		private float RUN_SPEED_CH;
 		private float RUN_SPEED_CH_COMBO;
@@ -13,12 +21,6 @@ namespace LostArtifacts
 		private float UNDERWATER_SPEED;
 
 		private float multiplier;
-
-		public override int ID() => 7;
-		public override string Name() => "Tumbleweed";
-		public override string Description() => "These little weeds have been tumbling about the Howling Cliffs for as long as anyone can remember. Anything that touches one will become as swift as the wind itself.";
-		public override string TraitName() => "Windswept";
-		public override string TraitDescription() => "Striking an enemy increases movement speed for 5 seconds";
 
 		public override void Activate()
 		{
@@ -36,7 +38,7 @@ namespace LostArtifacts
 
 		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
 		{
-			if(hitInstance.AttackType == AttackTypes.Nail)
+			if(hitInstance.AttackType == AttackTypes.Nail || hitInstance.AttackType == AttackTypes.NailBeam)
 			{
 				StopAllCoroutines();
 				StartCoroutine(SpeedControl());
@@ -64,6 +66,8 @@ namespace LostArtifacts
 			base.Deactivate();
 
 			On.HealthManager.Hit -= HealthManagerHit;
+			StopAllCoroutines();
+
 			HeroController.instance.RUN_SPEED = RUN_SPEED;
 			HeroController.instance.RUN_SPEED_CH = RUN_SPEED_CH;
 			HeroController.instance.RUN_SPEED_CH_COMBO = RUN_SPEED_CH_COMBO;

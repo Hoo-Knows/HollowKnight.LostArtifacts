@@ -6,13 +6,15 @@ namespace LostArtifacts
 {
 	public class TravelersGarment : Artifact
 	{
-		private float[] velocityArray;
-
 		public override int ID() => 0;
 		public override string Name() => "Traveler's Garment";
-		public override string Description() => "A small cloth from a traveler who braved the wasteland beyond to reach Hallownest. It carries the aura of its former owner.";
+		public override string Description() => "A small cloth from a traveler who braved the wasteland beyond to " +
+			"reach Hallownest. It carries the aura of its former owner.";
+		public override string Levels() => "0%, 10%, 20% better scaling";
 		public override string TraitName() => "Resilience";
-		public override string TraitDescription() => "Increase damage based on the player’s average horizontal velocity";
+		public override string TraitDescription() => "Scales damage based on the player’s average horizontal velocity";
+
+		private float[] velocityArray;
 
 		public override void Activate()
 		{
@@ -25,7 +27,7 @@ namespace LostArtifacts
 
 		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
 		{
-			if(hitInstance.AttackType == AttackTypes.Nail)
+			if(hitInstance.AttackType == AttackTypes.Nail || hitInstance.AttackType == AttackTypes.NailBeam)
 			{
 				hitInstance.DamageDealt = (int)(hitInstance.DamageDealt * GetMultiplier());
 			}
@@ -59,8 +61,8 @@ namespace LostArtifacts
 		private float GetMultiplier()
 		{
 			float vel = GetAverageVelocity();
-			float multiplier = 30.5f / (1f + 440f * Mathf.Exp(-0.53f * vel));
-			if(vel >= 15.31f) multiplier = -20.05f + 10f * Mathf.Log(vel - 3.2f, 1.7f);
+			float multiplier = 40f / (1f + 416f * Mathf.Exp(-0.47f * vel));
+			if(vel >= 18.149f) multiplier = -16.15f + 10.2f * Mathf.Log(vel - 2.3f, 1.7f);
 
 			//Apply level multiplier
 			if(level == 1) multiplier *= 1f;
@@ -74,8 +76,8 @@ namespace LostArtifacts
 		{
 			base.Deactivate();
 
-			StopAllCoroutines();
 			On.HealthManager.Hit -= HealthManagerHit;
+			StopAllCoroutines();
 		}
 	}
 }

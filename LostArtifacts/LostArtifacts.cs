@@ -79,6 +79,11 @@ namespace LostArtifacts
 
 			AddArtifact<TravelersGarment>();
 			AddArtifact<PavingStone>();
+			AddArtifact<LushMoss>();
+			AddArtifact<NoxiousShroom>();
+			AddArtifact<Cryingrock>();
+			AddArtifact<TotemShard>();
+			AddArtifact<DungBall>();
 			AddArtifact<Tumbleweed>();
 			AddArtifact<ChargedCrystal>();
 
@@ -86,8 +91,19 @@ namespace LostArtifacts
 			On.HeroController.OnDisable += HeroControllerOnDisable;
 			ModHooks.LanguageGetHook += LanguageGetHook;
 			ModHooks.GetPlayerBoolHook += GetPlayerBoolHook;
+			On.PlayMakerFSM.Awake += PlayMakerFSMAwake;
 
 			Log("Initialized");
+		}
+
+		private void PlayMakerFSMAwake(On.PlayMakerFSM.orig_Awake orig, PlayMakerFSM self)
+		{
+			if(self.gameObject.name == "Knight Spore Cloud")
+			{
+				Log(self.gameObject.transform.parent.name);
+				Log(self.gameObject.transform.parent.parent.name);
+			}
+			orig(self);
 		}
 
 		private void HeroControllerStart(On.HeroController.orig_Start orig, HeroController self)
@@ -147,6 +163,7 @@ namespace LostArtifacts
 			//Set inventory inactive
 			pageFSM.InsertCustomAction("Move Pane L", () => CloseInventory(false), 0);
 			pageFSM.InsertCustomAction("Move Pane R", () => CloseInventory(false), 0);
+			GameManager.instance.inventoryFSM.InsertCustomAction("Loop Through", () => CloseInventory(false), 0);
 			GameManager.instance.inventoryFSM.InsertCustomAction("Close", () => CloseInventory(true), 0);
 			GameManager.instance.inventoryFSM.InsertCustomAction("Damage Close", () => CloseInventory(true), 0);
 			GameManager.instance.inventoryFSM.InsertCustomAction("R Lock Close", () => CloseInventory(true), 0);

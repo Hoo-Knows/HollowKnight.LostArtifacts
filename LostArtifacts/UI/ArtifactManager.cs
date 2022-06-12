@@ -21,9 +21,11 @@ namespace LostArtifacts.UI
 
 		public EventSystem eventSystem;
 
-		public Text artifactName;
-        public Image artifactSprite;
-        public Text artifactDescription;
+		private Text artifactName;
+        private Image artifactSprite;
+        private Text artifactDescription;
+        private Text levelsTitle;
+        private Text artifactLevels;
 
         public int nailLevel;
         public Sprite[] nailSprites;
@@ -51,6 +53,8 @@ namespace LostArtifacts.UI
             artifactName = parent.Find("Canvas/Artifact Panel/Artifact Name").gameObject.GetComponent<Text>();
             artifactSprite = parent.Find("Canvas/Artifact Panel/Artifact Sprite").gameObject.GetComponent<Image>();
             artifactDescription = parent.Find("Canvas/Artifact Panel/Artifact Description").gameObject.GetComponent<Text>();
+            levelsTitle = parent.Find("Canvas/Artifact Panel/Levels Title").gameObject.GetComponent<Text>();
+            artifactLevels = parent.Find("Canvas/Artifact Panel/Artifact Levels").gameObject.GetComponent<Text>();
         }
 
         public void OnEnable()
@@ -63,18 +67,19 @@ namespace LostArtifacts.UI
             eventSystem.SetSelectedGameObject(selected);
             selectedButton.Select();
 
+            //Prevent mouse
+            Cursor.lockState = CursorLockMode.Locked;
+
             //Update UI
             ArtifactCursor.Instance.UpdatePos();
             LostArtifacts la = LostArtifacts.Instance;
             if(la.artifacts[selectedButton.id] != null && la.artifacts[selectedButton.id].unlocked)
             {
-                SetArtifactPanel(la.artifacts[selectedButton.id].Name(),
-                    la.artifacts[selectedButton.id].sprite,
-                    la.artifacts[selectedButton.id].Description());
+                SetArtifactPanel(la.artifacts[selectedButton.id]);
             }
             else
             {
-                SetArtifactPanel("", empty, "");
+                SetArtifactPanel();
             }
         }
 
@@ -83,11 +88,22 @@ namespace LostArtifacts.UI
 			ArtifactCursor.Instance.UpdatePos();
         }
 
-        public void SetArtifactPanel(string name, Sprite sprite, string description)
+        public void SetArtifactPanel(Artifact artifact)
         {
-            artifactName.text = name;
-            artifactSprite.sprite = sprite;
-            artifactDescription.text = description;
+            artifactName.text = artifact.Name();
+            artifactSprite.sprite = artifact.sprite;
+            artifactDescription.text = artifact.Description();
+            levelsTitle.text = "Levels";
+            artifactLevels.text = artifact.Levels();
+        }
+
+        public void SetArtifactPanel()
+		{
+            artifactName.text = "";
+            artifactSprite.sprite = empty;
+            artifactDescription.text = "";
+            levelsTitle.text = "";
+            artifactLevels.text = "";
         }
 
         public void Update()

@@ -31,7 +31,7 @@ namespace LostArtifacts.UI
 			ArtifactCursor.Instance.UpdatePos();
 
 			//Update artifact panel
-			ArtifactManager.Instance.SetArtifactPanel("", ArtifactManager.Instance.empty, "");
+			ArtifactManager.Instance.SetArtifactPanel();
 		}
 
 		public void Confirm()

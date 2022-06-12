@@ -6,13 +6,15 @@ namespace LostArtifacts
 {
 	public class ChargedCrystal : Artifact
 	{
-		private float multiplier;
-
 		public override int ID() => 8;
 		public override string Name() => "Charged Crystal";
-		public override string Description() => "Though all crystals from the Peaks hold some amount of energy, this crystal that Myla stumbled upon is even more potent than usual. It pulses and glows with all of its might.";
+		public override string Description() => "Though all crystals from the Peaks hold some amount of energy, this crystal " +
+			"that Myla stumbled upon is even more potent than usual. It pulses and glows with all of its might.";
+		public override string Levels() => "+10%, +20%, +40% damage";
 		public override string TraitName() => "Energized";
 		public override string TraitDescription() => "Nail arts deal increased damage";
+
+		private float multiplier;
 
 		public override void Activate()
 		{
@@ -44,7 +46,6 @@ namespace LostArtifacts
 		{
 			base.Deactivate();
 
-			StopAllCoroutines();
 			On.HealthManager.Hit -= HealthManagerHit;
 		}
 	}

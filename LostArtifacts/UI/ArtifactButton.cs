@@ -87,11 +87,11 @@ namespace LostArtifacts.UI
 			//Update artifact panel
 			if(artifact != null && artifact.unlocked)
 			{
-				ArtifactManager.Instance.SetArtifactPanel(artifact.Name(), artifact.sprite, artifact.Description());
+				ArtifactManager.Instance.SetArtifactPanel(artifact);
 			}
 			else
 			{
-				ArtifactManager.Instance.SetArtifactPanel("", ArtifactManager.Instance.empty, "");
+				ArtifactManager.Instance.SetArtifactPanel();
 			}
 		}
 

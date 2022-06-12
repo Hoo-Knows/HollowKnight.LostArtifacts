@@ -12,6 +12,7 @@ namespace LostArtifacts
         public abstract int ID();
         public abstract string Name();
         public abstract string Description();
+        public abstract string Levels();
         public abstract string TraitName();
         public abstract string TraitDescription();
 

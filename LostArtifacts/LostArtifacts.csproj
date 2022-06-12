@@ -15,8 +15,8 @@
     <Product>LostArtifacts</Product>
     <Description>A Hollow Knight Mod</Description>
     <Copyright>Copyright ©  2022</Copyright>
-    <AssemblyVersion>0.2.2.0</AssemblyVersion>
-    <FileVersion>0.2.2.0</FileVersion>
+    <AssemblyVersion>0.3.0.0</AssemblyVersion>
+    <FileVersion>0.3.0.0</FileVersion>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
@@ -86,10 +86,10 @@
       <HintPath>$(HollowKnightRefs)/PlayMaker.dll</HintPath>
     </Reference>
     <Reference Include="Satchel">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\Satchel\Satchel.dll</HintPath>
+      <HintPath>$(HollowKnightRefs)\Mods\Satchel\Satchel.dll</HintPath>
     </Reference>
     <Reference Include="SFCore">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\SFCore\SFCore.dll</HintPath>
+      <HintPath>$(HollowKnightRefs)\Mods\SFCore\SFCore.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition">
       <HintPath>$(HollowKnightRefs)/System.ComponentModel.Composition.dll</HintPath>
@@ -327,18 +327,6 @@
     </Reference>
   </ItemGroup>
 	<ItemGroup>
-		<EmbeddedResource Include="Resources\artifactsui" />
-	</ItemGroup>
-	<ItemGroup>
-		<EmbeddedResource Include="Resources\TravelersGarment.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<EmbeddedResource Include="Resources\PavingStone.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<EmbeddedResource Include="Resources\Tumbleweed.png" />
-	</ItemGroup>
-    <ItemGroup>
-		<EmbeddedResource Include="Resources\ChargedCrystal.png" />
+		<EmbeddedResource Include="Resources\*"/>
 	</ItemGroup>
 </Project>
