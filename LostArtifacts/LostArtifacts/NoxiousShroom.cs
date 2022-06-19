@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
-using Satchel;
-using HutongGames.PlayMaker.Actions;
+using Random = System.Random;
 
 namespace LostArtifacts
 {
@@ -13,11 +12,13 @@ namespace LostArtifacts
 		public override string Name() => "Noxious Shroom";
 		public override string Description() => "Found only in the deepest recesses of the Fungal Wastes, these mushrooms " +
 			"have highly concentrated toxins. Releasing them would be disastrous…for the enemy.";
-		public override string Levels() => "1, 2, 3 chances to spread";
+		public override string Levels() => "Can spread to 1, 2, 3 other enemies";
 		public override string TraitName() => "Toxic";
-		public override string TraitDescription() => "Hitting an enemy releases a spore cloud that can spread to nearby enemies";
+		public override string TraitDescription() => "Hitting an enemy has a 40% chance to release a spore cloud that can " +
+			"spread to nearby enemies";
 
 		private GameObject cloudGO;
+		private Random random;
 
 		public override void Activate()
 		{
@@ -31,15 +32,16 @@ namespace LostArtifacts
 					break;
 				}
 			}
+			random = new Random();
 
-			On.HealthManager.Hit += HealthManagerHit;
+			On.HealthManager.TakeDamage += HealthManagerTakeDamage;
 		}
 
-		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
+		private void HealthManagerTakeDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
 		{
 			if(hitInstance.AttackType == AttackTypes.Nail || hitInstance.AttackType == AttackTypes.NailBeam)
 			{
-				StartCoroutine(CloudControl(self, new List<string>()));
+				if(random.Next(0, 5) < 2) StartCoroutine(CloudControl(self, new List<string>()));
 			}
 			orig(self, hitInstance);
 		}
@@ -55,13 +57,8 @@ namespace LostArtifacts
 			//Spawn cloud
 			GameObject cloud = Instantiate(cloudGO, pos, Quaternion.identity);
 
-			cloud.LocateMyFSM("Control").GetAction<SetScale>("Normal", 1).x = 0.5f;
-			cloud.LocateMyFSM("Control").GetAction<SetScale>("Normal", 1).y = 0.5f;
-			cloud.LocateMyFSM("Control").GetAction<SetScale>("Deep", 1).x = 0.5f;
-			cloud.LocateMyFSM("Control").GetAction<SetScale>("Deep", 1).y = 0.5f;
-
 			cloud.SetActive(true);
-			cloud.GetComponent<DamageEffectTicker>().damageInterval = 0.25f;
+			cloud.GetComponent<DamageEffectTicker>().damageInterval = 0.5f;
 
 			//Wait a bit to spread
 			yield return new WaitForSeconds(2f);
@@ -100,7 +97,7 @@ namespace LostArtifacts
 		{
 			base.Deactivate();
 
-			On.HealthManager.Hit -= HealthManagerHit;
+			On.HealthManager.TakeDamage -= HealthManagerTakeDamage;
 			StopAllCoroutines();
 		}
 	}

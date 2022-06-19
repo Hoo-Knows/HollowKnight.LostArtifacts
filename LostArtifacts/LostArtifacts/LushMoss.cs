@@ -8,8 +8,8 @@ namespace LostArtifacts
 		public override string Name() => "Lush Moss";
 		public override string Description() => "This piece of moss came from the Massive Moss Charger. It has a mysterious " +
 			"healing power that allows the moss chargers to recover their moss no matter how many times it is destroyed.";
-		public override string Levels() => "40, 30, 20 hits";
-		public override string TraitName() => "Nature’s Aura";
+		public override string Levels() => "30, 20, 10 hits to heal";
+		public override string TraitName() => "Regeneration";
 		public override string TraitDescription() => "Heal a mask after a certain amount of hits";
 
 		private int counter;
@@ -20,12 +20,12 @@ namespace LostArtifacts
 			base.Activate();
 
 			counter = 0;
-			hitsNeeded = 50 - level * 10;
+			hitsNeeded = 40 - level * 10;
 
-			On.HealthManager.Hit += HealthManagerHit;
+			On.HealthManager.TakeDamage += HealthManagerTakeDamage;
 		}
 
-		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
+		private void HealthManagerTakeDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
 		{
 			if(hitInstance.AttackType == AttackTypes.Nail || hitInstance.AttackType == AttackTypes.NailBeam)
 			{
@@ -43,7 +43,7 @@ namespace LostArtifacts
 		{
 			base.Deactivate();
 
-			On.HealthManager.Hit -= HealthManagerHit;
+			On.HealthManager.TakeDamage -= HealthManagerTakeDamage;
 		}
 	}
 }

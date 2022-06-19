@@ -10,9 +10,9 @@ namespace LostArtifacts
 		public override string Name() => "Traveler's Garment";
 		public override string Description() => "A small cloth from a traveler who braved the wasteland beyond to " +
 			"reach Hallownest. It carries the aura of its former owner.";
-		public override string Levels() => "0%, 10%, 20% better scaling";
+		public override string Levels() => "0%, 50%, 100% better scaling";
 		public override string TraitName() => "Resilience";
-		public override string TraitDescription() => "Scales damage based on the player’s average horizontal velocity";
+		public override string TraitDescription() => "Scales damage with the player’s horizontal speed over the past 3 seconds";
 
 		private float[] velocityArray;
 
@@ -29,7 +29,8 @@ namespace LostArtifacts
 		{
 			if(hitInstance.AttackType == AttackTypes.Nail || hitInstance.AttackType == AttackTypes.NailBeam)
 			{
-				hitInstance.DamageDealt = (int)(hitInstance.DamageDealt * GetMultiplier());
+				LostArtifacts.Instance.Log(GetMultiplier());
+				hitInstance.Multiplier += GetMultiplier();
 			}
 			orig(self, hitInstance);
 		}
@@ -61,15 +62,13 @@ namespace LostArtifacts
 		private float GetMultiplier()
 		{
 			float vel = GetAverageVelocity();
-			float multiplier = 40f / (1f + 416f * Mathf.Exp(-0.47f * vel));
-			if(vel >= 18.149f) multiplier = -16.15f + 10.2f * Mathf.Log(vel - 2.3f, 1.7f);
+			float multiplier = 21f / (1f + 330f * Mathf.Exp(-0.46f * vel));
+			if(vel >= 16.607f) multiplier = -41.4f + 9.5f * Mathf.Log(vel + 2.4f, 1.6f);
 
 			//Apply level multiplier
-			if(level == 1) multiplier *= 1f;
-			if(level == 2) multiplier *= 1.1f;
-			if(level == 3) multiplier *= 1.2f;
+			multiplier *= 0.5f + level * 0.5f;
 
-			return multiplier / 100f + 1f;
+			return multiplier / 100f;
 		}
 
 		public override void Deactivate()

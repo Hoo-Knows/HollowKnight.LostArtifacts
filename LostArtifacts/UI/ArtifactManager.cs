@@ -34,6 +34,12 @@ namespace LostArtifacts.UI
         public Sprite locked;
         public Sprite cursor;
 
+        private bool jumpWasPressed;
+        private bool upWasPressed;
+        private bool downWasPressed;
+        private bool leftWasPressed;
+        private bool rightWasPressed;
+
         private void Awake()
         {
             Instance = this;
@@ -57,7 +63,13 @@ namespace LostArtifacts.UI
             artifactLevels = parent.Find("Canvas/Artifact Panel/Artifact Levels").gameObject.GetComponent<Text>();
         }
 
-        public void OnEnable()
+        private void Start()
+		{
+            //Prevent mouse
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+
+        private void OnEnable()
 		{
             //Update nail level
             nailLevel = PlayerData.instance.GetInt("nailSmithUpgrades");
@@ -66,9 +78,6 @@ namespace LostArtifacts.UI
             selected = selectedButton.gameObject;
             eventSystem.SetSelectedGameObject(selected);
             selectedButton.Select();
-
-            //Prevent mouse
-            Cursor.lockState = CursorLockMode.Locked;
 
             //Update UI
             ArtifactCursor.Instance.UpdatePos();
@@ -83,7 +92,7 @@ namespace LostArtifacts.UI
             }
         }
 
-        public void OnDisable()
+        private void OnDisable()
 		{
 			ArtifactCursor.Instance.UpdatePos();
         }
@@ -106,10 +115,10 @@ namespace LostArtifacts.UI
             artifactLevels.text = "";
         }
 
-        public void Update()
+        private void Update()
         {
             //Handle UI input
-            if(GetKeyDown(InputHandler.Instance.inputActions.jump))
+            if(InputHandler.Instance.inputActions.jump.IsPressed && !jumpWasPressed)
             {
                 if(selected.GetComponent<ArtifactButton>() != null)
                 {
@@ -124,32 +133,36 @@ namespace LostArtifacts.UI
                     selected.GetComponent<ArrowButton>().Confirm();
                 }
             }
-            if(GetKeyDown(InputHandler.Instance.inputActions.up) && selected.GetComponent<Button>().FindSelectableOnUp() != null)
+            if(InputHandler.Instance.inputActions.up.IsPressed && !upWasPressed && 
+                selected.GetComponent<Button>().FindSelectableOnUp() != null)
             {
                 selected = selected.GetComponent<Button>().FindSelectableOnUp().gameObject;
                 eventSystem.SetSelectedGameObject(selected);
             }
-            if(GetKeyDown(InputHandler.Instance.inputActions.down) && selected.GetComponent<Button>().FindSelectableOnDown() != null)
+            if(InputHandler.Instance.inputActions.down.IsPressed && !downWasPressed && 
+                selected.GetComponent<Button>().FindSelectableOnDown() != null)
             {
                 selected = selected.GetComponent<Button>().FindSelectableOnDown().gameObject;
                 eventSystem.SetSelectedGameObject(selected);
             }
-            if(GetKeyDown(InputHandler.Instance.inputActions.left) && selected.GetComponent<Button>().FindSelectableOnLeft() != null)
+            if(InputHandler.Instance.inputActions.left.IsPressed && !leftWasPressed && 
+                selected.GetComponent<Button>().FindSelectableOnLeft() != null)
             {
                 selected = selected.GetComponent<Button>().FindSelectableOnLeft().gameObject;
                 eventSystem.SetSelectedGameObject(selected);
             }
-            if(GetKeyDown(InputHandler.Instance.inputActions.right) && selected.GetComponent<Button>().FindSelectableOnRight() != null)
+            if(InputHandler.Instance.inputActions.right.IsPressed && !rightWasPressed && 
+                selected.GetComponent<Button>().FindSelectableOnRight() != null)
             {
                 selected = selected.GetComponent<Button>().FindSelectableOnRight().gameObject;
                 eventSystem.SetSelectedGameObject(selected);
             }
-        }
 
-        private bool GetKeyDown(InControl.PlayerAction key)
-		{
-            InputHandler.KeyOrMouseBinding binding = InputHandler.Instance.GetKeyBindingForAction(key);
-            return Input.GetKeyDown((KeyCode)Enum.Parse(typeof(KeyCode), binding.Key.ToString()));
+            jumpWasPressed = InputHandler.Instance.inputActions.jump.IsPressed;
+            upWasPressed = InputHandler.Instance.inputActions.up.IsPressed;
+            downWasPressed = InputHandler.Instance.inputActions.down.IsPressed;
+            leftWasPressed = InputHandler.Instance.inputActions.left.IsPressed;
+            rightWasPressed = InputHandler.Instance.inputActions.right.IsPressed;
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Satchel;
 using System.Collections;
 using UnityEngine;
+using HutongGames.PlayMaker.Actions;
 
 namespace LostArtifacts
 {
@@ -12,12 +13,12 @@ namespace LostArtifacts
 		public override string Name() => "Totem Shard";
 		public override string Description() => "The scholars of the Soul Sanctum were fascinated by a totem that released SOUL " +
 			"as pure destructive energy. Though it has shattered from overuse, the shards retain some of its original power.";
-		public override string Levels() => "5, 7.5, 10 second duration";
+		public override string Levels() => "2.5, 5, 7.5 second duration";
 		public override string TraitName() => "Soulful";
-		public override string TraitDescription() => "Deal +25% damage after healing (Deep Focus gives +50%, Quick Focus adds 2.5 seconds)";
+		public override string TraitDescription() => "Deal +25% damage for a short time after healing; Deep Focus gives +75% " +
+			"instead, Quick Focus adds 5 seconds";
 
 		private bool buffActive;
-		private PlayMakerFSM spellFSM;
 
 		public override void Activate()
 		{
@@ -25,19 +26,18 @@ namespace LostArtifacts
 
 			buffActive = false;
 
-			spellFSM = HeroController.instance.spellControl;
-			spellFSM.AddCustomAction("Focus Get Finish", () =>
-			{
-				StopAllCoroutines();
-				StartCoroutine(DamageControl());
-			});
-			spellFSM.AddCustomAction("Focus Get Finish 2", () =>
-			{
-				StopAllCoroutines();
-				StartCoroutine(DamageControl());
-			});
-
 			On.HealthManager.Hit += HealthManagerHit;
+			On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += SendEventByNameOnEnter;
+		}
+
+		private void SendEventByNameOnEnter(On.HutongGames.PlayMaker.Actions.SendEventByName.orig_OnEnter orig, SendEventByName self)
+		{
+			orig(self);
+			if(self.Fsm.Name == "Spell Control" && self.State.Name.Contains("Focus Get Finish") && self.sendEvent.Value == "FOCUS END")
+			{
+				StopAllCoroutines();
+				StartCoroutine(DamageControl());
+			}
 		}
 
 		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
@@ -46,8 +46,8 @@ namespace LostArtifacts
 			{
 				if(buffActive)
 				{
-					float multiplier = PlayerData.instance.GetBool("equippedCharm_34") ? 1.5f : 1.25f;
-					hitInstance.DamageDealt = (int)(hitInstance.DamageDealt * multiplier);
+					float multiplier = PlayerData.instance.GetBool("equippedCharm_34") ? 0.25f : 0.75f;
+					hitInstance.Multiplier += multiplier;
 				}
 			}
 			orig(self, hitInstance);
@@ -57,11 +57,8 @@ namespace LostArtifacts
 		{
 			buffActive = true;
 
-			float duration = 0f;
-			if(level == 1) duration = 5f;
-			if(level == 2) duration = 7.5f;
-			if(level == 3) duration = 10f;
-			if(PlayerData.instance.GetBool("equippedCharm_07")) duration += 2.5f;
+			float duration = level * 2.5f;
+			if(PlayerData.instance.GetBool("equippedCharm_07")) duration *= 2f;
 
 			yield return new WaitForSeconds(duration);
 
@@ -73,10 +70,8 @@ namespace LostArtifacts
 			base.Deactivate();
 
 			On.HealthManager.Hit -= HealthManagerHit;
+			On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter -= SendEventByNameOnEnter;
 			StopAllCoroutines();
-
-			spellFSM.RemoveAction("Focus Get Finish", 15);
-			spellFSM.RemoveAction("Focus Get Finish 2", 17);
 
 			buffActive = false;
 		}

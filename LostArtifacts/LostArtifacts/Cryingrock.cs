@@ -12,9 +12,9 @@ namespace LostArtifacts
 		public override string Name() => "Cryingrock";
 		public override string Description() => "The never-ending rain seeps into the roads and buildings of the crumbling city, " +
 			"creating rocks like this. The water embedded in the rock vaguely resembles tears.";
-		public override string Levels() => "+20%, +30%, +50% damage";
+		public override string Levels() => "+30%, +40%, +50% damage";
 		public override string TraitName() => "Fallen";
-		public override string TraitDescription() => "Take one extra damage, but deal more damage for 3 seconds after getting hit";
+		public override string TraitDescription() => "Take one extra damage, but deal more damage for 5 seconds after taking damage";
 
 		private float multiplier;
 
@@ -22,16 +22,15 @@ namespace LostArtifacts
 		{
 			base.Activate();
 
-			if(level == 1) multiplier = 1.2f;
-			if(level == 2) multiplier = 1.3f;
-			if(level == 3) multiplier = 1.5f;
+			multiplier = 0.2f + level * 0.1f;
 
-			ModHooks.TakeHealthHook += TakeHealthHook;
+			ModHooks.TakeDamageHook += TakeDamageHook;
 		}
 
-		private int TakeHealthHook(int damage)
+		private int TakeDamageHook(ref int hazardType, int damage)
 		{
 			StopAllCoroutines();
+			On.HealthManager.Hit -= HealthManagerHit;
 			StartCoroutine(DamageControl());
 			return damage + 1;
 		}
@@ -47,7 +46,7 @@ namespace LostArtifacts
 		{
 			if(hitInstance.AttackType == AttackTypes.Nail || hitInstance.AttackType == AttackTypes.NailBeam)
 			{
-				hitInstance.DamageDealt = (int)(hitInstance.DamageDealt * multiplier);
+				hitInstance.Multiplier += multiplier;
 			}
 			orig(self, hitInstance);
 		}
@@ -56,7 +55,7 @@ namespace LostArtifacts
 		{
 			base.Deactivate();
 
-			ModHooks.TakeHealthHook -= TakeHealthHook;
+			ModHooks.TakeDamageHook -= TakeDamageHook;
 			On.HealthManager.Hit -= HealthManagerHit;
 			StopAllCoroutines();
 		}

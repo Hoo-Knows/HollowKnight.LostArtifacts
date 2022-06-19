@@ -1,18 +1,19 @@
 ﻿using Modding;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SFCore;
 using Satchel;
 using System.IO;
 using System.Text.RegularExpressions;
+using HutongGames.PlayMaker.Actions;
 
 namespace LostArtifacts
 {
 	public class LostArtifacts : Mod, ILocalSettings<Settings>
 	{
 		public static LostArtifacts Instance;
+		public static Dictionary<string, Dictionary<string, GameObject>> Preloads;
 
 		private GameObject prefabUI;
 		private string iconPath;
@@ -64,9 +65,19 @@ namespace LostArtifacts
 				EditInventory);
 		}
 
+		public override List<ValueTuple<string, string>> GetPreloadNames()
+		{
+			return new List<ValueTuple<string, string>>
+			{
+				new ValueTuple<string, string>("GG_Uumuu", "Mega Jellyfish GG")
+			};
+		}
+
 		public override void Initialize(Dictionary<string, Dictionary<string, GameObject>> preloadedObjects)
 		{
 			Log("Initializing");
+
+			Preloads = preloadedObjects;
 
 			//Add artifacts
 			artifactsGO = new GameObject("Artifacts GO");
@@ -86,24 +97,24 @@ namespace LostArtifacts
 			AddArtifact<DungBall>();
 			AddArtifact<Tumbleweed>();
 			AddArtifact<ChargedCrystal>();
+			AddArtifact<Dreamwood>();
+			AddArtifact<LumaflyEssence>();
+			AddArtifact<ThornedLeaf>();
+			AddArtifact<WeaverSilk>();
+			AddArtifact<WyrmAsh>();
+			AddArtifact<BeastHide>();
+			AddArtifact<Honeydrop>(); //Needs visual feedback
+			AddArtifact<InfectedRock>();
+			AddArtifact<Buzzsaw>();
+			AddArtifact<Voidstone>();
+			AddArtifact<AttunedJewel>(); //Needs visual feedback
 
 			On.HeroController.Start += HeroControllerStart;
 			On.HeroController.OnDisable += HeroControllerOnDisable;
 			ModHooks.LanguageGetHook += LanguageGetHook;
 			ModHooks.GetPlayerBoolHook += GetPlayerBoolHook;
-			On.PlayMakerFSM.Awake += PlayMakerFSMAwake;
 
 			Log("Initialized");
-		}
-
-		private void PlayMakerFSMAwake(On.PlayMakerFSM.orig_Awake orig, PlayMakerFSM self)
-		{
-			if(self.gameObject.name == "Knight Spore Cloud")
-			{
-				Log(self.gameObject.transform.parent.name);
-				Log(self.gameObject.transform.parent.parent.name);
-			}
-			orig(self);
 		}
 
 		private void HeroControllerStart(On.HeroController.orig_Start orig, HeroController self)
@@ -113,6 +124,9 @@ namespace LostArtifacts
 			foreach(Artifact artifact in artifacts)
 			{
 				if(artifact == null || artifact.active) continue;
+
+				//Unlock by default
+				Settings.unlocked[artifact.ID()] = true;
 
 				//Ensure that an artifact is locked/unlocked
 				if(Settings.unlocked[artifact.ID()]) artifact.Unlock();
@@ -163,10 +177,23 @@ namespace LostArtifacts
 			//Set inventory inactive
 			pageFSM.InsertCustomAction("Move Pane L", () => CloseInventory(false), 0);
 			pageFSM.InsertCustomAction("Move Pane R", () => CloseInventory(false), 0);
-			GameManager.instance.inventoryFSM.InsertCustomAction("Loop Through", () => CloseInventory(false), 0);
-			GameManager.instance.inventoryFSM.InsertCustomAction("Close", () => CloseInventory(true), 0);
-			GameManager.instance.inventoryFSM.InsertCustomAction("Damage Close", () => CloseInventory(true), 0);
-			GameManager.instance.inventoryFSM.InsertCustomAction("R Lock Close", () => CloseInventory(true), 0);
+
+			On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += SendEventByNameOnEnter;
+		}
+
+		private void SendEventByNameOnEnter(On.HutongGames.PlayMaker.Actions.SendEventByName.orig_OnEnter orig, SendEventByName self)
+		{
+			orig(self);
+			if(self.Fsm.Name == "Inventory Control" && self.State.Name == "Loop Through" && self.sendEvent.Value == "INV PANEL CHANGE")
+			{
+				CloseInventory(false);
+			}
+			if(self.Fsm.Name == "Inventory Control" &&
+				(self.State.Name == "Close" || self.State.Name == "Damage Close" || self.State.Name == "R Lock Close") && 
+				self.sendEvent.Value == "MAP KEY DOWN")
+			{
+				CloseInventory(true);
+			}
 		}
 
 		private void CloseInventory(bool full)
@@ -203,9 +230,26 @@ namespace LostArtifacts
 					Log("Failed to extract sprite for " + name);
 				}
 			}
-			if(File.Exists(path)) texture = TextureUtils.LoadTextureFromFile(path);
+			if(File.Exists(path)) texture = GetPremultipliedAlpha(TextureUtils.LoadTextureFromFile(path));
 
 			return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 64f);
+		}
+
+		public static Texture2D GetPremultipliedAlpha(Texture2D source)
+		{
+			Color[] sourcePixels = source.GetPixels();
+			Color[] destPixels = new Color[sourcePixels.Length];
+
+			for(int i = 0; i < sourcePixels.Length; i++)
+			{
+				Color px = sourcePixels[i];
+				destPixels[i] = new Color(px.r * px.a, px.g * px.a, px.b * px.a, px.a);
+			}
+
+			Texture2D dest = new(source.width, source.height, TextureFormat.ARGB32, false);
+			dest.SetPixels(destPixels);
+			dest.Apply();
+			return dest;
 		}
 
 		private void ExtractSprite(string name)

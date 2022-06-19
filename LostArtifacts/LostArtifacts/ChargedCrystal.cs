@@ -10,7 +10,7 @@ namespace LostArtifacts
 		public override string Name() => "Charged Crystal";
 		public override string Description() => "Though all crystals from the Peaks hold some amount of energy, this crystal " +
 			"that Myla stumbled upon is even more potent than usual. It pulses and glows with all of its might.";
-		public override string Levels() => "+10%, +20%, +40% damage";
+		public override string Levels() => "+20%, +30%, +40% damage";
 		public override string TraitName() => "Energized";
 		public override string TraitDescription() => "Nail arts deal increased damage";
 
@@ -20,9 +20,7 @@ namespace LostArtifacts
 		{
 			base.Activate();
 
-			if(level == 1) multiplier = 1.1f;
-			if(level == 2) multiplier = 1.2f;
-			if(level == 3) multiplier = 1.4f;
+			multiplier = 0.1f + level * 0.1f;
 
 			On.HealthManager.Hit += HealthManagerHit;
 		}
@@ -36,7 +34,7 @@ namespace LostArtifacts
 					hitInstance.Source.name.Contains("Hit L") ||
 					hitInstance.Source.name.Contains("Hit R"))
 				{
-					hitInstance.DamageDealt = (int)(hitInstance.DamageDealt * multiplier);
+					hitInstance.Multiplier += multiplier;
 				}
 			}
 			orig(self, hitInstance);
