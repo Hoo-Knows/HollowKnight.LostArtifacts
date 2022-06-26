@@ -1,20 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ItemChanger;
+using ItemChanger.Locations;
 using Modding;
 using System.Collections;
 using UnityEngine;
 
 namespace LostArtifacts
 {
-	public class Cryingrock : Artifact
+	public class CryingStatue : Artifact
 	{
 		public override int ID() => 4;
-		public override string Name() => "Cryingrock";
-		public override string Description() => "The never-ending rain seeps into the roads and buildings of the crumbling city, " +
-			"creating rocks like this. The water embedded in the rock vaguely resembles tears.";
-		public override string Levels() => "+30%, +40%, +50% damage";
+		public override string Name() => "Crying Statue";
+		public override string Description() => "The never-ending rain seeps into every object it can find, including this relic. " +
+			"The water looks vaguely like tears.";
+		public override string LevelInfo() => "+30%, +40%, +50% damage";
 		public override string TraitName() => "Fallen";
 		public override string TraitDescription() => "Take one extra damage, but deal more damage for 5 seconds after taking damage";
+		public override AbstractLocation Location()
+		{
+			return new CoordinateLocation()
+			{
+				name = InternalName(),
+				sceneName = nameof(SceneNames.Ruins1_27),
+				x = 51.5f,
+				y = 23.4f,
+				elevation = 0f
+			};
+		}
 
 		private float multiplier;
 

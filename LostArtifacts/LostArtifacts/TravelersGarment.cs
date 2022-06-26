@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ItemChanger;
+using ItemChanger.Locations;
 using System.Collections;
 using UnityEngine;
 
@@ -10,9 +11,20 @@ namespace LostArtifacts
 		public override string Name() => "Traveler's Garment";
 		public override string Description() => "A small cloth from a traveler who braved the wasteland beyond to " +
 			"reach Hallownest. It carries the aura of its former owner.";
-		public override string Levels() => "0%, 50%, 100% better scaling";
+		public override string LevelInfo() => "0%, 50%, 100% better scaling";
 		public override string TraitName() => "Resilience";
 		public override string TraitDescription() => "Scales damage with the player’s horizontal speed over the past 3 seconds";
+		public override AbstractLocation Location()
+		{
+			return new CoordinateLocation()
+			{
+				name = InternalName(),
+				sceneName = nameof(SceneNames.Town),
+				x = 189f,
+				y = 8.4f,
+				elevation = 0f
+			};
+		}
 
 		private float[] velocityArray;
 

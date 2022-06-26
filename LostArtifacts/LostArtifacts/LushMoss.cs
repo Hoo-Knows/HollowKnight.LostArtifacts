@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ItemChanger;
+using ItemChanger.Locations;
 
 namespace LostArtifacts
 {
@@ -8,9 +9,32 @@ namespace LostArtifacts
 		public override string Name() => "Lush Moss";
 		public override string Description() => "This piece of moss came from the Massive Moss Charger. It has a mysterious " +
 			"healing power that allows the moss chargers to recover their moss no matter how many times it is destroyed.";
-		public override string Levels() => "30, 20, 10 hits to heal";
+		public override string LevelInfo() => "30, 20, 10 hits to heal";
 		public override string TraitName() => "Regeneration";
 		public override string TraitDescription() => "Heal a mask after a certain amount of hits";
+		public override AbstractLocation Location()
+		{
+			return new DualLocation()
+			{
+				name = InternalName(),
+				Test = new PDBool(nameof(PlayerData.megaMossChargerDefeated)),
+				falseLocation = new EnemyLocation()
+				{
+					name = InternalName(),
+					sceneName = nameof(SceneNames.Fungus1_29),
+					objectName = "Mega Moss Charger",
+					removeGeo = false
+				},
+				trueLocation = new CoordinateLocation()
+				{
+					name = InternalName(),
+					sceneName = nameof(SceneNames.Fungus1_29),
+					x = 50.7f,
+					y = 7.4f,
+					elevation = 0f
+				}
+			};
+		}
 
 		private int counter;
 		private int hitsNeeded;

@@ -21,8 +21,14 @@ namespace LostArtifacts.UI
 			choosing = false;
 			equipped = false;
 
-			if(artifact != null && artifact.unlocked) gameObject.GetComponent<Image>().sprite = artifact.sprite;
-			else gameObject.GetComponent<Image>().sprite = ArtifactManager.Instance.empty;
+			if(artifact != null && LostArtifacts.Settings.unlocked[artifact.ID()])
+			{
+				gameObject.GetComponent<Image>().sprite = artifact.sprite.Value;
+			}
+			else
+			{
+				gameObject.GetComponent<Image>().sprite = ArtifactManager.Instance.empty;
+			}
 
 			pos = gameObject.transform.localPosition;
 
@@ -64,6 +70,18 @@ namespace LostArtifacts.UI
 			}
 		}
 
+		protected override void OnEnable()
+		{
+			if(artifact != null && LostArtifacts.Settings.unlocked[artifact.ID()])
+			{
+				gameObject.GetComponent<Image>().sprite = artifact.sprite.Value;
+			}
+			else
+			{
+				gameObject.GetComponent<Image>().sprite = ArtifactManager.Instance.empty;
+			}
+		}
+
 		protected override void OnDisable()
 		{
 			if(choosing)
@@ -85,7 +103,7 @@ namespace LostArtifacts.UI
 			ArtifactCursor.Instance.UpdatePos();
 
 			//Update artifact panel
-			if(artifact != null && artifact.unlocked)
+			if(artifact != null && LostArtifacts.Settings.unlocked[artifact.ID()])
 			{
 				ArtifactManager.Instance.SetArtifactPanel(artifact);
 			}
@@ -98,7 +116,7 @@ namespace LostArtifacts.UI
 		public void Confirm()
 		{
 			if(artifact == null) return;
-			if(ArtifactManager.Instance.nailLevel == 0 || !artifact.unlocked) return;
+			if(ArtifactManager.Instance.nailLevel == 0 || !LostArtifacts.Settings.unlocked[artifact.ID()]) return;
 
 			ArtifactAudio.Instance.Play(ArtifactAudio.Instance.submit);
 

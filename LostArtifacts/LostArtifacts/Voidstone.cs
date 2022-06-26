@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using HutongGames.PlayMaker.Actions;
-using Satchel;
+﻿using HutongGames.PlayMaker.Actions;
+using ItemChanger;
+using ItemChanger.Locations;
 using UnityEngine;
 
 namespace LostArtifacts
@@ -12,10 +11,21 @@ namespace LostArtifacts
 		public override string Name() => "Voidstone";
 		public override string Description() => "A drop of hardened void, formed inside the egg that the Vessels hatched from. " +
 			"Holding it provides a strange sort of comfort.";
-		public override string Levels() => "15, 10, 5 hits to reach max";
+		public override string LevelInfo() => "15, 10, 5 hits to reach max";
 		public override string TraitName() => "Abyssal";
 		public override string TraitDescription() => "Striking an enemy repeatedly builds up the damage of the next spell " +
 			"(max +100% increase)";
+		public override AbstractLocation Location()
+		{
+			return new CoordinateLocation()
+			{
+				name = InternalName(),
+				sceneName = nameof(SceneNames.Abyss_09),
+				x = 210.2f,
+				y = 50.4f,
+				elevation = 0f
+			};
+		}
 
 		private float counter;
 		private float multiplier;

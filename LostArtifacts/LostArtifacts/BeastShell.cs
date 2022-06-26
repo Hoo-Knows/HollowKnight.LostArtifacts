@@ -1,19 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using HutongGames.PlayMaker.Actions;
+﻿using HutongGames.PlayMaker.Actions;
+using ItemChanger;
+using ItemChanger.Locations;
 using System.Collections;
 using UnityEngine;
 
 namespace LostArtifacts
 {
-	public class BeastHide : Artifact
+	public class BeastShell : Artifact
 	{
 		public override int ID() => 14;
-		public override string Name() => "Beast Hide";
+		public override string Name() => "Beast Shell";
 		public override string Description() => "A trophy from the God Tamer’s beast. It was deeply loyal toward its owner.";
-		public override string Levels() => "+100%, +200%, +300% minion damage";
+		public override string LevelInfo() => "+100%, +200%, +300% minion damage";
 		public override string TraitName() => "Beast Tamer";
 		public override string TraitDescription() => "Striking an enemy buffs minion damage for 5 seconds";
+		public override AbstractLocation Location()
+		{
+			return new EnemyLocation()
+			{
+				name = InternalName(),
+				sceneName = nameof(SceneNames.Room_Colosseum_Gold),
+				objectName = "Lobster",
+				removeGeo = false
+			};
+		}
 
 		private float multiplier;
 		private bool buffActive;

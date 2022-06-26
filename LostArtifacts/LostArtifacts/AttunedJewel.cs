@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using HutongGames.PlayMaker.Actions;
+﻿using HutongGames.PlayMaker.Actions;
+using ItemChanger;
+using ItemChanger.Locations;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LostArtifacts
@@ -12,10 +13,21 @@ namespace LostArtifacts
 		public override string Name() => "Attuned Jewel";
 		public override string Description() => "The Godseekers crafted this jewel through harnessing the power of the Gods of " +
 			"Thunder and Rain. It reveals the bearer’s inner nature and allows them to ascend ever higher.";
-		public override string Levels() => "+10%, +20%, +30% to each stat";
+		public override string LevelInfo() => "+10%, +20%, +30% to each stat";
 		public override string TraitName() => "Attuned";
 		public override string TraitDescription() => "Casting Fireball, Dive, or Shriek grants bonus range, movement speed, or " +
 			"damage for 5 seconds, respectively";
+		public override AbstractLocation Location()
+		{
+			return new CoordinateLocation()
+			{
+				name = InternalName(),
+				sceneName = nameof(SceneNames.GG_Workshop),
+				x = 241.7f,
+				y = 6.4f,
+				elevation = 0f
+			};
+		}
 
 		private bool rangeBuffActive;
 		private bool speedBuffActive;
@@ -95,7 +107,7 @@ namespace LostArtifacts
 				{
 					slash.scale.x /= multiplier;
 					slash.scale.y /= multiplier;
-					slash.SetMantis(PlayerData.instance.GetBool("equippedCharm_13"));
+					slash.SetMantis(PlayerData.instance.GetBool(nameof(PlayerData.equippedCharm_13)));
 				}
 
 				rangeBuffActive = false;

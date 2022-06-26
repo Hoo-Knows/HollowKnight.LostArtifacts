@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ItemChanger;
+using ItemChanger.Locations;
 using Modding;
 
 namespace LostArtifacts
@@ -9,9 +9,32 @@ namespace LostArtifacts
 		public override int ID() => 16;
 		public override string Name() => "Infected Rock";
 		public override string Description() => "The Broken Vessel had to make friends where it could.";
-		public override string Levels() => "3, 7, 11 extra SOUL";
+		public override string LevelInfo() => "3, 7, 11 extra SOUL";
 		public override string TraitName() => "Forgotten";
 		public override string TraitDescription() => "Increases SOUL gain from striking enemies with the nail";
+		public override AbstractLocation Location()
+		{
+			return new DualLocation()
+			{
+				name = InternalName(),
+				Test = new PDBool(nameof(PlayerData.killedInfectedKnight)),
+				falseLocation = new EnemyLocation()
+				{
+					name = InternalName(),
+					sceneName = nameof(SceneNames.Abyss_19),
+					objectName = "Infected Knight",
+					removeGeo = false
+				},
+				trueLocation = new CoordinateLocation()
+				{
+					name = InternalName(),
+					sceneName = nameof(SceneNames.Abyss_19),
+					x = 26.8f,
+					y = 28.4f,
+					elevation = 0f
+				}
+			};
+		}
 
 		public override void Activate()
 		{

@@ -1,4 +1,6 @@
-﻿using Modding;
+﻿using ItemChanger;
+using ItemChanger.Locations;
+using Modding;
 using System.Collections;
 using UnityEngine;
 
@@ -10,9 +12,20 @@ namespace LostArtifacts
 		public override string Name() => "Paving Stone";
 		public override string Description() => "A stone from the interconnected crossroads beneath Dirtmouth. Through the Stags' " +
 			"repeated use, it is imbued with a trace amount of their power.";
-		public override string Levels() => "-5%, -10%, -15% attack cooldown";
+		public override string LevelInfo() => "-5%, -10%, -15% attack cooldown";
 		public override string TraitName() => "Stagspeed";
 		public override string TraitDescription() => "Decreases attack cooldown";
+		public override AbstractLocation Location()
+		{
+			return new CoordinateLocation()
+			{
+				name = InternalName(),
+				sceneName = nameof(SceneNames.Crossroads_47),
+				x = 14.2f,
+				y = 3.4f,
+				elevation = 0f
+			};
+		}
 
 		private float multiplier;
 		private float ATTACK_COOLDOWN_TIME;
@@ -43,7 +56,7 @@ namespace LostArtifacts
 
 		private IEnumerator CooldownControl()
 		{
-			if(!PlayerData.instance.GetBool("equippedCharm_32"))
+			if(!PlayerData.instance.GetBool(nameof(PlayerData.equippedCharm_32)))
 			{
 				yield return new WaitForSeconds(HeroController.instance.ATTACK_COOLDOWN_TIME);
 			}

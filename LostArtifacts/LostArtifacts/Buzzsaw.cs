@@ -1,7 +1,7 @@
-﻿using System;
+﻿using ItemChanger;
+using ItemChanger.Locations;
 using System.Collections.Generic;
 using UnityEngine;
-using Modding;
 
 namespace LostArtifacts
 {
@@ -10,9 +10,20 @@ namespace LostArtifacts
 		public override int ID() => 17;
 		public override string Name() => "Buzzsaw";
 		public override string Description() => "Shaw";
-		public override string Levels() => "0%, 50%, 100% better scaling";
+		public override string LevelInfo() => "0%, 50%, 100% better scaling";
 		public override string TraitName() => "Secluded";
 		public override string TraitDescription() => "Nail damage increases with distance from nearest enemy";
+		public override AbstractLocation Location()
+		{
+			return new CoordinateLocation()
+			{
+				name = InternalName(),
+				sceneName = nameof(SceneNames.White_Palace_08),
+				x = 105.3f,
+				y = 20.4f,
+				elevation = 0f
+			};
+		}
 
 		public override void Activate()
 		{

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ItemChanger;
+using ItemChanger.Locations;
 using System.Collections;
 using UnityEngine;
 
@@ -11,10 +11,32 @@ namespace LostArtifacts
 		public override string Name() => "Thorned Leaf";
 		public override string Description() => "An extremely sharp and prickly leaf taken from the hostile foliage of the " +
 			"Queen’s Gardens. Even holding it by the stem is dangerous enough.";
-		public override string Levels() => "0.5, 0.4, 0.3 seconds per damage tick";
+		public override string LevelInfo() => "0.5, 0.4, 0.3 seconds per damage tick";
 		public override string TraitName() => "Lacerating";
 		public override string TraitDescription() => "Striking an enemy inflicts a damage over time effect " +
 			"for 5 seconds (cannot stack)";
+		public override AbstractLocation Location()
+		{
+			return new DualLocation()
+			{
+				name = InternalName(),
+				Test = new SDBool("Battle Scene", nameof(SceneNames.Fungus3_10)),
+				falseLocation = new EnemyLocation()
+				{
+					name = InternalName(),
+					sceneName = nameof(SceneNames.Fungus3_10),
+					objectName = "Battle Scene/Wave 6/Dragonfly Summon (3)/Mantis Heavy Flyer"
+				},
+				trueLocation = new CoordinateLocation()
+				{
+					name = InternalName(),
+					sceneName = nameof(SceneNames.Fungus3_10),
+					x = 55f,
+					y = 10.4f,
+					elevation = 0f
+				}
+			};
+		}
 
 		public override void Activate()
 		{

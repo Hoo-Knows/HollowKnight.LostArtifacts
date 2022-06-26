@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections;
-using Modding;
-using UnityEngine;
-using GlobalEnums;
-using Satchel;
+﻿using GlobalEnums;
 using HutongGames.PlayMaker.Actions;
+using ItemChanger;
+using ItemChanger.Locations;
+using Modding;
+using Satchel;
+using System.Collections;
+using UnityEngine;
 
 namespace LostArtifacts
 {
@@ -15,9 +15,20 @@ namespace LostArtifacts
 		public override string Name() => "Lumafly Essence";
 		public override string Description() => "Monomon the Teacher studied the Charged Lumaflies closely and extracted their " +
 			"essence to give Uumuu electrifying powers. Applying the essence to the nail may produce a similar effect.";
-		public override string Levels() => "2, 3, 4 bursts";
+		public override string LevelInfo() => "2, 3, 4 bursts";
 		public override string TraitName() => "Shocking";
 		public override string TraitDescription() => "Swinging the nail creates a chain of electric bursts (treated as nail damage)";
+		public override AbstractLocation Location()
+		{
+			return new CoordinateLocation()
+			{
+				name = InternalName(),
+				sceneName = nameof(SceneNames.Fungus3_archive_02),
+				x = 26.5f,
+				y = 74.4f,
+				elevation = 0f
+			};
+		}
 
 		private GameObject zapGO;
 
@@ -66,7 +77,7 @@ namespace LostArtifacts
 				Destroy(zap.GetComponent<DamageHero>());
 
 				DamageEnemies de = zap.AddComponent<DamageEnemies>();
-				de.damageDealt = PlayerData.instance.GetInt("nailDamage");
+				de.damageDealt = PlayerData.instance.GetInt(nameof(PlayerData.nailDamage));
 				de.attackType = AttackTypes.Nail;
 				de.ignoreInvuln = false;
 

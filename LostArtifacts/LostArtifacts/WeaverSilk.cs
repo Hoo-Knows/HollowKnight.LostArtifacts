@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ItemChanger;
+using ItemChanger.Locations;
 using System.Collections;
 using UnityEngine;
 
@@ -11,9 +11,20 @@ namespace LostArtifacts
 		public override string Name() => "Weaver Silk";
 		public override string Description() => "Before the Weavers left Hallownest, they left behind some spools of silk. " +
 			"Even when not woven into a Seal of Binding, they contain great power.";
-		public override string Levels() => "1, 2, 3 extra damage";
+		public override string LevelInfo() => "1, 2, 3 extra damage";
 		public override string TraitName() => "Sealed";
 		public override string TraitDescription() => "Striking an enemy adds flat damage to all instances of damage for 3 seconds";
+		public override AbstractLocation Location()
+		{
+			return new CoordinateLocation()
+			{
+				name = InternalName(),
+				sceneName = nameof(SceneNames.Deepnest_45_v02),
+				x = 115.3f,
+				y = 13.4f,
+				elevation = 0f
+			};
+		}
 
 		public override void Activate()
 		{

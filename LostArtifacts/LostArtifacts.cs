@@ -1,16 +1,18 @@
-﻿using Modding;
+﻿using HutongGames.PlayMaker.Actions;
+using ItemChanger;
+using ItemChanger.UIDefs;
+using Modding;
+using Satchel;
+using Satchel.BetterMenus;
+using SFCore;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
-using SFCore;
-using Satchel;
 using System.IO;
-using System.Text.RegularExpressions;
-using HutongGames.PlayMaker.Actions;
+using UnityEngine;
 
 namespace LostArtifacts
 {
-	public class LostArtifacts : Mod, ILocalSettings<Settings>
+	public class LostArtifacts : Mod, ILocalSettings<Settings>, ICustomMenuMod
 	{
 		public static LostArtifacts Instance;
 		public static Dictionary<string, Dictionary<string, GameObject>> Preloads;
@@ -24,6 +26,10 @@ namespace LostArtifacts
 		public PlayMakerFSM pageFSM;
 
 		public static Settings Settings { get; set; } = new Settings();
+
+		public bool ToggleButtonInsideMenu => false;
+		private Menu MenuRef;
+
 		public void OnLoadLocal(Settings s)
 		{
 			Log("Loading Lost Artifacts settings");
@@ -63,6 +69,36 @@ namespace LostArtifacts
 				"Artifacts",
 				"artifactsUnlocked",
 				EditInventory);
+
+			//Add artifacts
+			artifactsGO = new GameObject("Artifacts GO");
+			artifacts = new Artifact[20];
+			UnityEngine.Object.DontDestroyOnLoad(artifactsGO);
+
+			//Create icons directory if it doesn't exist
+			iconPath = Path.Combine(AssemblyUtils.getCurrentDirectory(), "Icons");
+			IoUtils.EnsureDirectory(iconPath);
+
+			AddArtifact<TravelersGarment>();
+			AddArtifact<PavingStone>();
+			AddArtifact<LushMoss>();
+			AddArtifact<NoxiousShroom>();
+			AddArtifact<CryingStatue>();
+			AddArtifact<TotemShard>();
+			AddArtifact<DungBall>();
+			AddArtifact<Tumbleweed>();
+			AddArtifact<ChargedCrystal>();
+			AddArtifact<Dreamwood>();
+			AddArtifact<LumaflyEssence>();
+			AddArtifact<ThornedLeaf>();
+			AddArtifact<WeaverSilk>();
+			AddArtifact<WyrmAsh>();
+			AddArtifact<BeastShell>();
+			AddArtifact<Honeydrop>(); //Needs visual feedback
+			AddArtifact<InfectedRock>();
+			AddArtifact<Buzzsaw>();
+			AddArtifact<Voidstone>();
+			AddArtifact<AttunedJewel>(); //Needs visual feedback
 		}
 
 		public override List<ValueTuple<string, string>> GetPreloadNames()
@@ -79,42 +115,38 @@ namespace LostArtifacts
 
 			Preloads = preloadedObjects;
 
-			//Add artifacts
-			artifactsGO = new GameObject("Artifacts GO");
-			artifacts = new Artifact[20];
-			UnityEngine.Object.DontDestroyOnLoad(artifactsGO);
-
-			//Create icons directory if it doesn't exist
-			iconPath = Path.Combine(AssemblyUtils.getCurrentDirectory(), "Icons");
-			IoUtils.EnsureDirectory(iconPath);
-
-			AddArtifact<TravelersGarment>();
-			AddArtifact<PavingStone>();
-			AddArtifact<LushMoss>();
-			AddArtifact<NoxiousShroom>();
-			AddArtifact<Cryingrock>();
-			AddArtifact<TotemShard>();
-			AddArtifact<DungBall>();
-			AddArtifact<Tumbleweed>();
-			AddArtifact<ChargedCrystal>();
-			AddArtifact<Dreamwood>();
-			AddArtifact<LumaflyEssence>();
-			AddArtifact<ThornedLeaf>();
-			AddArtifact<WeaverSilk>();
-			AddArtifact<WyrmAsh>();
-			AddArtifact<BeastHide>();
-			AddArtifact<Honeydrop>(); //Needs visual feedback
-			AddArtifact<InfectedRock>();
-			AddArtifact<Buzzsaw>();
-			AddArtifact<Voidstone>();
-			AddArtifact<AttunedJewel>(); //Needs visual feedback
+			foreach(Artifact artifact in artifacts)
+			{
+				ItemChanger.Items.BoolItem item = new ItemChanger.Items.BoolItem()
+				{
+					name = artifact.InternalName(),
+					fieldName = "unlockedArtifact_" + artifact.ID(),
+					UIDef = new MsgUIDef()
+					{
+						name = new LanguageString("UI", "LostArtifacts." + artifact.InternalName()),
+						shopDesc = new LanguageString("UI", "LostArtifacts." + artifact.InternalName() + "Desc"),
+						sprite = artifact.sprite
+					}
+				};
+				Finder.DefineCustomItem(item);
+			}
 
 			On.HeroController.Start += HeroControllerStart;
 			On.HeroController.OnDisable += HeroControllerOnDisable;
+			On.UIManager.StartNewGame += UIManagerStartNewGame;
 			ModHooks.LanguageGetHook += LanguageGetHook;
 			ModHooks.GetPlayerBoolHook += GetPlayerBoolHook;
+			ModHooks.SetPlayerBoolHook += SetPlayerBoolHook;
 
 			Log("Initialized");
+		}
+
+		private void UnlockAllArtifacts()
+		{
+			foreach(Artifact artifact in artifacts)
+			{
+				Settings.unlocked[artifact.ID()] = true;
+			}
 		}
 
 		private void HeroControllerStart(On.HeroController.orig_Start orig, HeroController self)
@@ -124,12 +156,6 @@ namespace LostArtifacts
 			foreach(Artifact artifact in artifacts)
 			{
 				if(artifact == null || artifact.active) continue;
-
-				//Unlock by default
-				Settings.unlocked[artifact.ID()] = true;
-
-				//Ensure that an artifact is locked/unlocked
-				if(Settings.unlocked[artifact.ID()]) artifact.Unlock();
 
 				//Activate artifact
 				artifact.level = 0;
@@ -178,10 +204,10 @@ namespace LostArtifacts
 			pageFSM.InsertCustomAction("Move Pane L", () => CloseInventory(false), 0);
 			pageFSM.InsertCustomAction("Move Pane R", () => CloseInventory(false), 0);
 
-			On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += SendEventByNameOnEnter;
+			On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += CloseInventoryHook;
 		}
 
-		private void SendEventByNameOnEnter(On.HutongGames.PlayMaker.Actions.SendEventByName.orig_OnEnter orig, SendEventByName self)
+		private void CloseInventoryHook(On.HutongGames.PlayMaker.Actions.SendEventByName.orig_OnEnter orig, SendEventByName self)
 		{
 			orig(self);
 			if(self.Fsm.Name == "Inventory Control" && self.State.Name == "Loop Through" && self.sendEvent.Value == "INV PANEL CHANGE")
@@ -189,7 +215,7 @@ namespace LostArtifacts
 				CloseInventory(false);
 			}
 			if(self.Fsm.Name == "Inventory Control" &&
-				(self.State.Name == "Close" || self.State.Name == "Damage Close" || self.State.Name == "R Lock Close") && 
+				(self.State.Name == "Close" || self.State.Name == "Damage Close" || self.State.Name == "R Lock Close") &&
 				self.sendEvent.Value == "MAP KEY DOWN")
 			{
 				CloseInventory(true);
@@ -206,16 +232,17 @@ namespace LostArtifacts
 		public void AddArtifact<T>() where T : Artifact
 		{
 			Artifact artifact = artifactsGO.AddComponent<T>();
-			artifact.sprite = GetArtifactSprite(artifact.Name());
-			artifact.unlocked = Settings.unlocked[artifact.ID()];
+			artifact.sprite = new ArtifactSprite()
+			{
+				name = artifact.InternalName()
+			};
 			artifacts[artifact.ID()] = artifact;
 		}
 
-		private Sprite GetArtifactSprite(string name)
+		public Sprite GetArtifactSprite(string name)
 		{
 			Texture2D texture = TextureUtils.createTextureOfColor(64, 64, Color.clear);
 
-			name = Regex.Replace(name, @"[^0-9a-zA-Z\._]", "");
 			string path = Path.Combine(iconPath, name + ".png");
 
 			//Extract sprite from Resources if it doesn't exist
@@ -223,7 +250,13 @@ namespace LostArtifacts
 			{
 				try
 				{
-					ExtractSprite(name);
+					Stream stream = typeof(LostArtifacts).Assembly.GetManifestResourceStream("LostArtifacts.Resources." + name + ".png");
+					{
+						var buffer = new byte[stream.Length];
+						stream.Read(buffer, 0, buffer.Length);
+						File.WriteAllBytes(path, buffer);
+						stream.Dispose();
+					}
 				}
 				catch
 				{
@@ -252,29 +285,83 @@ namespace LostArtifacts
 			return dest;
 		}
 
-		private void ExtractSprite(string name)
+		private void UIManagerStartNewGame(On.UIManager.orig_StartNewGame orig, UIManager self, bool permaDeath, bool bossRush)
 		{
-			string path = Path.Combine(iconPath, name + ".png");
+			orig(self, permaDeath, bossRush);
 
-			Stream stream = typeof(LostArtifacts).Assembly.GetManifestResourceStream("LostArtifacts.Resources." + name + ".png");
+			if(bossRush)
 			{
-				var buffer = new byte[stream.Length];
-				stream.Read(buffer, 0, buffer.Length);
-				File.WriteAllBytes(path, buffer);
-				stream.Dispose();
+				UnlockAllArtifacts();
+				return;
 			}
+
+			ItemChangerMod.CreateSettingsProfile();
+
+			List<AbstractPlacement> placements = new List<AbstractPlacement>();
+			foreach(Artifact artifact in artifacts)
+			{
+				placements.Add(artifact.Location().Wrap().Add(Finder.GetItem(artifact.InternalName())));
+			}
+			ItemChangerMod.AddPlacements(placements, PlacementConflictResolution.Ignore);
 		}
 
 		private string LanguageGetHook(string key, string sheetTitle, string orig)
 		{
-			if(key == "LostArtifacts.PageConvKey") return "Artifacts";
+			if(key.StartsWith("LostArtifacts."))
+			{
+				string str = key.Split(new char[] { '.' })[1];
+				if(str == "PageConvKey") return "Artifacts";
+				foreach(Artifact artifact in artifacts)
+				{
+					if(str == artifact.InternalName())
+					{
+						return artifact.Name();
+					}
+					if(str == artifact.InternalName() + "Desc")
+					{
+						return artifact.Description();
+					}
+				}
+			}
 			return orig;
 		}
 
 		private bool GetPlayerBoolHook(string name, bool orig)
 		{
-			if(name == "artifactsUnlocked") return PlayerData.instance.GetInt("nailSmithUpgrades") > 0;
+			if(name == "artifactsUnlocked")
+			{
+				return PlayerData.instance.GetInt(nameof(PlayerData.nailSmithUpgrades)) > 0;
+			}
+			if(name.StartsWith("unlockedArtifact_"))
+			{
+				return Settings.unlocked[int.Parse(name.Split(new char[] { '_' })[1])];
+			}
 			return orig;
+		}
+
+		private bool SetPlayerBoolHook(string name, bool orig)
+		{
+			if(name.StartsWith("unlockedArtifact_"))
+			{
+				Settings.unlocked[int.Parse(name.Split(new char[] { '_' })[1])] = orig;
+			}
+			return orig;
+		}
+
+		public MenuScreen GetMenuScreen(MenuScreen modListMenu, ModToggleDelegates? toggleDelegates)
+		{
+			if(MenuRef == null)
+			{
+				MenuRef = new Menu("Lost Artifacts",
+					new Element[]
+					{
+						new MenuButton("Unlock all artifacts", "",
+						(_) => UnlockAllArtifacts(),
+						Id: "UnlockButton")
+					}
+				);
+			}
+			return MenuRef.GetMenuScreen(modListMenu);
 		}
 	}
 }

@@ -1,0 +1,20 @@
+- Traveler’s Garment (Dirtmouth) - Next to the well
+- Paving Stone (Forgotten Crossroads) - Next to the Stag
+- Lush Moss (Greenpath) - Defeat the Massive Moss Charger
+- Noxious Shroom (Fungal Wastes) - Next to the Mushroom Corpse in Fungal Core
+- Crying Statue (City of Tears) - On the ledge overlooking the Hollow Knight statue
+- Totem Shard (Soul Sanctum) - In the room after Soul Master, next to a Soul Totem
+- Dung Ball (Royal Waterways) - Inside Dung Defender’s cave
+- Tumbleweed (Howling Cliffs) - On the platforms in the far west
+- Charged Crystal (Crystal Peaks) - Defeat Crystal Guardian
+- Dreamwood (Resting Grounds) - Next to the completed Whispering Root after reentering the room
+- Lumafly Essence (Fog Canyon) - Next to the Lumafly tank in Teacher’s Archives
+- Thorned Leaf (Queen's Gardens) - Defeat the Mantis Traitor arena
+- Weaver Silk (Deepnest) - Inside the Weavers’ Den
+- Wyrm Ash (Kingdom’s Edge) - Defeat Hornet Sentinel, or outside the Cast-Off Shell after obtaining King’s Brand
+- Beast Shell (Colosseum of Fools) - Defeat God Tamer in Trial of the Fool
+- Honeydrop (Hive) - Next to the bench
+- Infected Rock (Ancient Basin) - Defeat Broken Vessel
+- Buzzsaw (White Palace) - Hidden in the Workshop
+- Voidstone (Abyss) - Next to the Void Tendril journal entry
+- Attuned Jewel (Godhome) - Next to the Void Idol

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ItemChanger;
+using ItemChanger.Locations;
 using UnityEngine;
 
 namespace LostArtifacts
@@ -9,9 +9,20 @@ namespace LostArtifacts
 		public override int ID() => 6;
 		public override string Name() => "Dung Ball";
 		public override string Description() => "A questionable gift from the Dung Defender.";
-		public override string Levels() => "Stinky, Stinkier, Stinkiest";
+		public override string LevelInfo() => "Stinky, Stinkier, Stinkiest";
 		public override string TraitName() => "Stinky";
 		public override string TraitDescription() => "Odorous (also lag generator)";
+		public override AbstractLocation Location()
+		{
+			return new CoordinateLocation()
+			{
+				name = InternalName(),
+				sceneName = nameof(SceneNames.Waterways_15),
+				x = 18f,
+				y = 4.4f,
+				elevation = 0f
+			};
+		}
 
 		private GameObject stinkGO;
 

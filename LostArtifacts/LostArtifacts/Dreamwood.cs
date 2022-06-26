@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using HutongGames.PlayMaker.Actions;
+﻿using ItemChanger;
+using ItemChanger.Locations;
 using Modding;
+using System.Collections.Generic;
 
 namespace LostArtifacts
 {
@@ -11,10 +11,34 @@ namespace LostArtifacts
 		public override string Name() => "Dreamwood";
 		public override string Description() => "A small piece of a Whispering Root. It has an affinity with dreams that enhances " +
 			"the Dream Nail’s ability to mediate between dreams and reality.";
-		public override string Levels() => "Effect stacks up to 1, 2, 3 times on an enemy";
+		public override string LevelInfo() => "Effect stacks up to 1, 2, 3 times on an enemy";
 		public override string TraitName() => "Dreamlink";
 		public override string TraitDescription() => "Using Dream Nail on an enemy links them to the nail, making them take 1/6 " +
 			"base nail damage every swing";
+		public override AbstractLocation Location()
+		{
+			return new DualLocation()
+			{
+				name = InternalName(),
+				Test = new SDBool("Dream Plant", nameof(SceneNames.RestingGrounds_05)),
+				falseLocation = new CoordinateLocation()
+				{
+					name = InternalName(),
+					sceneName = nameof(SceneNames.RestingGrounds_05),
+					x = 15.9f,
+					y = -100f,
+					elevation = 0f
+				},
+				trueLocation = new CoordinateLocation()
+				{
+					name = InternalName(),
+					sceneName = nameof(SceneNames.RestingGrounds_05),
+					x = 15.9f,
+					y = 69.4f,
+					elevation = 0f
+				}
+			};
+		}
 
 		private int damage;
 		private Dictionary<HealthManager, int> hmDict;
@@ -23,7 +47,7 @@ namespace LostArtifacts
 		{
 			base.Activate();
 
-			damage = PlayerData.instance.GetInt("nailDamage") / 6 + 1;
+			damage = PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) / 6 + 1;
 			hmDict = new Dictionary<HealthManager, int>();
 
 			On.EnemyDreamnailReaction.RecieveDreamImpact += EnemyDreamnailReactionRecieveDreamImpact;

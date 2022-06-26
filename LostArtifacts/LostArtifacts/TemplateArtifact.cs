@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ItemChanger;
+using ItemChanger.Locations;
 
 namespace LostArtifacts
 {
@@ -8,9 +8,20 @@ namespace LostArtifacts
 		public override int ID() => 0;
 		public override string Name() => "";
 		public override string Description() => "";
-		public override string Levels() => "";
+		public override string LevelInfo() => "";
 		public override string TraitName() => "";
 		public override string TraitDescription() => "";
+		public override AbstractLocation Location()
+		{
+			return new CoordinateLocation()
+			{
+				name = InternalName(),
+				sceneName = "",
+				x = 0f,
+				y = 0f,
+				elevation = 0f
+			};
+		}
 
 		public override void Activate()
 		{
@@ -23,7 +34,7 @@ namespace LostArtifacts
 		{
 			if(hitInstance.AttackType == AttackTypes.Nail || hitInstance.AttackType == AttackTypes.NailBeam)
 			{
-				
+
 			}
 			orig(self, hitInstance);
 		}

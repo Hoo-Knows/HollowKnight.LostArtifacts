@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Satchel;
+﻿using HutongGames.PlayMaker.Actions;
+using ItemChanger;
+using ItemChanger.Locations;
 using System.Collections;
 using UnityEngine;
-using HutongGames.PlayMaker.Actions;
 
 namespace LostArtifacts
 {
@@ -13,10 +12,21 @@ namespace LostArtifacts
 		public override string Name() => "Totem Shard";
 		public override string Description() => "The scholars of the Soul Sanctum were fascinated by a totem that released SOUL " +
 			"as pure destructive energy. Though it has shattered from overuse, the shards retain some of its original power.";
-		public override string Levels() => "2.5, 5, 7.5 second duration";
+		public override string LevelInfo() => "2.5, 5, 7.5 second duration";
 		public override string TraitName() => "Soulful";
 		public override string TraitDescription() => "Deal +25% damage for a short time after healing; Deep Focus gives +75% " +
 			"instead, Quick Focus adds 5 seconds";
+		public override AbstractLocation Location()
+		{
+			return new CoordinateLocation()
+			{
+				name = InternalName(),
+				sceneName = nameof(SceneNames.Ruins1_32),
+				x = 13.9f,
+				y = 96.4f,
+				elevation = 0f
+			};
+		}
 
 		private bool buffActive;
 
@@ -46,7 +56,7 @@ namespace LostArtifacts
 			{
 				if(buffActive)
 				{
-					float multiplier = PlayerData.instance.GetBool("equippedCharm_34") ? 0.25f : 0.75f;
+					float multiplier = PlayerData.instance.GetBool(nameof(PlayerData.equippedCharm_34)) ? 0.25f : 0.75f;
 					hitInstance.Multiplier += multiplier;
 				}
 			}
@@ -58,7 +68,7 @@ namespace LostArtifacts
 			buffActive = true;
 
 			float duration = level * 2.5f;
-			if(PlayerData.instance.GetBool("equippedCharm_07")) duration *= 2f;
+			if(PlayerData.instance.GetBool(nameof(PlayerData.equippedCharm_7))) duration *= 2f;
 
 			yield return new WaitForSeconds(duration);
 

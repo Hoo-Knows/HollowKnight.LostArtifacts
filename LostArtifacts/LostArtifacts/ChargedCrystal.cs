@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections;
-using UnityEngine;
+﻿using ItemChanger;
+using ItemChanger.Locations;
 
 namespace LostArtifacts
 {
@@ -8,11 +7,35 @@ namespace LostArtifacts
 	{
 		public override int ID() => 8;
 		public override string Name() => "Charged Crystal";
-		public override string Description() => "Though all crystals from the Peaks hold some amount of energy, this crystal " +
-			"that Myla stumbled upon is even more potent than usual. It pulses and glows with all of its might.";
-		public override string Levels() => "+20%, +30%, +40% damage";
+		public override string Description() => "Though all crystals from the Peaks hold some amount of energy, this crystal is " +
+			"even more potent than usual. It pulses and glows with all of its might.";
+		public override string LevelInfo() => "+20%, +30%, +40% damage";
 		public override string TraitName() => "Energized";
 		public override string TraitDescription() => "Nail arts deal increased damage";
+		public override AbstractLocation Location()
+		{
+			return new DualLocation()
+			{
+				name = InternalName(),
+				Test = new PDBool(nameof(PlayerData.defeatedMegaBeamMiner)),
+				falseLocation = new EnemyFsmLocation()
+				{
+					name = InternalName(),
+					sceneName = nameof(SceneNames.Mines_18),
+					enemyObj = "Mega Zombie Beam Miner (1)",
+					enemyFsm = "Beam Miner",
+					removeGeo = false
+				},
+				trueLocation = new CoordinateLocation()
+				{
+					name = InternalName(),
+					sceneName = nameof(SceneNames.Mines_18),
+					x = 26f,
+					y = 11.4f,
+					elevation = 0f
+				}
+			};
+		}
 
 		private float multiplier;
 

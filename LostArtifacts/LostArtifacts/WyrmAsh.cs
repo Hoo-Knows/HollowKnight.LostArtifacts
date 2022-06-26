@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-using HutongGames.PlayMaker.Actions;
+﻿using HutongGames.PlayMaker.Actions;
+using ItemChanger;
+using ItemChanger.Locations;
 using Satchel;
+using UnityEngine;
 
 namespace LostArtifacts
 {
@@ -12,9 +12,33 @@ namespace LostArtifacts
 		public override string Name() => "Wyrm Ash";
 		public override string Description() => "So great was the Wyrm's power, that even a small amount of its corpse's ashes " +
 			"carry noticeable power. Imbuing the nail with these ashes allows the wielder to harness the Wyrm's control over life.";
-		public override string Levels() => "9, 6, 3 hits per minion";
+		public override string LevelInfo() => "9, 6, 3 hits per minion";
 		public override string TraitName() => "Rebirth";
 		public override string TraitDescription() => "Spawn a minion after a certain amount of hits";
+		public override AbstractLocation Location()
+		{
+			return new DualLocation()
+			{
+				name = InternalName(),
+				Test = new PDBool(nameof(PlayerData.hasKingsBrand)),
+				falseLocation = new EnemyFsmLocation()
+				{
+					name = InternalName(),
+					sceneName = nameof(SceneNames.Deepnest_East_Hornet),
+					enemyObj = "Hornet Boss 2",
+					enemyFsm = "Control",
+					removeGeo = false
+				},
+				trueLocation = new CoordinateLocation()
+				{
+					name = InternalName(),
+					sceneName = nameof(SceneNames.Deepnest_East_12),
+					x = 101.8f,
+					y = 11.4f,
+					elevation = 0f
+				}
+			};
+		}
 
 		private int counter;
 		private int hitsNeeded;

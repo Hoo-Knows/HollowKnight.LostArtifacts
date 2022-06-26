@@ -1,7 +1,8 @@
-﻿using System;
+﻿using ItemChanger;
+using ItemChanger.Locations;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
 using Random = System.Random;
 
 namespace LostArtifacts
@@ -12,10 +13,21 @@ namespace LostArtifacts
 		public override string Name() => "Noxious Shroom";
 		public override string Description() => "Found only in the deepest recesses of the Fungal Wastes, these mushrooms " +
 			"have highly concentrated toxins. Releasing them would be disastrous…for the enemy.";
-		public override string Levels() => "Can spread to 1, 2, 3 other enemies";
+		public override string LevelInfo() => "Can spread to 1, 2, 3 other enemies";
 		public override string TraitName() => "Toxic";
 		public override string TraitDescription() => "Hitting an enemy has a 40% chance to release a spore cloud that can " +
 			"spread to nearby enemies";
+		public override AbstractLocation Location()
+		{
+			return new CoordinateLocation()
+			{
+				name = InternalName(),
+				sceneName = nameof(SceneNames.Fungus2_30),
+				x = 68f,
+				y = 21.4f,
+				elevation = 0f
+			};
+		}
 
 		private GameObject cloudGO;
 		private Random random;

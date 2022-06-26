@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ItemChanger;
+using ItemChanger.Locations;
 using Modding;
 using UnityEngine;
 
@@ -11,12 +11,23 @@ namespace LostArtifacts
 		public override string Name() => "Honeydrop";
 		public override string Description() => "This honeydrop was made through the bees’ hard work. And you took it without " +
 			"permission. Unbeelievable.";
-		public override string Levels() => (50 * (PlayerData.instance.GetInt("nailDamage") - 1)) + ", " +
-			(35 * (PlayerData.instance.GetInt("nailDamage") - 1)) + ", " +
-			(20 * (PlayerData.instance.GetInt("nailDamage") - 1)) + " damage";
+		public override string LevelInfo() => (50 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1)) + ", " +
+			(35 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1)) + ", " +
+			(20 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1)) + " damage";
 		public override string TraitName() => "Honey Coating";
 		public override string TraitDescription() => "Dealing enough damage gives a honey coating that blocks one instance " +
 			"of non-hazard damage (cannot stack)";
+		public override AbstractLocation Location()
+		{
+			return new CoordinateLocation()
+			{
+				name = InternalName(),
+				sceneName = nameof(SceneNames.Hive_01),
+				x = 47.4f,
+				y = 8.4f,
+				elevation = 0f
+			};
+		}
 
 		private bool coated;
 		private int damageDealt;
@@ -29,9 +40,9 @@ namespace LostArtifacts
 			coated = false;
 			damageDealt = 0;
 
-			if(level == 1) damageNeeded = 50 * (PlayerData.instance.GetInt("nailDamage") - 1);
-			if(level == 2) damageNeeded = 35 * (PlayerData.instance.GetInt("nailDamage") - 1);
-			if(level == 3) damageNeeded = 20 * (PlayerData.instance.GetInt("nailDamage") - 1);
+			if(level == 1) damageNeeded = 50 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1);
+			if(level == 2) damageNeeded = 35 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1);
+			if(level == 3) damageNeeded = 20 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1);
 
 			On.HealthManager.TakeDamage += HealthManagerTakeDamage;
 			ModHooks.AfterTakeDamageHook += AfterTakeDamageHook;
