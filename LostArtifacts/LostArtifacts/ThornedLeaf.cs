@@ -11,7 +11,7 @@ namespace LostArtifacts
 		public override string Name() => "Thorned Leaf";
 		public override string Description() => "An extremely sharp and prickly leaf taken from the hostile foliage of the " +
 			"Queen’s Gardens. Even holding it by the stem is dangerous enough.";
-		public override string LevelInfo() => "0.5, 0.4, 0.3 seconds per damage tick";
+		public override string LevelInfo() => "1, 0.75, 0.5 seconds per damage tick";
 		public override string TraitName() => "Lacerating";
 		public override string TraitDescription() => "Striking an enemy inflicts a damage over time effect " +
 			"for 5 seconds (cannot stack)";
@@ -20,6 +20,7 @@ namespace LostArtifacts
 			return new DualLocation()
 			{
 				name = InternalName(),
+				sceneName = nameof(SceneNames.Fungus3_10),
 				Test = new SDBool("Battle Scene", nameof(SceneNames.Fungus3_10)),
 				falseLocation = new EnemyLocation()
 				{
@@ -53,7 +54,7 @@ namespace LostArtifacts
 				{
 					Destroy(self.gameObject.GetComponent<Laceration>());
 				}
-				self.gameObject.AddComponent<Laceration>();
+				if(!self.IsInvincible) self.gameObject.AddComponent<Laceration>();
 			}
 			orig(self, hitInstance);
 		}
@@ -81,10 +82,7 @@ namespace LostArtifacts
 					break;
 				}
 			}
-
-			if(level == 1) damageInterval = 0.5f;
-			if(level == 2) damageInterval = 0.4f;
-			if(level == 3) damageInterval = 0.3f;
+			damageInterval = 1.25f - 0.25f * level;
 
 			StartCoroutine(DealDamage());
 		}
@@ -95,6 +93,9 @@ namespace LostArtifacts
 			{
 				if(gameObject.GetComponent<HealthManager>() != null)
 				{
+					if(gameObject.GetComponent<HealthManager>().hp <= 0 || 
+						gameObject.GetComponent<HealthManager>().IsInvincible) break;
+
 					gameObject.GetComponent<HealthManager>().ApplyExtraDamage(1);
 					gameObject.GetComponent<SpriteFlash>().flashWhiteQuick();
 				}

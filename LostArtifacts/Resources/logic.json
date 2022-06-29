@@ -1,0 +1,82 @@
+[
+    {
+        "name": "TravelersGarment",
+        "logic": "Town"
+    },
+    {
+        "name": "PavingStone",
+        "logic": "*Crossroads_Stag"
+    },
+    {
+        "name": "LushMoss",
+        "logic": "*Boss_Geo-Massive_Moss_Charger"
+    },
+    {
+        "name": "NoxiousShroom",
+        "logic": "Fungus2_30[top1]"
+    },
+    {
+        "name": "CryingStatue",
+        "logic": "(Ruins1_27[right1] + (WINGS | ANYCLAW)) | (Ruins1_27[left1] + (RIGHTCLAW + WINGS))"
+    },
+    {
+        "name": "TotemShard",
+        "logic": "*Soul_Totem-Sanctum_Below_Chest"
+    },
+    {
+        "name": "DungBall",
+        "logic": "*King's_Idol-Dung_Defender"
+    },
+    {
+        "name": "Tumbleweed",
+        "logic": "*Geo_Rock-Cliffs_Main_1"
+    },
+    {
+        "name": "ChargedCrystal",
+        "logic": "*Boss_Geo-Crystal_Guardian"
+    },
+    {
+        "name": "Dreamwood",
+        "logic": "*Whispering_Root-Resting_Grounds"
+    },
+    {
+        "name": "LumaflyEssence",
+        "logic": "*Journal_Entry-Charged_Lumafly"
+    },
+    {
+        "name": "ThornedLeaf",
+        "logic": "Defeated_West_Queen's_Gardens_Arena"
+    },
+    {
+        "name": "WeaverSilk",
+        "logic": "Deepnest_45_v02[left1]"
+    },
+    {
+        "name": "WyrmAsh",
+        "logic": "Deepnest_East_14[left1] + Defeated_Hornet_2 + King's_Brand"
+    },
+    {
+        "name": "BeastShell",
+        "logic": "Defeated_Colosseum_2"
+    },
+    {
+        "name": "Honeydrop",
+        "logic": "Hive_01[right2]"
+    },
+    {
+        "name": "InfectedRock",
+        "logic": "Defeated_Broken_Vessel"
+    },
+    {
+        "name": "Buzzsaw",
+        "logic": "*Lore_Tablet-Palace_Workshop"
+    },
+    {
+        "name": "Voidstone",
+        "logic": "*Journal_Entry-Void_Tendrils"
+    },
+    {
+        "name": "AttunedJewel",
+        "logic": "GG_Workshop + GG_Atrium + *Boss_Geo-Vengefly_King + Defeated_Gruz_Mother + Defeated_False_Knight + *Boss_Geo-Massive_Moss_Charger + Defeated_Hornet_1 + Defeated_Gorb + Defeated_Elegant_Warrior + Defeated_Brooding_Mawlek + Defeated_Xero + Defeated_Colosseum_2 + Defeated_Mantis_Lords + Defeated_Marmu + Defeated_Flukemarm + Defeated_Galien + Defeated_Hive_Knight + Defeated_Elder_Hu + Defeated_Collector + Defeated_Grimm + Defeated_Watcher_Knights + Defeated_Uumuu + Defeated_Nosk + Defeated_Hornet_2 + Defeated_Enraged_Guardian + Defeated_Lost_Kin + Defeated_No_Eyes + Defeated_Traitor_Lord + Defeated_White_Defender + Defeated_Soul_Tyrant + Defeated_Markoth + Defeated_Failed_Champion" 
+    },
+]

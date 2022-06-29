@@ -48,7 +48,8 @@ namespace LostArtifacts
 				StopAllCoroutines();
 				StartCoroutine(DamageControl());
 			}
-			if(buffActive && hitInstance.Source.transform.parent.name.Contains("Hatchling"))
+			if(buffActive && hitInstance.Source.transform.parent != null && 
+				hitInstance.Source.transform.parent.name.Contains("Hatchling"))
 			{
 				hitInstance.Multiplier += multiplier;
 			}

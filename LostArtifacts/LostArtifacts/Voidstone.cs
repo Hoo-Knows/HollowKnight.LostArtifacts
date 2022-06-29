@@ -14,7 +14,7 @@ namespace LostArtifacts
 		public override string LevelInfo() => "15, 10, 5 hits to reach max";
 		public override string TraitName() => "Abyssal";
 		public override string TraitDescription() => "Striking an enemy repeatedly builds up the damage of the next spell " +
-			"(max +100% increase)";
+			"(max +50% increase)";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()

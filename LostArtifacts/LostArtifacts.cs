@@ -1,5 +1,6 @@
 ﻿using HutongGames.PlayMaker.Actions;
 using ItemChanger;
+using ItemChanger.Tags;
 using ItemChanger.UIDefs;
 using Modding;
 using Satchel;
@@ -18,10 +19,11 @@ namespace LostArtifacts
 		public static Dictionary<string, Dictionary<string, GameObject>> Preloads;
 
 		private GameObject prefabUI;
-		private string iconPath;
+		public string iconPath;
 
 		public GameObject artifactsGO;
 		public Artifact[] artifacts;
+		public HashSet<string> artifactNames;
 		public GameObject artifactsUI;
 		public PlayMakerFSM pageFSM;
 
@@ -57,6 +59,7 @@ namespace LostArtifacts
 			}
 			prefabUI = assetBundle.LoadAsset<GameObject>("Artifacts");
 
+			//Create UI
 			artifactsUI = UnityEngine.Object.Instantiate(prefabUI);
 			GameObject.DontDestroyOnLoad(artifactsUI);
 			artifactsUI.SetActive(false);
@@ -73,6 +76,7 @@ namespace LostArtifacts
 			//Add artifacts
 			artifactsGO = new GameObject("Artifacts GO");
 			artifacts = new Artifact[20];
+			artifactNames = new HashSet<string>();
 			UnityEngine.Object.DontDestroyOnLoad(artifactsGO);
 
 			//Create icons directory if it doesn't exist
@@ -117,6 +121,7 @@ namespace LostArtifacts
 
 			foreach(Artifact artifact in artifacts)
 			{
+				//Define items
 				ItemChanger.Items.BoolItem item = new ItemChanger.Items.BoolItem()
 				{
 					name = artifact.InternalName(),
@@ -128,7 +133,21 @@ namespace LostArtifacts
 						sprite = artifact.sprite
 					}
 				};
+
+				//Define tags for other mods
+				InteropTag tag = item.AddTag<InteropTag>();
+				tag.Message = "RandoSupplementalMetadata";
+				tag.Properties["ModSource"] = GetName();
+				tag.Properties["PoolGroup"] = "Artifacts";
 				Finder.DefineCustomItem(item);
+				Finder.DefineCustomLocation(artifact.Location());
+
+				//Used for Rando integration
+				artifactNames.Add(artifact.InternalName());
+			}
+			if(ModHooks.GetMod("Randomizer 4") is Mod)
+			{
+				ArtifactRando.HookRando();
 			}
 
 			On.HeroController.Start += HeroControllerStart;
@@ -151,8 +170,9 @@ namespace LostArtifacts
 
 		private void HeroControllerStart(On.HeroController.orig_Start orig, HeroController self)
 		{
-			//Activate artifacts if they are equipped
 			orig(self);
+
+			//Activate artifacts according to settings
 			foreach(Artifact artifact in artifacts)
 			{
 				if(artifact == null || artifact.active) continue;
@@ -179,6 +199,13 @@ namespace LostArtifacts
 
 				artifact.Deactivate();
 			}
+
+			//Reset UI so it doesn't transfer across saves
+			UnityEngine.Object.Destroy(artifactsUI);
+			artifactsUI = UnityEngine.Object.Instantiate(prefabUI);
+			GameObject.DontDestroyOnLoad(artifactsUI);
+			artifactsUI.SetActive(false);
+
 			orig(self);
 		}
 
@@ -225,64 +252,14 @@ namespace LostArtifacts
 		private void CloseInventory(bool full)
 		{
 			artifactsUI.SetActive(false);
-			//Needed if closing the inventory while on the Artifacts tab
 			if(full) pageFSM.SetState("Init");
 		}
 
 		public void AddArtifact<T>() where T : Artifact
 		{
 			Artifact artifact = artifactsGO.AddComponent<T>();
-			artifact.sprite = new ArtifactSprite()
-			{
-				name = artifact.InternalName()
-			};
+			artifact.sprite = new ArtifactSprite(artifact.InternalName());
 			artifacts[artifact.ID()] = artifact;
-		}
-
-		public Sprite GetArtifactSprite(string name)
-		{
-			Texture2D texture = TextureUtils.createTextureOfColor(64, 64, Color.clear);
-
-			string path = Path.Combine(iconPath, name + ".png");
-
-			//Extract sprite from Resources if it doesn't exist
-			if(!File.Exists(path))
-			{
-				try
-				{
-					Stream stream = typeof(LostArtifacts).Assembly.GetManifestResourceStream("LostArtifacts.Resources." + name + ".png");
-					{
-						var buffer = new byte[stream.Length];
-						stream.Read(buffer, 0, buffer.Length);
-						File.WriteAllBytes(path, buffer);
-						stream.Dispose();
-					}
-				}
-				catch
-				{
-					Log("Failed to extract sprite for " + name);
-				}
-			}
-			if(File.Exists(path)) texture = GetPremultipliedAlpha(TextureUtils.LoadTextureFromFile(path));
-
-			return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 64f);
-		}
-
-		public static Texture2D GetPremultipliedAlpha(Texture2D source)
-		{
-			Color[] sourcePixels = source.GetPixels();
-			Color[] destPixels = new Color[sourcePixels.Length];
-
-			for(int i = 0; i < sourcePixels.Length; i++)
-			{
-				Color px = sourcePixels[i];
-				destPixels[i] = new Color(px.r * px.a, px.g * px.a, px.b * px.a, px.a);
-			}
-
-			Texture2D dest = new(source.width, source.height, TextureFormat.ARGB32, false);
-			dest.SetPixels(destPixels);
-			dest.Apply();
-			return dest;
 		}
 
 		private void UIManagerStartNewGame(On.UIManager.orig_StartNewGame orig, UIManager self, bool permaDeath, bool bossRush)
@@ -294,14 +271,26 @@ namespace LostArtifacts
 				UnlockAllArtifacts();
 				return;
 			}
+			PlaceItems();
+		}
 
-			ItemChangerMod.CreateSettingsProfile();
+		private void PlaceItems()
+		{
+			if(ModHooks.GetMod("Randomizer 4", false, false) is Mod
+				&& RandomizerMod.RandomizerMod.RS != null
+				&& !ArtifactRando.RandoSettings.RandomizeArtifacts)
+			{
+				return;
+			}
+
+			ItemChangerMod.CreateSettingsProfile(true, false);
 
 			List<AbstractPlacement> placements = new List<AbstractPlacement>();
 			foreach(Artifact artifact in artifacts)
 			{
-				placements.Add(artifact.Location().Wrap().Add(Finder.GetItem(artifact.InternalName())));
+				placements.Add(Finder.GetLocation(artifact.InternalName()).Wrap().Add(Finder.GetItem(artifact.InternalName())));
 			}
+
 			ItemChangerMod.AddPlacements(placements, PlacementConflictResolution.Ignore);
 		}
 

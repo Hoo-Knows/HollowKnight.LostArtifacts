@@ -17,6 +17,7 @@ namespace LostArtifacts
 			return new DualLocation()
 			{
 				name = InternalName(),
+				sceneName = nameof(SceneNames.Fungus1_29),
 				Test = new PDBool(nameof(PlayerData.megaMossChargerDefeated)),
 				falseLocation = new EnemyLocation()
 				{

@@ -17,6 +17,7 @@ namespace LostArtifacts
 			return new DualLocation()
 			{
 				name = InternalName(),
+				sceneName = nameof(SceneNames.Mines_18),
 				Test = new PDBool(nameof(PlayerData.defeatedMegaBeamMiner)),
 				falseLocation = new EnemyFsmLocation()
 				{

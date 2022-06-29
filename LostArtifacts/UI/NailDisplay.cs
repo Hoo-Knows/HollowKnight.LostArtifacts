@@ -5,9 +5,10 @@ namespace LostArtifacts.UI
 {
 	public class NailDisplay : MonoBehaviour
 	{
-		void Start()
+		protected void OnEnable()
 		{
-			gameObject.GetComponent<Image>().sprite = ArtifactManager.Instance.nailSprites[ArtifactManager.Instance.nailLevel];
+			gameObject.GetComponent<Image>().sprite = 
+				ArtifactManager.Instance.nailSprites[PlayerData.instance.GetInt(nameof(PlayerData.nailSmithUpgrades))];
 		}
 	}
 }

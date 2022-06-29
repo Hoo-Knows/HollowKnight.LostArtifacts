@@ -6,10 +6,16 @@ namespace LostArtifacts.UI
 	public class ArtifactCursor : MonoBehaviour
 	{
 		public static ArtifactCursor Instance;
+		private GameObject glow;
 
 		private void Awake()
 		{
 			Instance = this;
+		}
+
+		private void Start()
+		{
+			glow = gameObject.transform.parent.Find("Glow").gameObject;
 		}
 
 		public void UpdatePos()
@@ -23,8 +29,13 @@ namespace LostArtifacts.UI
 			else
 			{
 				gameObject.GetComponent<Image>().sprite = ArtifactManager.Instance.cursor;
-				iTween.MoveTo(gameObject, selected.transform.position, 0.3f);
+				iTween.MoveTo(gameObject, selected.transform.position, 0.1f);
 			}
+		}
+		
+		private void Update()
+		{
+			glow.transform.position = gameObject.transform.position;
 		}
 	}
 }

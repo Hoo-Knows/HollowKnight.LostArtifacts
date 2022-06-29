@@ -70,7 +70,7 @@ namespace LostArtifacts
 			GameObject cloud = Instantiate(cloudGO, pos, Quaternion.identity);
 
 			cloud.SetActive(true);
-			cloud.GetComponent<DamageEffectTicker>().damageInterval = 0.5f;
+			cloud.GetComponent<DamageEffectTicker>().damageInterval = 1f;
 
 			//Wait a bit to spread
 			yield return new WaitForSeconds(2f);

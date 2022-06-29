@@ -20,6 +20,7 @@ namespace LostArtifacts
 			return new DualLocation()
 			{
 				name = InternalName(),
+				sceneName = nameof(SceneNames.Deepnest_East_12),
 				Test = new PDBool(nameof(PlayerData.hasKingsBrand)),
 				falseLocation = new EnemyFsmLocation()
 				{

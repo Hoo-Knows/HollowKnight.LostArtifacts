@@ -116,7 +116,8 @@ namespace LostArtifacts.UI
 		public void Confirm()
 		{
 			if(artifact == null) return;
-			if(ArtifactManager.Instance.nailLevel == 0 || !LostArtifacts.Settings.unlocked[artifact.ID()]) return;
+			if(PlayerData.instance.GetInt(nameof(PlayerData.nailSmithUpgrades)) == 0 || 
+				!LostArtifacts.Settings.unlocked[artifact.ID()]) return;
 
 			ArtifactAudio.Instance.Play(ArtifactAudio.Instance.submit);
 

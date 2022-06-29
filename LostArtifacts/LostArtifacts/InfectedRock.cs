@@ -17,6 +17,7 @@ namespace LostArtifacts
 			return new DualLocation()
 			{
 				name = InternalName(),
+				sceneName = nameof(SceneNames.Abyss_19),
 				Test = new PDBool(nameof(PlayerData.killedInfectedKnight)),
 				falseLocation = new EnemyLocation()
 				{

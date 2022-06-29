@@ -32,10 +32,14 @@ namespace LostArtifacts.UI
 					id = 3;
 					break;
 			}
+		}
+
+		protected override void OnEnable()
+		{
 			if(button != null) sprite = button.artifact.sprite.Value;
 			else sprite = ArtifactManager.Instance.empty;
 
-			unlocked = ArtifactManager.Instance.nailLevel > id;
+			unlocked = PlayerData.instance.GetInt(nameof(PlayerData.nailSmithUpgrades)) > id;
 			gameObject.GetComponent<Image>().sprite = unlocked ? sprite : ArtifactManager.Instance.locked;
 
 			SetTraits();
@@ -72,7 +76,6 @@ namespace LostArtifacts.UI
 			{
 				//Rejected
 				ArtifactAudio.Instance.Play(ArtifactAudio.Instance.reject);
-				iTween.ShakePosition(ArtifactCursor.Instance.gameObject, Vector3.one * 0.7f, 0.3f);
 			}
 		}
 

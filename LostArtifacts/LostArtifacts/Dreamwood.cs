@@ -20,6 +20,7 @@ namespace LostArtifacts
 			return new DualLocation()
 			{
 				name = InternalName(),
+				sceneName = nameof(SceneNames.RestingGrounds_05),
 				Test = new SDBool("Dream Plant", nameof(SceneNames.RestingGrounds_05)),
 				falseLocation = new CoordinateLocation()
 				{

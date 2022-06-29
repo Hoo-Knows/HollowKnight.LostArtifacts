@@ -27,7 +27,6 @@ namespace LostArtifacts.UI
 		private Text levelsTitle;
 		private Text artifactLevels;
 
-		public int nailLevel;
 		public Sprite[] nailSprites;
 
 		public Sprite empty;
@@ -77,20 +76,8 @@ namespace LostArtifacts.UI
 			}
 		}
 
-		private void Start()
-		{
-			//Prevent mouse
-			Cursor.lockState = CursorLockMode.Locked;
-		}
-
 		private void OnEnable()
 		{
-			//Update nail level
-			nailLevel = PlayerData.instance.GetInt(nameof(PlayerData.nailSmithUpgrades));
-
-			//Prevent mouse
-			Cursor.lockState = CursorLockMode.Locked;
-
 			//Set selected
 			selected = selectedButton.gameObject;
 			eventSystem.SetSelectedGameObject(selected);
