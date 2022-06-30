@@ -51,7 +51,6 @@ namespace LostArtifacts
 			if(hitInstance.AttackType == AttackTypes.Spell)
 			{
 				hitInstance.Multiplier += multiplier;
-				LostArtifacts.Instance.Log(hitInstance.Multiplier);
 			}
 			orig(self, hitInstance);
 		}

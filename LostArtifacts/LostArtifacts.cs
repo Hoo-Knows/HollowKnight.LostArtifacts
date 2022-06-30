@@ -75,7 +75,7 @@ namespace LostArtifacts
 
 			//Add artifacts
 			artifactsGO = new GameObject("Artifacts GO");
-			artifacts = new Artifact[20];
+			artifacts = new Artifact[21];
 			artifactNames = new HashSet<string>();
 			UnityEngine.Object.DontDestroyOnLoad(artifactsGO);
 
@@ -103,6 +103,7 @@ namespace LostArtifacts
 			AddArtifact<Buzzsaw>();
 			AddArtifact<Voidstone>();
 			AddArtifact<AttunedJewel>(); //Needs visual feedback
+			AddArtifact<HiddenMemento>();
 		}
 
 		public override List<ValueTuple<string, string>> GetPreloadNames()
@@ -276,14 +277,7 @@ namespace LostArtifacts
 
 		private void PlaceItems()
 		{
-			if(ModHooks.GetMod("Randomizer 4", false, false) is Mod
-				&& RandomizerMod.RandomizerMod.RS != null
-				&& !ArtifactRando.RandoSettings.RandomizeArtifacts)
-			{
-				return;
-			}
-
-			ItemChangerMod.CreateSettingsProfile(true, false);
+			ItemChangerMod.CreateSettingsProfile(false, false);
 
 			List<AbstractPlacement> placements = new List<AbstractPlacement>();
 			foreach(Artifact artifact in artifacts)

@@ -12,6 +12,7 @@ namespace LostArtifacts.UI
 
 		public ArtifactButton defaultButton;
 		public ArtifactButton selectedButton;
+		public ArtifactButton schyButton;
 		public GameObject selected;
 
 		public ArtifactSlot slotHandle;
@@ -46,6 +47,7 @@ namespace LostArtifacts.UI
 
 			defaultButton = parent.Find("Canvas/Artifacts/Artifact 0").gameObject.GetComponent<ArtifactButton>();
 			selectedButton = defaultButton;
+			schyButton = parent.Find("Canvas/Artifacts/Artifact 20").gameObject.GetComponent<ArtifactButton>();
 			selected = selectedButton.gameObject;
 
 			slotHandle = parent.Find("Canvas/Nail Panel/Slot Handle/Artifact Handle").gameObject.GetComponent<ArtifactSlot>();
@@ -93,6 +95,18 @@ namespace LostArtifacts.UI
 			else
 			{
 				SetArtifactPanel();
+			}
+
+			//Update button movement for Hidden Memento
+			if(LostArtifacts.Settings.unlocked[20])
+			{
+				for(int i = 10; i < 20; i++)
+				{
+					ArtifactButton button = parent.Find("Canvas/Artifacts/Artifact " + i).gameObject.GetComponent<ArtifactButton>();
+					Navigation nav = button.navigation;
+					nav.selectOnDown = schyButton;
+					button.navigation = nav;
+				}
 			}
 		}
 

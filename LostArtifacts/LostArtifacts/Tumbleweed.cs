@@ -33,7 +33,7 @@ namespace LostArtifacts
 		{
 			base.Activate();
 
-			multiplier = 0.1f * level + 1;
+			multiplier = 0.1f * level + 1f;
 
 			On.HealthManager.Hit += HealthManagerHit;
 		}

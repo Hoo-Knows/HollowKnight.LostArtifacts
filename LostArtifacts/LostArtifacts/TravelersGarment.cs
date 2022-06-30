@@ -41,7 +41,6 @@ namespace LostArtifacts
 		{
 			if(hitInstance.AttackType == AttackTypes.Nail || hitInstance.AttackType == AttackTypes.NailBeam)
 			{
-				LostArtifacts.Instance.Log(GetMultiplier());
 				hitInstance.Multiplier += GetMultiplier();
 			}
 			orig(self, hitInstance);

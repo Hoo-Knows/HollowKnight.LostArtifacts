@@ -29,7 +29,7 @@ namespace LostArtifacts.UI
 			else
 			{
 				gameObject.GetComponent<Image>().sprite = ArtifactManager.Instance.cursor;
-				iTween.MoveTo(gameObject, selected.transform.position, 0.1f);
+				iTween.MoveTo(gameObject, selected.transform.position, 0.3f);
 			}
 		}
 		

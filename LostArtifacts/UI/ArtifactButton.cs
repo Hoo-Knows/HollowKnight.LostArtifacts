@@ -111,6 +111,26 @@ namespace LostArtifacts.UI
 			{
 				ArtifactManager.Instance.SetArtifactPanel();
 			}
+
+			//Set navigation for left and right menu buttons and special artifact
+			if(id == 0 || id == 10)
+			{
+				Navigation nav = FindSelectableOnLeft().navigation;
+				nav.selectOnRight = this;
+				FindSelectableOnLeft().navigation = nav;
+			}
+			if(id == 9 || id == 19)
+			{
+				Navigation nav = FindSelectableOnRight().navigation;
+				nav.selectOnLeft = this;
+				FindSelectableOnRight().navigation = nav;
+			}
+			if(id >= 10 && id < 20)
+			{
+				Navigation nav = FindSelectableOnDown().navigation;
+				nav.selectOnUp = this;
+				FindSelectableOnDown().navigation = nav;
+			}
 		}
 
 		public void Confirm()
