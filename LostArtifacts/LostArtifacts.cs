@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace LostArtifacts
 {
-	public class LostArtifacts : Mod, ILocalSettings<Settings>, ICustomMenuMod
+	public class LostArtifacts : Mod, ILocalSettings<Settings>, IGlobalSettings<RandoSettings>, ICustomMenuMod
 	{
 		public static LostArtifacts Instance;
 		public static Dictionary<string, Dictionary<string, GameObject>> Preloads;
@@ -28,6 +28,7 @@ namespace LostArtifacts
 		public PlayMakerFSM pageFSM;
 
 		public static Settings Settings { get; set; } = new Settings();
+		public static RandoSettings RandoSettings { get; set; } = new RandoSettings();
 
 		public bool ToggleButtonInsideMenu => false;
 		private Menu MenuRef;
@@ -42,6 +43,9 @@ namespace LostArtifacts
 			Log("Saving Lost Artifacts settings");
 			return Settings;
 		}
+
+		public void OnLoadGlobal(RandoSettings s) => RandoSettings = s;
+		public RandoSettings OnSaveGlobal() => RandoSettings;
 
 		public override string GetVersion() => AssemblyUtils.GetAssemblyVersionHash();
 
@@ -146,9 +150,10 @@ namespace LostArtifacts
 				//Used for Rando integration
 				artifactNames.Add(artifact.InternalName());
 			}
-			if(ModHooks.GetMod("Randomizer 4") is Mod)
+
+			if(ModHooks.GetMod("Randomizer 4") != null)
 			{
-				ArtifactRando.HookRando();
+				RandoIntegration();
 			}
 
 			On.HeroController.Start += HeroControllerStart;
@@ -163,9 +168,9 @@ namespace LostArtifacts
 
 		private void UnlockAllArtifacts()
 		{
-			foreach(Artifact artifact in artifacts)
+			for(int i = 0; i < 20; i++)
 			{
-				Settings.unlocked[artifact.ID()] = true;
+				Settings.unlocked[i] = true;
 			}
 		}
 
@@ -272,10 +277,15 @@ namespace LostArtifacts
 				UnlockAllArtifacts();
 				return;
 			}
-			PlaceItems();
+			PlaceArtifacts();
 		}
 
-		private void PlaceItems()
+		private void RandoIntegration()
+		{
+			ArtifactRando.HookRando();
+		}
+
+		private void PlaceArtifacts()
 		{
 			ItemChangerMod.CreateSettingsProfile(false, false);
 
@@ -284,7 +294,6 @@ namespace LostArtifacts
 			{
 				placements.Add(Finder.GetLocation(artifact.InternalName()).Wrap().Add(Finder.GetItem(artifact.InternalName())));
 			}
-
 			ItemChangerMod.AddPlacements(placements, PlacementConflictResolution.Ignore);
 		}
 
@@ -340,7 +349,11 @@ namespace LostArtifacts
 					{
 						new MenuButton("Unlock all artifacts", "",
 						(_) => UnlockAllArtifacts(),
-						Id: "UnlockButton")
+						Id: "UnlockButton"),
+
+						new MenuButton("Place artifacts in world", "Will not override any existing ItemChanger data",
+						(_) => PlaceArtifacts(),
+						Id: "PlaceButton")
 					}
 				);
 			}

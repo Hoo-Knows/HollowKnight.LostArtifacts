@@ -14,7 +14,6 @@ namespace LostArtifacts
 {
 	public static class ArtifactRando
 	{
-		public static RandoSettings RandoSettings = new RandoSettings();
 		private static MenuPage SettingsPage;
 
 		public static void HookRando()
@@ -27,7 +26,7 @@ namespace LostArtifacts
 
 		private static void DefineLogicItem(GenerationSettings gs, LogicManagerBuilder lmb)
 		{
-			if(!RandoSettings.RandomizeArtifacts) return;
+			if(!LostArtifacts.RandoSettings.RandomizeArtifacts) return;
 
 			foreach(Artifact artifact in LostArtifacts.Instance.artifacts)
 			{
@@ -40,7 +39,7 @@ namespace LostArtifacts
 
 		private static void DefineArtifacts(RequestBuilder rb)
 		{
-			if(!RandoSettings.RandomizeArtifacts) return;
+			if(!LostArtifacts.RandoSettings.RandomizeArtifacts) return;
 
 			foreach(Artifact artifact in LostArtifacts.Instance.artifacts)
 			{
@@ -76,7 +75,7 @@ namespace LostArtifacts
 					return false;
 				}
 
-				if(!LostArtifacts.Instance.artifactNames.Contains(item) || RandoSettings.UseMainItemGroup)
+				if(!LostArtifacts.Instance.artifactNames.Contains(item) || LostArtifacts.RandoSettings.UseMainItemGroup)
 				{
 					gb = default;
 					return false;
@@ -89,7 +88,7 @@ namespace LostArtifacts
 
 		private static void AddArtifacts(RequestBuilder rb)
 		{
-			if(!RandoSettings.RandomizeArtifacts) return;
+			if(!LostArtifacts.RandoSettings.RandomizeArtifacts) return;
 
 			foreach(Artifact artifact in LostArtifacts.Instance.artifacts)
 			{
@@ -108,7 +107,8 @@ namespace LostArtifacts
 		private static void ConstructMenu(MenuPage landingPage)
 		{
 			SettingsPage = new MenuPage(LostArtifacts.Instance.GetName(), landingPage);
-			MenuElementFactory<RandoSettings> factory = new MenuElementFactory<RandoSettings>(SettingsPage, RandoSettings);
+			MenuElementFactory<RandoSettings> factory = 
+				new MenuElementFactory<RandoSettings>(SettingsPage, LostArtifacts.RandoSettings);
 			IMenuElement[] elements = factory.Elements;
 			new VerticalItemPanel(SettingsPage, new Vector2(0f, 300f), 75f, true, elements);
 		}
