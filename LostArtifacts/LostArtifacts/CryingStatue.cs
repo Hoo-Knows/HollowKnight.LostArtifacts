@@ -4,7 +4,7 @@ using Modding;
 using System.Collections;
 using UnityEngine;
 
-namespace LostArtifacts
+namespace LostArtifacts.Artifacts
 {
 	public class CryingStatue : Artifact
 	{

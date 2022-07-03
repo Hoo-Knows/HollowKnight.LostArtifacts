@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace LostArtifacts
+namespace LostArtifacts.Artifacts
 {
 	public class AttunedJewel : Artifact
 	{

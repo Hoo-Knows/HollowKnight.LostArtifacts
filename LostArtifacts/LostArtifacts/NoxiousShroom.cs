@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = System.Random;
 
-namespace LostArtifacts
+namespace LostArtifacts.Artifacts
 {
 	public class NoxiousShroom : Artifact
 	{

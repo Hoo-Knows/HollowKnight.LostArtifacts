@@ -2,7 +2,7 @@
 using ItemChanger.Locations;
 using UnityEngine;
 
-namespace LostArtifacts
+namespace LostArtifacts.Artifacts
 {
 	public class DungBall : Artifact
 	{

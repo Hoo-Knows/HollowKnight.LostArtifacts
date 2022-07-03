@@ -3,7 +3,7 @@ using ItemChanger.Locations;
 using System.Collections;
 using UnityEngine;
 
-namespace LostArtifacts
+namespace LostArtifacts.Artifacts
 {
 	public class HiddenMemento : Artifact
 	{

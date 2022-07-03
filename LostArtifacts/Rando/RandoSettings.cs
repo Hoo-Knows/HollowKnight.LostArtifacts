@@ -1,4 +1,4 @@
-﻿namespace LostArtifacts
+﻿namespace LostArtifacts.Rando
 {
 	public class RandoSettings
 	{

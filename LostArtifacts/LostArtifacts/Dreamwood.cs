@@ -3,7 +3,7 @@ using ItemChanger.Locations;
 using Modding;
 using System.Collections.Generic;
 
-namespace LostArtifacts
+namespace LostArtifacts.Artifacts
 {
 	public class Dreamwood : Artifact
 	{

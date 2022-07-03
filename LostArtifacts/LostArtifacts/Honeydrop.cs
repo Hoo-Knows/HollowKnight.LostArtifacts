@@ -3,7 +3,7 @@ using ItemChanger.Locations;
 using Modding;
 using UnityEngine;
 
-namespace LostArtifacts
+namespace LostArtifacts.Artifacts
 {
 	public class Honeydrop : Artifact
 	{

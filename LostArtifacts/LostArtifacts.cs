@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using LostArtifacts.Artifacts;
+using LostArtifacts.Rando;
 
 namespace LostArtifacts
 {
@@ -153,7 +155,7 @@ namespace LostArtifacts
 
 			if(ModHooks.GetMod("Randomizer 4") != null)
 			{
-				RandoIntegration();
+				ArtifactRando.HookRando();
 			}
 
 			On.HeroController.Start += HeroControllerStart;
@@ -234,8 +236,8 @@ namespace LostArtifacts
 			pageFSM.AddCustomAction("Artifacts", () => artifactsUI.SetActive(true));
 
 			//Set inventory inactive
-			pageFSM.InsertCustomAction("Move Pane L", () => CloseInventory(false), 0);
-			pageFSM.InsertCustomAction("Move Pane R", () => CloseInventory(false), 0);
+			pageFSM.InsertCustomAction("Move Pane L", () => artifactsUI.SetActive(false), 0);
+			pageFSM.InsertCustomAction("Move Pane R", () => artifactsUI.SetActive(false), 0);
 
 			On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += CloseInventoryHook;
 		}
@@ -243,22 +245,19 @@ namespace LostArtifacts
 		private void CloseInventoryHook(On.HutongGames.PlayMaker.Actions.SendEventByName.orig_OnEnter orig, SendEventByName self)
 		{
 			orig(self);
-			if(self.Fsm.Name == "Inventory Control" && self.State.Name == "Loop Through" && self.sendEvent.Value == "INV PANEL CHANGE")
+
+			if(self.Fsm.Name != "Inventory Control") return;
+
+			if(self.State.Name == "Loop Through" && self.sendEvent.Value == "INV PANEL CHANGE")
 			{
-				CloseInventory(false);
+				artifactsUI.SetActive(false);
 			}
-			if(self.Fsm.Name == "Inventory Control" &&
-				(self.State.Name == "Close" || self.State.Name == "Damage Close" || self.State.Name == "R Lock Close") &&
+			if((self.State.Name == "Close" || self.State.Name == "Damage Close" || self.State.Name == "R Lock Close") &&
 				self.sendEvent.Value == "MAP KEY DOWN")
 			{
-				CloseInventory(true);
+				artifactsUI.SetActive(false);
+				pageFSM.SetState("Init");
 			}
-		}
-
-		private void CloseInventory(bool full)
-		{
-			artifactsUI.SetActive(false);
-			if(full) pageFSM.SetState("Init");
 		}
 
 		public void AddArtifact<T>() where T : Artifact
@@ -278,11 +277,6 @@ namespace LostArtifacts
 				return;
 			}
 			PlaceArtifacts();
-		}
-
-		private void RandoIntegration()
-		{
-			ArtifactRando.HookRando();
 		}
 
 		private void PlaceArtifacts()

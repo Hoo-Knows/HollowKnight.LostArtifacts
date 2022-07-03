@@ -3,7 +3,7 @@ using ItemChanger;
 using ItemChanger.Locations;
 using UnityEngine;
 
-namespace LostArtifacts
+namespace LostArtifacts.Artifacts
 {
 	public class Voidstone : Artifact
 	{

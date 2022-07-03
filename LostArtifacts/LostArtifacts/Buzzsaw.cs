@@ -3,7 +3,7 @@ using ItemChanger.Locations;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace LostArtifacts
+namespace LostArtifacts.Artifacts
 {
 	public class Buzzsaw : Artifact
 	{

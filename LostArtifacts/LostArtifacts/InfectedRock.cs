@@ -2,7 +2,7 @@
 using ItemChanger.Locations;
 using Modding;
 
-namespace LostArtifacts
+namespace LostArtifacts.Artifacts
 {
 	public class InfectedRock : Artifact
 	{

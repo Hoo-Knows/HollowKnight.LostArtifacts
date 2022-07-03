@@ -1,27 +1,21 @@
 ﻿using MenuChanger;
-using MenuChanger.Extensions;
-using MenuChanger.MenuElements;
-using MenuChanger.MenuPanels;
 using RandomizerCore.Logic;
 using RandomizerCore.LogicItems;
 using RandomizerMod.Menu;
 using RandomizerMod.RC;
 using RandomizerMod.Settings;
 using System.IO;
-using UnityEngine;
 
-namespace LostArtifacts
+namespace LostArtifacts.Rando
 {
 	public static class ArtifactRando
 	{
-		private static MenuPage SettingsPage;
-
 		public static void HookRando()
 		{
 			RCData.RuntimeLogicOverride.Subscribe(-498f, DefineLogicItem);
 			RequestBuilder.OnUpdate.Subscribe(-498f, DefineArtifacts);
 			RequestBuilder.OnUpdate.Subscribe(50f, AddArtifacts);
-			RandomizerMenuAPI.AddMenuPage(ConstructMenu, HandleButton);
+			RandomizerMenuAPI.AddMenuPage(RandoMenu.ConstructMenu, RandoMenu.HandleButton);
 		}
 
 		private static void DefineLogicItem(GenerationSettings gs, LogicManagerBuilder lmb)
@@ -95,22 +89,6 @@ namespace LostArtifacts
 				rb.AddItemByName(artifact.InternalName());
 				rb.AddLocationByName(artifact.InternalName());
 			}
-		}
-
-		private static bool HandleButton(MenuPage landingPage, out SmallButton button)
-		{
-			button = new(landingPage, LostArtifacts.Instance.GetName());
-			button.AddHideAndShowEvent(landingPage, SettingsPage);
-			return true;
-		}
-
-		private static void ConstructMenu(MenuPage landingPage)
-		{
-			SettingsPage = new MenuPage(LostArtifacts.Instance.GetName(), landingPage);
-			MenuElementFactory<RandoSettings> factory = 
-				new MenuElementFactory<RandoSettings>(SettingsPage, LostArtifacts.RandoSettings);
-			IMenuElement[] elements = factory.Elements;
-			new VerticalItemPanel(SettingsPage, new Vector2(0f, 300f), 75f, true, elements);
 		}
 	}
 }

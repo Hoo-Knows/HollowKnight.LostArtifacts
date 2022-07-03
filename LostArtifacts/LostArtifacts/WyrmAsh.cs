@@ -4,7 +4,7 @@ using ItemChanger.Locations;
 using Satchel;
 using UnityEngine;
 
-namespace LostArtifacts
+namespace LostArtifacts.Artifacts
 {
 	public class WyrmAsh : Artifact
 	{

@@ -1,7 +1,7 @@
 ﻿using ItemChanger;
 using ItemChanger.Locations;
 
-namespace LostArtifacts
+namespace LostArtifacts.Artifacts
 {
 	public class ChargedCrystal : Artifact
 	{
