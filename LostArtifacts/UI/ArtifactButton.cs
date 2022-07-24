@@ -93,14 +93,7 @@ namespace LostArtifacts.UI
 
 		public override void OnSelect(BaseEventData eventData)
 		{
-			ArtifactAudio.Instance.Play(ArtifactAudio.Instance.select);
-
-			//Set selected
-			ArtifactManager.Instance.selected = gameObject;
-			ArtifactManager.Instance.selectedButton = this;
-
-			//Move cursor
-			ArtifactCursor.Instance.UpdatePos();
+			ArtifactManager.Instance.SetSelected(gameObject);
 
 			//Update artifact panel
 			if(artifact != null && LostArtifacts.Settings.unlocked[artifact.ID()])
@@ -112,7 +105,7 @@ namespace LostArtifacts.UI
 				ArtifactManager.Instance.SetArtifactPanel();
 			}
 
-			//Set navigation for left and right menu buttons and special artifact
+			//Set navigation for left and right menu buttons and Schy's artifact
 			if(id == 0 || id == 10)
 			{
 				Navigation nav = FindSelectableOnLeft().navigation;

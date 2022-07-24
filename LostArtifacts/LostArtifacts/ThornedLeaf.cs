@@ -1,5 +1,6 @@
 ﻿using ItemChanger;
 using ItemChanger.Locations;
+using Modding;
 using System.Collections;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ namespace LostArtifacts.Artifacts
 		public override string Name() => "Thorned Leaf";
 		public override string Description() => "An extremely sharp and prickly leaf taken from the hostile foliage of the " +
 			"Queen’s Gardens. Even holding it by the stem is dangerous enough.";
-		public override string LevelInfo() => "1, 0.75, 0.5 seconds per damage tick";
+		public override string LevelInfo() => "0.75, 0.5, 0.25 seconds per damage tick";
 		public override string TraitName() => "Lacerating";
 		public override string TraitDescription() => "Striking an enemy inflicts a damage over time effect " +
 			"for 5 seconds (cannot stack)";
@@ -57,6 +58,11 @@ namespace LostArtifacts.Artifacts
 				if(!self.IsInvincible) self.gameObject.AddComponent<Laceration>();
 			}
 			orig(self, hitInstance);
+
+			if(hitInstance.Source.name == "LostArtifactsGO")
+			{
+				ReflectionHelper.SetField(self, "evasionByHitRemaining", 0f);
+			}
 		}
 
 		public override void Deactivate()
@@ -82,7 +88,7 @@ namespace LostArtifacts.Artifacts
 					break;
 				}
 			}
-			damageInterval = 1.25f - 0.25f * level;
+			damageInterval = 1f - 0.25f * level;
 
 			StartCoroutine(DealDamage());
 		}
@@ -93,7 +99,7 @@ namespace LostArtifacts.Artifacts
 			{
 				if(gameObject.GetComponent<HealthManager>() != null)
 				{
-					if(gameObject.GetComponent<HealthManager>().hp <= 0 || 
+					if(gameObject.GetComponent<HealthManager>().hp <= 0 ||
 						gameObject.GetComponent<HealthManager>().IsInvincible) break;
 
 					gameObject.GetComponent<HealthManager>().ApplyExtraDamage(1);

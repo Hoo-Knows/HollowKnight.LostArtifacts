@@ -7,6 +7,7 @@ namespace LostArtifacts.UI
 	{
 		public static ArtifactCursor Instance;
 		private GameObject glow;
+		private GameObject selected;
 
 		private void Awake()
 		{
@@ -20,7 +21,7 @@ namespace LostArtifacts.UI
 
 		public void UpdatePos()
 		{
-			GameObject selected = ArtifactManager.Instance.selected;
+			selected = ArtifactManager.Instance.selected;
 
 			if(selected == null)
 			{

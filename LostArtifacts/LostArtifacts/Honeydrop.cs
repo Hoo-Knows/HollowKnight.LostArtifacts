@@ -12,8 +12,8 @@ namespace LostArtifacts.Artifacts
 		public override string Description() => "This honeydrop was made through the bees’ hard work. And you took it without " +
 			"permission. Unbeelievable.";
 		public override string LevelInfo() => (50 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1)) + ", " +
-			(35 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1)) + ", " +
-			(20 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1)) + " damage";
+			(40 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1)) + ", " +
+			(30 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1)) + " damage";
 		public override string TraitName() => "Honey Coating";
 		public override string TraitDescription() => "Dealing enough damage gives a honey coating that blocks one instance " +
 			"of non-hazard damage (cannot stack)";
@@ -41,8 +41,8 @@ namespace LostArtifacts.Artifacts
 			damageDealt = 0;
 
 			if(level == 1) damageNeeded = 50 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1);
-			if(level == 2) damageNeeded = 35 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1);
-			if(level == 3) damageNeeded = 20 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1);
+			if(level == 2) damageNeeded = 40 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1);
+			if(level == 3) damageNeeded = 30 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1);
 
 			On.HealthManager.TakeDamage += HealthManagerTakeDamage;
 			ModHooks.AfterTakeDamageHook += AfterTakeDamageHook;
@@ -68,7 +68,7 @@ namespace LostArtifacts.Artifacts
 		private int AfterTakeDamageHook(int hazardType, int damageAmount)
 		{
 			if(!coated || hazardType != 1) return damageAmount;
-			HeroController.instance.gameObject.GetComponent<AudioSource>().PlayOneShot(HeroController.instance.blockerImpact, 1f);
+			HeroController.instance.gameObject.GetComponent<AudioSource>().PlayOneShot(HeroController.instance.blockerImpact, 2f);
 			coated = false;
 			return 0;
 		}

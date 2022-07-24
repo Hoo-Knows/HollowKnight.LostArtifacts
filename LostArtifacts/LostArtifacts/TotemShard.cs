@@ -14,7 +14,7 @@ namespace LostArtifacts.Artifacts
 			"as pure destructive energy. Though it has shattered from overuse, the shards retain some of its original power.";
 		public override string LevelInfo() => "2.5, 5, 7.5 second duration";
 		public override string TraitName() => "Soulful";
-		public override string TraitDescription() => "Deal +25% damage for a short time after healing; Deep Focus gives +75% " +
+		public override string TraitDescription() => "Deal +15% damage for a short time after healing; Deep Focus gives +60% " +
 			"instead, Quick Focus adds 5 seconds";
 		public override AbstractLocation Location()
 		{
@@ -56,7 +56,7 @@ namespace LostArtifacts.Artifacts
 			{
 				if(buffActive)
 				{
-					float multiplier = PlayerData.instance.GetBool(nameof(PlayerData.equippedCharm_34)) ? 0.25f : 0.75f;
+					float multiplier = PlayerData.instance.GetBool(nameof(PlayerData.equippedCharm_34)) ? 0.15f : 0.6f;
 					hitInstance.Multiplier += multiplier;
 				}
 			}

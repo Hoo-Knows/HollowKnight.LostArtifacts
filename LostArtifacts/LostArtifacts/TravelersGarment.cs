@@ -9,11 +9,11 @@ namespace LostArtifacts.Artifacts
 	{
 		public override int ID() => 0;
 		public override string Name() => "Traveler's Garment";
-		public override string Description() => "A small cloth from a traveler who braved the wasteland beyond to " +
+		public override string Description() => "A cloak from a traveler who braved the wasteland beyond to " +
 			"reach Hallownest. It carries the aura of its former owner.";
 		public override string LevelInfo() => "0%, 50%, 100% better scaling";
 		public override string TraitName() => "Resilience";
-		public override string TraitDescription() => "Scales damage with the player’s horizontal speed over the past 3 seconds";
+		public override string TraitDescription() => "Scales damage with the player’s horizontal speed over the past second";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()
@@ -32,7 +32,7 @@ namespace LostArtifacts.Artifacts
 		{
 			base.Activate();
 
-			velocityArray = new float[300];
+			velocityArray = new float[100];
 			StartCoroutine(VelocityTracker());
 			On.HealthManager.Hit += HealthManagerHit;
 		}
@@ -53,7 +53,7 @@ namespace LostArtifacts.Artifacts
 			{
 				yield return new WaitForSeconds(0.01f);
 
-				if(i >= 300) i = 0;
+				if(i >= 100) i = 0;
 				velocityArray[i] = Mathf.Abs(HeroController.instance.gameObject.GetComponent<Rigidbody2D>().velocity.x);
 				i++;
 			}
@@ -67,17 +67,18 @@ namespace LostArtifacts.Artifacts
 			{
 				sum += velocity;
 			}
-			return sum / 300f;
+			return sum / 100f;
 		}
 
 		private float GetMultiplier()
 		{
 			float vel = GetAverageVelocity();
-			float multiplier = 21f / (1f + 330f * Mathf.Exp(-0.46f * vel));
-			if(vel >= 16.607f) multiplier = -41.4f + 9.5f * Mathf.Log(vel + 2.4f, 1.6f);
+			LostArtifacts.Instance.Log(vel);
+			float multiplier = 24.7f / (1f + 173f * Mathf.Exp(-0.46f * vel));
+			if(vel > 13.73f) multiplier = -38f + 10.7f * Mathf.Log(vel - 1.6f, 1.6f);
 
 			//Apply level multiplier
-			multiplier *= 0.5f + level * 0.5f;
+			multiplier *= (level + 1) * 0.5f;
 
 			return multiplier / 100f;
 		}

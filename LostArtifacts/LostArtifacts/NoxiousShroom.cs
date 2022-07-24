@@ -15,7 +15,7 @@ namespace LostArtifacts.Artifacts
 			"have highly concentrated toxins. Releasing them would be disastrous…for the enemy.";
 		public override string LevelInfo() => "Can spread to 1, 2, 3 other enemies";
 		public override string TraitName() => "Toxic";
-		public override string TraitDescription() => "Hitting an enemy has a 40% chance to release a spore cloud that can " +
+		public override string TraitDescription() => "Hitting an enemy has a 30% chance to release a spore cloud that can " +
 			"spread to nearby enemies";
 		public override AbstractLocation Location()
 		{
@@ -53,7 +53,7 @@ namespace LostArtifacts.Artifacts
 		{
 			if(hitInstance.AttackType == AttackTypes.Nail || hitInstance.AttackType == AttackTypes.NailBeam)
 			{
-				if(random.Next(0, 5) < 2) StartCoroutine(CloudControl(self, new List<string>()));
+				if(random.Next(0, 10) < 3) StartCoroutine(CloudControl(self, new List<string>()));
 			}
 			orig(self, hitInstance);
 		}

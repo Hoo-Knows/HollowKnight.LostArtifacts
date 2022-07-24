@@ -86,7 +86,6 @@ namespace LostArtifacts.UI
 			selectedButton.Select();
 
 			//Update UI
-			ArtifactCursor.Instance.UpdatePos();
 			LostArtifacts la = LostArtifacts.Instance;
 			if(la.artifacts[selectedButton.id] != null && LostArtifacts.Settings.unlocked[selectedButton.id])
 			{
@@ -110,9 +109,16 @@ namespace LostArtifacts.UI
 			}
 		}
 
-		private void OnDisable()
+		public void SetSelected(GameObject selected)
 		{
+			this.selected = selected;
+			eventSystem.SetSelectedGameObject(selected);
 			ArtifactCursor.Instance.UpdatePos();
+			ArtifactAudio.Instance.Play(ArtifactAudio.Instance.select);
+			if(selected.GetComponent<ArtifactButton>() != null)
+			{
+				selectedButton = selected.GetComponent<ArtifactButton>();
+			}
 		}
 
 		public void SetArtifactPanel(Artifact artifact)
@@ -154,26 +160,22 @@ namespace LostArtifacts.UI
 			if(InputHandler.Instance.inputActions.up.IsPressed && !upWasPressed &&
 				selected.GetComponent<Button>().FindSelectableOnUp() != null)
 			{
-				selected = selected.GetComponent<Button>().FindSelectableOnUp().gameObject;
-				eventSystem.SetSelectedGameObject(selected);
+				eventSystem.SetSelectedGameObject(selected.GetComponent<Button>().FindSelectableOnUp().gameObject);
 			}
 			if(InputHandler.Instance.inputActions.down.IsPressed && !downWasPressed &&
 				selected.GetComponent<Button>().FindSelectableOnDown() != null)
 			{
-				selected = selected.GetComponent<Button>().FindSelectableOnDown().gameObject;
-				eventSystem.SetSelectedGameObject(selected);
+				eventSystem.SetSelectedGameObject(selected.GetComponent<Button>().FindSelectableOnDown().gameObject);
 			}
 			if(InputHandler.Instance.inputActions.left.IsPressed && !leftWasPressed &&
 				selected.GetComponent<Button>().FindSelectableOnLeft() != null)
 			{
-				selected = selected.GetComponent<Button>().FindSelectableOnLeft().gameObject;
-				eventSystem.SetSelectedGameObject(selected);
+				eventSystem.SetSelectedGameObject(selected.GetComponent<Button>().FindSelectableOnLeft().gameObject);
 			}
 			if(InputHandler.Instance.inputActions.right.IsPressed && !rightWasPressed &&
 				selected.GetComponent<Button>().FindSelectableOnRight() != null)
 			{
-				selected = selected.GetComponent<Button>().FindSelectableOnRight().gameObject;
-				eventSystem.SetSelectedGameObject(selected);
+				eventSystem.SetSelectedGameObject(selected.GetComponent<Button>().FindSelectableOnRight().gameObject);
 			}
 
 			jumpWasPressed = InputHandler.Instance.inputActions.jump.IsPressed;

@@ -12,7 +12,7 @@ namespace LostArtifacts.Artifacts
 		public override string Name() => "Wyrm Ash";
 		public override string Description() => "So great was the Wyrm's power, that even a small amount of its corpse's ashes " +
 			"carry noticeable power. Imbuing the nail with these ashes allows the wielder to harness the Wyrm's control over life.";
-		public override string LevelInfo() => "9, 6, 3 hits per minion";
+		public override string LevelInfo() => "12, 8, 4 hits per minion";
 		public override string TraitName() => "Rebirth";
 		public override string TraitDescription() => "Spawn a minion after a certain amount of hits";
 		public override AbstractLocation Location()
@@ -50,7 +50,7 @@ namespace LostArtifacts.Artifacts
 			base.Activate();
 
 			counter = 0;
-			hitsNeeded = 12 - 3 * level;
+			hitsNeeded = 16 - 4 * level;
 			hatchlingGO = HeroController.instance.transform.Find("Charm Effects").gameObject.LocateMyFSM("Hatchling Spawn").
 				GetAction<SpawnObjectFromGlobalPool>("Hatch", 2).gameObject.Value;
 

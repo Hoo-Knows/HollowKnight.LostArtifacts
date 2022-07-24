@@ -53,6 +53,7 @@ namespace LostArtifacts.Artifacts
 
 			On.EnemyDreamnailReaction.RecieveDreamImpact += EnemyDreamnailReactionRecieveDreamImpact;
 			ModHooks.AttackHook += AttackHook;
+			On.HealthManager.Hit += HealthManagerHit;
 		}
 
 		private void EnemyDreamnailReactionRecieveDreamImpact(
@@ -85,15 +86,26 @@ namespace LostArtifacts.Artifacts
 				}
 				HitInstance hi = new HitInstance
 				{
-					AttackType = AttackTypes.Nail,
+					AttackType = AttackTypes.NailBeam,
 					Direction = 0f,
 					DamageDealt = damage * hmDict[hm],
-					Source = HeroController.instance.gameObject,
+					Source = gameObject,
 					IgnoreInvulnerable = true,
 					MagnitudeMultiplier = 0f,
-					Multiplier = 1f
+					Multiplier = 1f,
+					IsExtraDamage = true
 				};
 				hm.Hit(hi);
+			}
+		}
+
+		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
+		{
+			orig(self, hitInstance);
+
+			if(hitInstance.Source.name == "LostArtifactsGO")
+			{
+				ReflectionHelper.SetField(self, "evasionByHitRemaining", 0f);
 			}
 		}
 
@@ -103,6 +115,7 @@ namespace LostArtifacts.Artifacts
 
 			On.EnemyDreamnailReaction.RecieveDreamImpact -= EnemyDreamnailReactionRecieveDreamImpact;
 			ModHooks.AttackHook -= AttackHook;
+			On.HealthManager.Hit -= HealthManagerHit;
 		}
 	}
 }

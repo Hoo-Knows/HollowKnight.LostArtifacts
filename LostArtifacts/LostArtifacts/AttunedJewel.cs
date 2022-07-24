@@ -29,9 +29,9 @@ namespace LostArtifacts.Artifacts
 			};
 		}
 
-		private bool rangeBuffActive;
-		private bool speedBuffActive;
-		private bool damageBuffActive;
+		private int rangeBuffActive;
+		private int speedBuffActive;
+		private int damageBuffActive;
 		private float duration;
 
 		private List<NailSlash> slashList;
@@ -41,9 +41,9 @@ namespace LostArtifacts.Artifacts
 		{
 			base.Activate();
 
-			rangeBuffActive = false;
-			speedBuffActive = false;
-			damageBuffActive = false;
+			rangeBuffActive = 0;
+			speedBuffActive = 0;
+			damageBuffActive = 0;
 			duration = 5f;
 
 			slashList = new List<NailSlash>()
@@ -66,12 +66,10 @@ namespace LostArtifacts.Artifacts
 			{
 				if(self.State.Name == "Fireball Recoil")
 				{
-					StopCoroutine(FireballControl());
 					StartCoroutine(FireballControl());
 				}
 				if(self.State.Name == "Scream End" || self.State.Name == "Scream End 2")
 				{
-					StopCoroutine(ScreamControl());
 					StartCoroutine(ScreamControl());
 				}
 			}
@@ -82,79 +80,70 @@ namespace LostArtifacts.Artifacts
 			orig(self);
 			if(self.Fsm.GameObjectName == "Knight" && self.Fsm.Name == "Spell Control" && self.State.Name == "Quake Finish")
 			{
-				StopCoroutine(DiveControl());
 				StartCoroutine(DiveControl());
 			}
 		}
 
 		private IEnumerator FireballControl()
 		{
-			if(!rangeBuffActive)
+			rangeBuffActive++;
+			if(rangeBuffActive == 1)
 			{
 				foreach(NailSlash slash in slashList)
 				{
 					slash.scale.x *= multiplier;
 					slash.scale.y *= multiplier;
-					slash.SetMantis(true);
 				}
-
-				rangeBuffActive = true;
 			}
 			yield return new WaitForSeconds(duration);
-			if(rangeBuffActive)
+			rangeBuffActive--;
+			if(rangeBuffActive == 0)
 			{
 				foreach(NailSlash slash in slashList)
 				{
 					slash.scale.x /= multiplier;
 					slash.scale.y /= multiplier;
-					slash.SetMantis(PlayerData.instance.GetBool(nameof(PlayerData.equippedCharm_13)));
 				}
-
-				rangeBuffActive = false;
 			}
 			yield break;
 		}
 
 		private IEnumerator DiveControl()
 		{
-			if(!speedBuffActive)
+			speedBuffActive++;
+			if(speedBuffActive == 1)
 			{
 				HeroController.instance.RUN_SPEED *= multiplier;
 				HeroController.instance.RUN_SPEED_CH *= multiplier;
 				HeroController.instance.RUN_SPEED_CH_COMBO *= multiplier;
 				HeroController.instance.WALK_SPEED *= multiplier;
 				HeroController.instance.UNDERWATER_SPEED *= multiplier;
-
-				speedBuffActive = true;
 			}
 			yield return new WaitForSeconds(duration);
-			if(speedBuffActive)
+			speedBuffActive--;
+			if(speedBuffActive == 0)
 			{
 				HeroController.instance.RUN_SPEED /= multiplier;
 				HeroController.instance.RUN_SPEED_CH /= multiplier;
 				HeroController.instance.RUN_SPEED_CH_COMBO /= multiplier;
 				HeroController.instance.WALK_SPEED /= multiplier;
 				HeroController.instance.UNDERWATER_SPEED /= multiplier;
-
-				speedBuffActive = false;
 			}
 			yield break;
 		}
 
 		private IEnumerator ScreamControl()
 		{
-			if(!damageBuffActive)
+			damageBuffActive++;
+			if(damageBuffActive == 1)
 			{
 				On.HealthManager.Hit += HealthManagerHit;
-
-				damageBuffActive = true;
 			}
 			yield return new WaitForSeconds(duration);
-			if(damageBuffActive)
+			damageBuffActive--;
+			if(damageBuffActive == 0)
 			{
 				On.HealthManager.Hit -= HealthManagerHit;
-
-				damageBuffActive = false;
 			}
 		}
 
@@ -175,7 +164,7 @@ namespace LostArtifacts.Artifacts
 			On.HutongGames.PlayMaker.Actions.SendMessage.OnEnter -= SendMessageOnEnter;
 			StopAllCoroutines();
 
-			if(rangeBuffActive)
+			if(rangeBuffActive > 0)
 			{
 				HeroController.instance.normalSlash.scale.x /= multiplier;
 				HeroController.instance.normalSlash.scale.y /= multiplier;
@@ -186,9 +175,9 @@ namespace LostArtifacts.Artifacts
 				HeroController.instance.downSlash.scale.x /= multiplier;
 				HeroController.instance.downSlash.scale.y /= multiplier;
 
-				rangeBuffActive = false;
+				rangeBuffActive = 0;
 			}
-			if(speedBuffActive)
+			if(speedBuffActive > 0)
 			{
 				HeroController.instance.RUN_SPEED /= multiplier;
 				HeroController.instance.RUN_SPEED_CH /= multiplier;
@@ -196,13 +185,13 @@ namespace LostArtifacts.Artifacts
 				HeroController.instance.WALK_SPEED /= multiplier;
 				HeroController.instance.UNDERWATER_SPEED /= multiplier;
 
-				speedBuffActive = false;
+				speedBuffActive = 0;
 			}
-			if(damageBuffActive)
+			if(damageBuffActive > 0)
 			{
 				On.HealthManager.Hit -= HealthManagerHit;
 
-				damageBuffActive = false;
+				damageBuffActive = 0;
 			}
 		}
 	}

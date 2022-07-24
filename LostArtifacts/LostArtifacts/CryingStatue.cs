@@ -12,7 +12,7 @@ namespace LostArtifacts.Artifacts
 		public override string Name() => "Crying Statue";
 		public override string Description() => "The never-ending rain seeps into every object it can find, including this relic. " +
 			"The water looks vaguely like tears.";
-		public override string LevelInfo() => "+30%, +40%, +50% damage";
+		public override string LevelInfo() => "+20%, +30%, +40% damage";
 		public override string TraitName() => "Fallen";
 		public override string TraitDescription() => "Take one extra damage, but deal more damage for 5 seconds after taking damage";
 		public override AbstractLocation Location()
@@ -33,9 +33,15 @@ namespace LostArtifacts.Artifacts
 		{
 			base.Activate();
 
-			multiplier = 0.2f + level * 0.1f;
+			multiplier = 0.1f * (level + 1);
 
+			ModHooks.TakeHealthHook += TakeHealthHook;
 			ModHooks.TakeDamageHook += TakeDamageHook;
+		}
+
+		private int TakeHealthHook(int damage)
+		{
+			return damage == 0 ? 0 : damage + 1;
 		}
 
 		private int TakeDamageHook(ref int hazardType, int damage)
@@ -43,7 +49,7 @@ namespace LostArtifacts.Artifacts
 			StopAllCoroutines();
 			On.HealthManager.Hit -= HealthManagerHit;
 			StartCoroutine(DamageControl());
-			return damage + 1;
+			return damage;
 		}
 
 		private IEnumerator DamageControl()
@@ -66,6 +72,7 @@ namespace LostArtifacts.Artifacts
 		{
 			base.Deactivate();
 
+			ModHooks.TakeHealthHook -= TakeHealthHook;
 			ModHooks.TakeDamageHook -= TakeDamageHook;
 			On.HealthManager.Hit -= HealthManagerHit;
 			StopAllCoroutines();

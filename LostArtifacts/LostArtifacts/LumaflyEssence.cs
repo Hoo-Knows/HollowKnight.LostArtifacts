@@ -43,8 +43,7 @@ namespace LostArtifacts.Artifacts
 			numToSpawn = level + 1;
 
 			ModHooks.AttackHook += AttackHook;
-			On.DamageEnemies.DoDamage += DamageEnemiesDoDamage;
-			On.DamageEnemies.FixedUpdate += DamageEnemiesFixedUpdate;
+			On.HealthManager.Hit += HealthManagerHit;
 		}
 
 		private void AttackHook(AttackDirection obj)
@@ -80,9 +79,9 @@ namespace LostArtifacts.Artifacts
 				Destroy(zap.GetComponent<DamageHero>());
 
 				DamageEnemies de = zap.AddComponent<DamageEnemies>();
-				de.damageDealt = PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) / 2;
+				de.damageDealt = PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) / 3;
 				de.attackType = AttackTypes.NailBeam;
-				de.ignoreInvuln = false;
+				de.ignoreInvuln = true;
 
 				zap.SetActive(true);
 
@@ -92,25 +91,19 @@ namespace LostArtifacts.Artifacts
 			yield break;
 		}
 
-		private void DamageEnemiesDoDamage(On.DamageEnemies.orig_DoDamage orig, DamageEnemies self, GameObject target)
+		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
 		{
-			orig(self, target);
-			if(self.gameObject.name == "LostArtifacts.LumaflyEssenceZap")
+			if(hitInstance.Source.name != "LostArtifacts.LumaflyEssenceZap")
 			{
-				self.gameObject.GetComponent<CircleCollider2D>().enabled = false;
+				orig(self, hitInstance);
+				return;
 			}
-		}
 
-		private void DamageEnemiesFixedUpdate(On.DamageEnemies.orig_FixedUpdate orig, DamageEnemies self)
-		{
-			try
-			{
-				orig(self);
-			}
-			catch
-			{
-				//Out of sight, out of mind
-			}
+			//Override the iframes on hit so that it doesn't eat nail hits
+			GameObject.Destroy(hitInstance.Source.GetComponent<DamageEnemies>());
+			hitInstance.IsExtraDamage = true;
+			orig(self, hitInstance);
+			ReflectionHelper.SetField(self, "evasionByHitRemaining", 0f);
 		}
 
 		private void Update()
@@ -123,8 +116,8 @@ namespace LostArtifacts.Artifacts
 			base.Deactivate();
 
 			ModHooks.AttackHook -= AttackHook;
-			On.DamageEnemies.DoDamage -= DamageEnemiesDoDamage;
-			On.DamageEnemies.FixedUpdate -= DamageEnemiesFixedUpdate;
+			On.HealthManager.Hit -= HealthManagerHit;
+			StopAllCoroutines();
 		}
 	}
 }

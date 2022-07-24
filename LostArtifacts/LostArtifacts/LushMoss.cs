@@ -9,7 +9,7 @@ namespace LostArtifacts.Artifacts
 		public override string Name() => "Lush Moss";
 		public override string Description() => "This piece of moss came from the Massive Moss Charger. It has a mysterious " +
 			"healing power that allows the moss chargers to recover their moss no matter how many times it is destroyed.";
-		public override string LevelInfo() => "30, 20, 10 hits to heal";
+		public override string LevelInfo() => "40, 30, 20 hits to heal";
 		public override string TraitName() => "Regeneration";
 		public override string TraitDescription() => "Heal a mask after a certain amount of hits";
 		public override AbstractLocation Location()
@@ -45,7 +45,7 @@ namespace LostArtifacts.Artifacts
 			base.Activate();
 
 			counter = 0;
-			hitsNeeded = 40 - level * 10;
+			hitsNeeded = 50 - level * 10;
 
 			On.HealthManager.TakeDamage += HealthManagerTakeDamage;
 		}

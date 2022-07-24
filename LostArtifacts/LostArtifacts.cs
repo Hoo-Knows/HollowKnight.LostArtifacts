@@ -80,7 +80,7 @@ namespace LostArtifacts
 				EditInventory);
 
 			//Add artifacts
-			artifactsGO = new GameObject("Artifacts GO");
+			artifactsGO = new GameObject("LostArtifactsGO");
 			artifacts = new Artifact[21];
 			artifactNames = new HashSet<string>();
 			UnityEngine.Object.DontDestroyOnLoad(artifactsGO);
@@ -104,11 +104,11 @@ namespace LostArtifacts
 			AddArtifact<WeaverSilk>();
 			AddArtifact<WyrmAsh>();
 			AddArtifact<BeastShell>();
-			AddArtifact<Honeydrop>(); //Needs visual feedback
+			AddArtifact<Honeydrop>(); //Yellow tint
 			AddArtifact<InfectedRock>();
 			AddArtifact<Buzzsaw>();
-			AddArtifact<Voidstone>();
-			AddArtifact<AttunedJewel>(); //Needs visual feedback
+			AddArtifact<Voidstone>(); //Void particles
+			AddArtifact<AttunedJewel>(); //Void particles
 			AddArtifact<HiddenMemento>();
 		}
 

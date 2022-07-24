@@ -16,7 +16,7 @@ namespace LostArtifacts.UI
 
 		public void Play(AudioClip clip)
 		{
-			gameObject.GetComponent<AudioSource>().PlayOneShot(clip, 0.5f);
+			HeroController.instance.GetComponent<AudioSource>().PlayOneShot(clip, 1f);
 		}
 	}
 }

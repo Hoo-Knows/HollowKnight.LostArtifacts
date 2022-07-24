@@ -16,19 +16,13 @@ namespace LostArtifacts.UI
 
 		public override void OnSelect(BaseEventData eventData)
 		{
-			//Set selected
-			ArtifactManager.Instance.selected = gameObject;
+			ArtifactManager.Instance.SetSelected(gameObject);
 
 			if(alt)
 			{
 				if(left) LostArtifacts.Instance.pageFSM.SendEvent("LEFT");
 				else LostArtifacts.Instance.pageFSM.SendEvent("RIGHT");
 			}
-
-			ArtifactAudio.Instance.Play(ArtifactAudio.Instance.select);
-
-			//Move cursor
-			ArtifactCursor.Instance.UpdatePos();
 
 			//Update artifact panel
 			ArtifactManager.Instance.SetArtifactPanel();
