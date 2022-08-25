@@ -11,7 +11,7 @@ namespace LostArtifacts.Artifacts
 		public override string Description() => "A questionable gift from the Dung Defender.";
 		public override string LevelInfo() => "Stinky, Stinkier, Stinkiest";
 		public override string TraitName() => "Stinky";
-		public override string TraitDescription() => "Odorous (also lag generator)";
+		public override string TraitDescription() => "Makes you odorous (also generates lag)";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()

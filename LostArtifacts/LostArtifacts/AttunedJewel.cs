@@ -15,8 +15,8 @@ namespace LostArtifacts.Artifacts
 			"Thunder and Rain. It reveals the bearer’s inner nature and allows them to ascend ever higher.";
 		public override string LevelInfo() => "+10%, +20%, +30% to each stat";
 		public override string TraitName() => "Attuned";
-		public override string TraitDescription() => "Casting Fireball, Dive, or Shriek grants bonus range, movement speed, or " +
-			"damage for 5 seconds, respectively";
+		public override string TraitDescription() => "Casting Fireball, Dive, or Shriek grants bonus attack range, movement speed, " +
+			"or damage for 5 seconds, respectively";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()

@@ -4,7 +4,7 @@ namespace LostArtifacts.Debug
 {
 	public class DebugMethods
 	{
-		[BindableMethod(name = "Unlock All Artifacts", category = "Lost Artifacts")]
+		[BindableMethod(name = "Unlock all artifacts", category = "Lost Artifacts")]
 		public static void UnlockArtifacts()
 		{
 			for(int i = 0; i < LostArtifacts.Settings.unlocked.Length; i++)
@@ -13,7 +13,7 @@ namespace LostArtifacts.Debug
 			}
 		}
 
-		[BindableMethod(name = "Toggle Unlock All Slots", category = "Lost Artifacts")]
+		[BindableMethod(name = "Toggle unlock all slots", category = "Lost Artifacts")]
 		public static void UnlockSlots()
 		{
 			LostArtifacts.Settings.unlockedSlots = !LostArtifacts.Settings.unlockedSlots;

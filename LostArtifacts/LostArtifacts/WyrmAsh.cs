@@ -14,7 +14,7 @@ namespace LostArtifacts.Artifacts
 			"carry noticeable power. Imbuing the nail with these ashes allows the wielder to harness the Wyrm's control over life.";
 		public override string LevelInfo() => "12, 8, 4 hits per minion";
 		public override string TraitName() => "Rebirth";
-		public override string TraitDescription() => "Spawn a minion after a certain amount of hits";
+		public override string TraitDescription() => "Spawn a hatchling after a certain amount of hits";
 		public override AbstractLocation Location()
 		{
 			return new DualLocation()
