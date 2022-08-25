@@ -79,7 +79,7 @@ namespace LostArtifacts.Artifacts
 				Destroy(zap.GetComponent<DamageHero>());
 
 				DamageEnemies de = zap.AddComponent<DamageEnemies>();
-				de.damageDealt = PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) / 3;
+				de.damageDealt = PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) / 2;
 				de.attackType = AttackTypes.NailBeam;
 				de.ignoreInvuln = true;
 

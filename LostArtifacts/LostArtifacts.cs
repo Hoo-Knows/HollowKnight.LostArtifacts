@@ -12,6 +12,7 @@ using System.IO;
 using UnityEngine;
 using LostArtifacts.Artifacts;
 using LostArtifacts.Rando;
+using LostArtifacts.Debug;
 
 namespace LostArtifacts
 {
@@ -153,9 +154,13 @@ namespace LostArtifacts
 				artifactNames.Add(artifact.InternalName());
 			}
 
-			if(ModHooks.GetMod("Randomizer 4") != null)
+			if(ModHooks.GetMod("Randomizer 4") is Mod)
 			{
 				ArtifactRando.HookRando();
+			}
+			if(ModHooks.GetMod("DebugMod") is Mod)
+			{
+				ArtifactDebug.AddToDebug();
 			}
 
 			On.HeroController.Start += HeroControllerStart;
@@ -166,14 +171,6 @@ namespace LostArtifacts
 			ModHooks.SetPlayerBoolHook += SetPlayerBoolHook;
 
 			Log("Initialized");
-		}
-
-		private void UnlockAllArtifacts()
-		{
-			for(int i = 0; i < 20; i++)
-			{
-				Settings.unlocked[i] = true;
-			}
 		}
 
 		private void HeroControllerStart(On.HeroController.orig_Start orig, HeroController self)
@@ -273,7 +270,10 @@ namespace LostArtifacts
 
 			if(bossRush)
 			{
-				UnlockAllArtifacts();
+				for(int i = 0; i < Settings.unlocked.Length; i++)
+				{
+					Settings.unlocked[i] = true;
+				}
 				return;
 			}
 			PlaceArtifacts();
@@ -316,7 +316,7 @@ namespace LostArtifacts
 		{
 			if(name == "artifactsUnlocked")
 			{
-				return PlayerData.instance.GetInt(nameof(PlayerData.nailSmithUpgrades)) > 0;
+				return Settings.unlockedSlots || PlayerData.instance.GetInt(nameof(PlayerData.nailSmithUpgrades)) > 0;
 			}
 			if(name.StartsWith("unlockedArtifact_"))
 			{
@@ -341,10 +341,6 @@ namespace LostArtifacts
 				MenuRef = new Menu("Lost Artifacts",
 					new Element[]
 					{
-						new MenuButton("Unlock all artifacts", "",
-						(_) => UnlockAllArtifacts(),
-						Id: "UnlockButton"),
-
 						new MenuButton("Place artifacts in world", "Will not override any existing ItemChanger data",
 						(_) => PlaceArtifacts(),
 						Id: "PlaceButton")

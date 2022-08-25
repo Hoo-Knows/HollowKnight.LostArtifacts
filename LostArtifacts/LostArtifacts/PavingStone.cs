@@ -12,7 +12,7 @@ namespace LostArtifacts.Artifacts
 		public override string Name() => "Paving Stone";
 		public override string Description() => "A stone from the interconnected crossroads beneath Dirtmouth. Through the Stags' " +
 			"repeated use, it is imbued with a trace amount of their power.";
-		public override string LevelInfo() => "-5%, -10%, -15% attack cooldown";
+		public override string LevelInfo() => "-10%, -15%, -20% attack cooldown";
 		public override string TraitName() => "Stagspeed";
 		public override string TraitDescription() => "Decreases attack cooldown";
 		public override AbstractLocation Location()
@@ -38,9 +38,9 @@ namespace LostArtifacts.Artifacts
 			ATTACK_COOLDOWN_TIME = HeroController.instance.ATTACK_COOLDOWN_TIME;
 			ATTACK_COOLDOWN_TIME_CH = HeroController.instance.ATTACK_COOLDOWN_TIME_CH;
 
-			if(level == 1) multiplier = 0.95f;
-			if(level == 2) multiplier = 0.9f;
-			if(level == 3) multiplier = 0.85f;
+			if(level == 1) multiplier = 0.9f;
+			if(level == 2) multiplier = 0.85f;
+			if(level == 3) multiplier = 0.8f;
 
 			HeroController.instance.ATTACK_COOLDOWN_TIME *= multiplier;
 			HeroController.instance.ATTACK_COOLDOWN_TIME_CH *= multiplier;

@@ -1,5 +1,4 @@
-﻿using MenuChanger;
-using RandomizerCore.Logic;
+﻿using RandomizerCore.Logic;
 using RandomizerCore.LogicItems;
 using RandomizerMod.Menu;
 using RandomizerMod.RC;
