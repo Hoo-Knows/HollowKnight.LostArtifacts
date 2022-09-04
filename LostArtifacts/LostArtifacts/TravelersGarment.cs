@@ -13,7 +13,7 @@ namespace LostArtifacts.Artifacts
 			"reach Hallownest. It carries the aura of its former owner.";
 		public override string LevelInfo() => "0%, 50%, 100% better scaling";
 		public override string TraitName() => "Resilience";
-		public override string TraitDescription() => "Scales damage with the player’s horizontal speed over the past second";
+		public override string TraitDescription() => "Scales damage with the player’s velocity over the past second";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()
@@ -54,7 +54,7 @@ namespace LostArtifacts.Artifacts
 				yield return new WaitForSeconds(0.01f);
 
 				if(i >= 100) i = 0;
-				velocityArray[i] = Mathf.Abs(HeroController.instance.gameObject.GetComponent<Rigidbody2D>().velocity.x);
+				velocityArray[i] = Mathf.Abs(HeroController.instance.gameObject.GetComponent<Rigidbody2D>().velocity.magnitude);
 				i++;
 			}
 			yield break;

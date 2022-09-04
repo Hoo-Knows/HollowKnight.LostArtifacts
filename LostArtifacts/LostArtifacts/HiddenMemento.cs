@@ -1,7 +1,6 @@
 ﻿using ItemChanger;
 using ItemChanger.Locations;
-using System.Collections;
-using UnityEngine;
+using Modding;
 
 namespace LostArtifacts.Artifacts
 {
@@ -10,9 +9,9 @@ namespace LostArtifacts.Artifacts
 		public override int ID() => 20;
 		public override string Name() => "Hidden Memento";
 		public override string Description() => "In memory of Schy.";
-		public override string LevelInfo() => "+10%, +20%, +30% speed";
+		public override string LevelInfo() => "+20%, +30%, +40% damage";
 		public override string TraitName() => "Pogomaster";
-		public override string TraitDescription() => "Pogoing grants increased movement speed for 5 seconds";
+		public override string TraitDescription() => "Pogoing makes the next attack deal increased damage";
 		public override AbstractLocation Location()
 		{
 			return new DualLocation()
@@ -40,84 +39,70 @@ namespace LostArtifacts.Artifacts
 		}
 
 		private float multiplier;
+		private bool bouncing;
 		private bool buffActive;
 
 		public override void Activate()
 		{
 			base.Activate();
 
-			multiplier = 0.1f * level + 1f;
+			multiplier = 0.1f * level + 0.1f;
+			bouncing = false;
+			buffActive = false;
 
+			On.HealthManager.Hit += HealthManagerHit;
+			ModHooks.AttackHook += AttackHook;
 			On.HeroController.Bounce += HeroControllerBounce;
 			On.HeroController.BounceHigh += HeroControllerBounceHigh;
 			On.HeroController.ShroomBounce += HeroControllerShroomBounce;
 		}
 
+		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
+		{
+			if(buffActive)
+			{
+				hitInstance.Multiplier += multiplier;
+				buffActive = false;
+			}
+			orig(self, hitInstance);
+		}
+
+		private void AttackHook(GlobalEnums.AttackDirection obj)
+		{
+			if(bouncing) buffActive = true;
+			bouncing = false;
+		}
+
 		private void HeroControllerBounce(On.HeroController.orig_Bounce orig, HeroController self)
 		{
 			orig(self);
-
-			StopAllCoroutines();
-			StartCoroutine(SpeedControl());
+			bouncing = true;
 		}
 
 		private void HeroControllerBounceHigh(On.HeroController.orig_BounceHigh orig, HeroController self)
 		{
 			orig(self);
-
-			StopAllCoroutines();
-			StartCoroutine(SpeedControl());
+			bouncing = true;
 		}
 
 		private void HeroControllerShroomBounce(On.HeroController.orig_ShroomBounce orig, HeroController self)
 		{
 			orig(self);
-
-			StopAllCoroutines();
-			StartCoroutine(SpeedControl());
-		}
-
-		private IEnumerator SpeedControl()
-		{
-			if(!buffActive)
-			{
-				HeroController.instance.RUN_SPEED *= multiplier;
-				HeroController.instance.RUN_SPEED_CH *= multiplier;
-				HeroController.instance.RUN_SPEED_CH_COMBO *= multiplier;
-				HeroController.instance.WALK_SPEED *= multiplier;
-				HeroController.instance.UNDERWATER_SPEED *= multiplier;
-				buffActive = true;
-			}
-			yield return new WaitForSeconds(10f);
-			if(buffActive)
-			{
-				HeroController.instance.RUN_SPEED /= multiplier;
-				HeroController.instance.RUN_SPEED_CH /= multiplier;
-				HeroController.instance.RUN_SPEED_CH_COMBO /= multiplier;
-				HeroController.instance.WALK_SPEED /= multiplier;
-				HeroController.instance.UNDERWATER_SPEED /= multiplier;
-				buffActive = false;
-			}
+			bouncing = true;
 		}
 
 		public override void Deactivate()
 		{
 			base.Deactivate();
 
+			On.HealthManager.Hit -= HealthManagerHit;
+			ModHooks.AttackHook -= AttackHook;
+			On.HeroController.Bounce -= HeroControllerBounce;
 			On.HeroController.BounceHigh -= HeroControllerBounceHigh;
 			On.HeroController.ShroomBounce -= HeroControllerShroomBounce;
 
-			StopAllCoroutines();
-
-			if(buffActive)
-			{
-				HeroController.instance.RUN_SPEED /= multiplier;
-				HeroController.instance.RUN_SPEED_CH /= multiplier;
-				HeroController.instance.RUN_SPEED_CH_COMBO /= multiplier;
-				HeroController.instance.WALK_SPEED /= multiplier;
-				HeroController.instance.UNDERWATER_SPEED /= multiplier;
-				buffActive = false;
-			}
+			bouncing = false;
+			buffActive = false;
 		}
 	}
 }

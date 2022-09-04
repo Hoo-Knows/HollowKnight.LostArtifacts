@@ -27,13 +27,14 @@ namespace LostArtifacts.Artifacts
 		}
 
 		private float multiplier;
-		private bool buffActive;
+		private int buffActive;
 
 		public override void Activate()
 		{
 			base.Activate();
 
 			multiplier = 0.1f * level + 1f;
+			buffActive = 0;
 
 			On.HealthManager.Hit += HealthManagerHit;
 		}
@@ -50,24 +51,24 @@ namespace LostArtifacts.Artifacts
 
 		private IEnumerator SpeedControl()
 		{
-			if(!buffActive)
+			buffActive++;
+			if(buffActive == 1)
 			{
 				HeroController.instance.RUN_SPEED *= multiplier;
 				HeroController.instance.RUN_SPEED_CH *= multiplier;
 				HeroController.instance.RUN_SPEED_CH_COMBO *= multiplier;
 				HeroController.instance.WALK_SPEED *= multiplier;
 				HeroController.instance.UNDERWATER_SPEED *= multiplier;
-				buffActive = true;
 			}
-			yield return new WaitForSeconds(5f);
-			if(buffActive)
+			yield return new WaitForSeconds(10f);
+			buffActive--;
+			if(buffActive == 0)
 			{
 				HeroController.instance.RUN_SPEED /= multiplier;
 				HeroController.instance.RUN_SPEED_CH /= multiplier;
 				HeroController.instance.RUN_SPEED_CH_COMBO /= multiplier;
 				HeroController.instance.WALK_SPEED /= multiplier;
 				HeroController.instance.UNDERWATER_SPEED /= multiplier;
-				buffActive = false;
 			}
 		}
 
@@ -78,14 +79,15 @@ namespace LostArtifacts.Artifacts
 			On.HealthManager.Hit -= HealthManagerHit;
 			StopAllCoroutines();
 
-			if(buffActive)
+			if(buffActive > 0)
 			{
 				HeroController.instance.RUN_SPEED /= multiplier;
 				HeroController.instance.RUN_SPEED_CH /= multiplier;
 				HeroController.instance.RUN_SPEED_CH_COMBO /= multiplier;
 				HeroController.instance.WALK_SPEED /= multiplier;
 				HeroController.instance.UNDERWATER_SPEED /= multiplier;
-				buffActive = false;
+
+				buffActive = 0;
 			}
 		}
 	}

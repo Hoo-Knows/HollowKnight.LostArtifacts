@@ -1,6 +1,6 @@
 ### Traits
 - Traveler’s Garment (Dirtmouth)
-	- Resilience - Scales damage with the player’s horizontal speed over the past second
+	- Resilience - Scales damage with the player’s velocity over the past second
 - Paving Stone (Forgotten Crossroads)
 	- Stagspeed - Decreases attack cooldown and nail art charge time
 - Lush Moss (Greenpath)
@@ -18,7 +18,7 @@
 - Charged Crystal (Crystal Peaks)
 	- Energized - Nail arts deal increased damage
 - Dreamwood (Resting Grounds)
-	- Dreamlink - Using Dream Nail on an enemy links them to the nail, making them take 1/6 base nail damage every swing
+	- Enervating - Striking an enemy with the Dream Nail makes them take permanent bonus damage (cannot stack)
 - Lumafly Essence (Fog Canyon)
 	- Shocking - Swinging the nail creates a chain of electric bursts (shorter each swing, resets when touching ground)
 - Thorned Leaf (Queen's Gardens)
@@ -39,6 +39,8 @@
 	- Abyssal - Striking an enemy repeatedly builds up the damage of the next spell (max +50% increase)
 - Attuned Jewel (Godhome)
 	- Attuned - Casting Fireball, Dive, or Shriek grants bonus attack range, movement speed, or damage for 5 seconds, respectively
+- Hidden Memento (Path of Pain)
+	- Pogomaster - Pogoing makes the next attack deal increased damage
 
 ### Descriptions
 - Traveler’s Garment (Dirtmouth) - Next to the well
@@ -61,3 +63,4 @@
 - Buzzsaw (White Palace) - Hidden in the Workshop
 - Voidstone (Abyss) - Next to the Void Tendril journal entry
 - Attuned Jewel (Godhome) - Next to the Void Idol
+- Hidden Memento (Path of Pain) - Outside the entrance to Path of Pain after completing it

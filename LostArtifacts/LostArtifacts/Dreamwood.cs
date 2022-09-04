@@ -1,6 +1,5 @@
 ﻿using ItemChanger;
 using ItemChanger.Locations;
-using Modding;
 using System.Collections.Generic;
 
 namespace LostArtifacts.Artifacts
@@ -9,12 +8,12 @@ namespace LostArtifacts.Artifacts
 	{
 		public override int ID() => 9;
 		public override string Name() => "Dreamwood";
-		public override string Description() => "A small piece of a Whispering Root. It has an affinity with dreams that enhances " +
-			"the Dream Nail’s ability to mediate between dreams and reality.";
-		public override string LevelInfo() => "Effect stacks up to 1, 2, 3 times on an enemy";
-		public override string TraitName() => "Dreamlink";
-		public override string TraitDescription() => "Using Dream Nail on an enemy links them to the nail, making them take 1/6 " +
-			"base nail damage every swing";
+		public override string Description() => "A small piece of a Whispering Root. It enhances the Dream Nail, allowing it to " +
+			"weaken enemies’ defenses by draining their energy.";
+		public override string LevelInfo() => "+10%, +20%, +30% bonus damage";
+		public override string TraitName() => "Enervating";
+		public override string TraitDescription() => "Striking an enemy with the Dream Nail makes them take permanent bonus " + 
+			"damage (cannot stack)";
 		public override AbstractLocation Location()
 		{
 			return new DualLocation()
@@ -41,18 +40,17 @@ namespace LostArtifacts.Artifacts
 			};
 		}
 
-		private int damage;
-		private Dictionary<HealthManager, int> hmDict;
+		private float multiplier;
+		private List<HealthManager> hmList;
 
 		public override void Activate()
 		{
 			base.Activate();
 
-			damage = PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) / 6 + 1;
-			hmDict = new Dictionary<HealthManager, int>();
+			multiplier = 0.1f * level;
+			hmList = new List<HealthManager>();
 
 			On.EnemyDreamnailReaction.RecieveDreamImpact += EnemyDreamnailReactionRecieveDreamImpact;
-			ModHooks.AttackHook += AttackHook;
 			On.HealthManager.Hit += HealthManagerHit;
 		}
 
@@ -61,52 +59,19 @@ namespace LostArtifacts.Artifacts
 		{
 			orig(self);
 			HealthManager hm = self.gameObject.GetComponent<HealthManager>();
-			if(hm != null)
+			if(hm != null && !hmList.Contains(hm))
 			{
-				if(hmDict.ContainsKey(hm))
-				{
-					hmDict[hm]++;
-					if(hmDict[hm] > 3) hmDict[hm] = 3;
-				}
-				else
-				{
-					hmDict.Add(hm, 1);
-				}
-			}
-		}
-
-		private void AttackHook(GlobalEnums.AttackDirection obj)
-		{
-			foreach(HealthManager hm in hmDict.Keys)
-			{
-				if(hm == null)
-				{
-					hmDict.Remove(hm);
-					continue;
-				}
-				HitInstance hi = new HitInstance
-				{
-					AttackType = AttackTypes.NailBeam,
-					Direction = 0f,
-					DamageDealt = damage * hmDict[hm],
-					Source = gameObject,
-					IgnoreInvulnerable = true,
-					MagnitudeMultiplier = 0f,
-					Multiplier = 1f,
-					IsExtraDamage = true
-				};
-				hm.Hit(hi);
+				hmList.Add(hm);
 			}
 		}
 
 		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
 		{
-			orig(self, hitInstance);
-
-			if(hitInstance.Source.name == "LostArtifactsGO")
+			if(hmList.Contains(self))
 			{
-				ReflectionHelper.SetField(self, "evasionByHitRemaining", 0f);
+				hitInstance.Multiplier += multiplier;
 			}
+			orig(self, hitInstance);
 		}
 
 		public override void Deactivate()
@@ -114,8 +79,7 @@ namespace LostArtifacts.Artifacts
 			base.Deactivate();
 
 			On.EnemyDreamnailReaction.RecieveDreamImpact -= EnemyDreamnailReactionRecieveDreamImpact;
-			ModHooks.AttackHook -= AttackHook;
-			On.HealthManager.Hit -= HealthManagerHit;
+			On.HealthManager.Hit += HealthManagerHit;
 		}
 	}
 }
