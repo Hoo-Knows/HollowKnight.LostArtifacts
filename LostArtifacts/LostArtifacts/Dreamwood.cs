@@ -20,7 +20,7 @@ namespace LostArtifacts.Artifacts
 			{
 				name = InternalName(),
 				sceneName = nameof(SceneNames.RestingGrounds_05),
-				Test = new SDBool("Dream Plant", nameof(SceneNames.RestingGrounds_05)),
+				Test = new PDBool(nameof(PlayerData.completedRGDreamPlant)),
 				falseLocation = new CoordinateLocation()
 				{
 					name = InternalName(),
