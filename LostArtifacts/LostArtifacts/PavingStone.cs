@@ -12,9 +12,9 @@ namespace LostArtifacts.Artifacts
 		public override string Name() => "Paving Stone";
 		public override string Description() => "A stone from the interconnected crossroads beneath Dirtmouth. Through the Stags' " +
 			"repeated use, it is imbued with a trace amount of their power.";
-		public override string LevelInfo() => "-10%, -15%, -20% decrease";
+		public override string LevelInfo() => "-10%, -20%, -30% decrease";
 		public override string TraitName() => "Stagspeed";
-		public override string TraitDescription() => "Decreases attack cooldown and nail art charge time";
+		public override string TraitDescription() => "Decreases attack cooldown and nail art charge time for 3 seconds after a dash";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()
@@ -32,6 +32,8 @@ namespace LostArtifacts.Artifacts
 		private float ATTACK_COOLDOWN_TIME_CH;
 		private float NAIL_CHARGE_TIME_CHARM;
 		private float NAIL_CHARGE_TIME_DEFAULT;
+		private int buffActive;
+		private Coroutine cooldown;
 
 		public override void Activate()
 		{
@@ -42,22 +44,44 @@ namespace LostArtifacts.Artifacts
 			NAIL_CHARGE_TIME_CHARM = HeroController.instance.NAIL_CHARGE_TIME_CHARM;
 			NAIL_CHARGE_TIME_DEFAULT = HeroController.instance.NAIL_CHARGE_TIME_DEFAULT;
 
-			if(level == 1) multiplier = 0.9f;
-			if(level == 2) multiplier = 0.85f;
-			if(level == 3) multiplier = 0.8f;
+			multiplier = 1f - level * 0.1f;
 
-			HeroController.instance.ATTACK_COOLDOWN_TIME *= multiplier;
-			HeroController.instance.ATTACK_COOLDOWN_TIME_CH *= multiplier;
-			HeroController.instance.NAIL_CHARGE_TIME_CHARM *= multiplier;
-			HeroController.instance.NAIL_CHARGE_TIME_DEFAULT *= multiplier;
-
+			On.HeroController.Dash += HeroControllerDash;
 			ModHooks.AttackHook += AttackHook;
+		}
+
+		private void HeroControllerDash(On.HeroController.orig_Dash orig, HeroController self)
+		{
+			orig(self);
+			StartCoroutine(BuffControl());
+		}
+
+		private IEnumerator BuffControl()
+		{
+			buffActive++;
+			if(buffActive == 1)
+			{
+				HeroController.instance.ATTACK_COOLDOWN_TIME *= multiplier;
+				HeroController.instance.ATTACK_COOLDOWN_TIME_CH *= multiplier;
+				HeroController.instance.NAIL_CHARGE_TIME_CHARM *= multiplier;
+				HeroController.instance.NAIL_CHARGE_TIME_DEFAULT *= multiplier;
+			}
+			yield return new WaitForSeconds(3f);
+			buffActive--;
+			if(buffActive == 0)
+			{
+				HeroController.instance.ATTACK_COOLDOWN_TIME = ATTACK_COOLDOWN_TIME;
+				HeroController.instance.ATTACK_COOLDOWN_TIME_CH = ATTACK_COOLDOWN_TIME_CH;
+				HeroController.instance.NAIL_CHARGE_TIME_CHARM = NAIL_CHARGE_TIME_CHARM;
+				HeroController.instance.NAIL_CHARGE_TIME_DEFAULT = NAIL_CHARGE_TIME_DEFAULT;
+			}
+			yield break;
 		}
 
 		private void AttackHook(GlobalEnums.AttackDirection obj)
 		{
-			StopAllCoroutines();
-			StartCoroutine(CooldownControl());
+			if(cooldown != null) StopCoroutine(cooldown);
+			cooldown = StartCoroutine(CooldownControl());
 		}
 
 		private IEnumerator CooldownControl()
@@ -77,6 +101,7 @@ namespace LostArtifacts.Artifacts
 		{
 			base.Deactivate();
 
+			On.HeroController.Dash -= HeroControllerDash;
 			ModHooks.AttackHook -= AttackHook;
 			StopAllCoroutines();
 

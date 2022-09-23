@@ -12,9 +12,9 @@ namespace LostArtifacts.Artifacts
 		public override string Name() => "Crying Statue";
 		public override string Description() => "The never-ending rain seeps into every object it can find, including this relic. " +
 			"The water looks vaguely like tears.";
-		public override string LevelInfo() => "+20%, +30%, +40% damage";
+		public override string LevelInfo() => "+10%, +15%, +20% damage per mask";
 		public override string TraitName() => "Fallen";
-		public override string TraitDescription() => "Take one extra damage, but deal more damage for 5 seconds after taking damage";
+		public override string TraitDescription() => "Take one extra damage, but deal more damage for 10 seconds after taking damage";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()
@@ -28,12 +28,13 @@ namespace LostArtifacts.Artifacts
 		}
 
 		private float multiplier;
+		private int damage;
 
 		public override void Activate()
 		{
 			base.Activate();
 
-			multiplier = 0.1f * (level + 1);
+			multiplier = 0.05f * (level + 1);
 
 			ModHooks.TakeHealthHook += TakeHealthHook;
 			ModHooks.TakeDamageHook += TakeDamageHook;
@@ -41,21 +42,22 @@ namespace LostArtifacts.Artifacts
 
 		private int TakeHealthHook(int damage)
 		{
-			return damage == 0 ? 0 : damage + 1;
+			StopAllCoroutines();
+			On.HealthManager.Hit -= HealthManagerHit;
+			StartCoroutine(DamageControl());
+			this.damage = damage;
+			return damage;
 		}
 
 		private int TakeDamageHook(ref int hazardType, int damage)
 		{
-			StopAllCoroutines();
-			On.HealthManager.Hit -= HealthManagerHit;
-			StartCoroutine(DamageControl());
-			return damage;
+			return damage == 0 ? 0 : damage + 1;
 		}
 
 		private IEnumerator DamageControl()
 		{
 			On.HealthManager.Hit += HealthManagerHit;
-			yield return new WaitForSeconds(5f);
+			yield return new WaitForSeconds(10f);
 			On.HealthManager.Hit -= HealthManagerHit;
 		}
 
@@ -63,7 +65,7 @@ namespace LostArtifacts.Artifacts
 		{
 			if(hitInstance.AttackType == AttackTypes.Nail || hitInstance.AttackType == AttackTypes.NailBeam)
 			{
-				hitInstance.Multiplier += multiplier;
+				hitInstance.Multiplier += multiplier * damage;
 			}
 			orig(self, hitInstance);
 		}

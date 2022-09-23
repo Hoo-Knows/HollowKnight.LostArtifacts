@@ -11,7 +11,7 @@ namespace LostArtifacts.Artifacts
 		public override int ID() => 14;
 		public override string Name() => "Beast Shell";
 		public override string Description() => "A trophy from the God Tamer’s beast. It was deeply loyal toward its owner.";
-		public override string LevelInfo() => "+100%, +200%, +300% minion damage";
+		public override string LevelInfo() => "+100%, +150%, +200% minion damage";
 		public override string TraitName() => "Beast Tamer";
 		public override string TraitDescription() => "Striking an enemy buffs minion damage for 5 seconds";
 		public override AbstractLocation Location()
@@ -32,9 +32,7 @@ namespace LostArtifacts.Artifacts
 		{
 			base.Activate();
 
-			if(level == 1) multiplier = 1f;
-			if(level == 2) multiplier = 2f;
-			if(level == 3) multiplier = 3f;
+			multiplier = 0.5f + 0.5f * level;
 			buffActive = false;
 
 			On.HealthManager.Hit += HealthManagerHit;

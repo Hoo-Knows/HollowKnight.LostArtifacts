@@ -1,6 +1,8 @@
 ﻿using ItemChanger;
 using ItemChanger.Locations;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace LostArtifacts.Artifacts
 {
@@ -12,8 +14,8 @@ namespace LostArtifacts.Artifacts
 			"weaken enemies’ defenses by draining their energy.";
 		public override string LevelInfo() => "+10%, +20%, +30% bonus damage";
 		public override string TraitName() => "Enervating";
-		public override string TraitDescription() => "Striking an enemy with the Dream Nail makes them take permanent bonus " + 
-			"damage (cannot stack)";
+		public override string TraitDescription() => "Striking an enemy with the Dream Nail makes them take bonus " + 
+			"damage for 15 seconds (can stack)";
 		public override AbstractLocation Location()
 		{
 			return new DualLocation()
@@ -41,14 +43,14 @@ namespace LostArtifacts.Artifacts
 		}
 
 		private float multiplier;
-		private List<HealthManager> hmList;
+		private Dictionary<HealthManager, int> hmDict;
 
 		public override void Activate()
 		{
 			base.Activate();
 
 			multiplier = 0.1f * level;
-			hmList = new List<HealthManager>();
+			hmDict = new Dictionary<HealthManager, int>();
 
 			On.EnemyDreamnailReaction.RecieveDreamImpact += EnemyDreamnailReactionRecieveDreamImpact;
 			On.HealthManager.Hit += HealthManagerHit;
@@ -59,17 +61,27 @@ namespace LostArtifacts.Artifacts
 		{
 			orig(self);
 			HealthManager hm = self.gameObject.GetComponent<HealthManager>();
-			if(hm != null && !hmList.Contains(hm))
+			if(hm == null) return;
+
+			if(!hmDict.ContainsKey(hm))
 			{
-				hmList.Add(hm);
+				hmDict.Add(hm, 0);
 			}
+			StartCoroutine(BuffControl(hm));
+		}
+
+		private IEnumerator BuffControl(HealthManager hm)
+		{
+			hmDict[hm]++;
+			yield return new WaitForSeconds(15f);
+			hmDict[hm]--;
 		}
 
 		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
 		{
-			if(hmList.Contains(self))
+			if(hmDict.ContainsKey(self))
 			{
-				hitInstance.Multiplier += multiplier;
+				hitInstance.Multiplier += multiplier * hmDict[self];
 			}
 			orig(self, hitInstance);
 		}
@@ -80,6 +92,7 @@ namespace LostArtifacts.Artifacts
 
 			On.EnemyDreamnailReaction.RecieveDreamImpact -= EnemyDreamnailReactionRecieveDreamImpact;
 			On.HealthManager.Hit += HealthManagerHit;
+			StopAllCoroutines();
 		}
 	}
 }

@@ -108,7 +108,7 @@ namespace LostArtifacts
 			AddArtifact<Honeydrop>(); //Yellow tint
 			AddArtifact<InfectedRock>();
 			AddArtifact<Buzzsaw>();
-			AddArtifact<Voidstone>(); //Void particles
+			AddArtifact<VoidEmblem>(); //Void particles
 			AddArtifact<AttunedJewel>(); //Void particles
 			AddArtifact<HiddenMemento>();
 		}

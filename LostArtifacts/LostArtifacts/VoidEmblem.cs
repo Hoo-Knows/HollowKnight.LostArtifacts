@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace LostArtifacts.Artifacts
 {
-	public class Voidstone : Artifact
+	public class VoidEmblem : Artifact
 	{
 		public override int ID() => 18;
-		public override string Name() => "Voidstone";
-		public override string Description() => "A drop of hardened void, formed inside the egg that the Vessels hatched from. " +
+		public override string Name() => "Void Emblem";
+		public override string Description() => "An emblem crafted by the ancient civilization designed to contain void energy. " +
 			"Holding it provides a strange sort of comfort.";
-		public override string LevelInfo() => "15, 10, 5 hits to reach max";
+		public override string LevelInfo() => "7, 5, 3 hits to reach max";
 		public override string TraitName() => "Abyssal";
 		public override string TraitDescription() => "Striking an enemy repeatedly builds up the damage of the next spell " +
 			"(max +50% increase)";
@@ -62,8 +62,8 @@ namespace LostArtifacts.Artifacts
 			if(self.Fsm.GameObjectName == "Knight" && self.Fsm.Name == "Spell Control" &&
 				(self.State.Name == "Has Fireball?" || self.State.Name == "Has Quake?" || self.State.Name == "Has Scream?"))
 			{
-				counter = Mathf.Min(counter, (4f - level) * 5f);
-				multiplier = 0.5f * counter / ((4f - level) * 5f);
+				counter = Mathf.Min(counter, (4f - level) * 2f + 1f);
+				multiplier = 0.5f * counter / ((4f - level) * 2f + 1f);
 			}
 		}
 

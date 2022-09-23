@@ -2,6 +2,7 @@
 using ItemChanger.Locations;
 using System.Collections;
 using UnityEngine;
+using Satchel;
 
 namespace LostArtifacts.Artifacts
 {
@@ -13,7 +14,7 @@ namespace LostArtifacts.Artifacts
 			"Even when not woven into a Seal of Binding, they contain great power.";
 		public override string LevelInfo() => "1, 2, 3 extra damage";
 		public override string TraitName() => "Sealed";
-		public override string TraitDescription() => "Striking an enemy adds flat damage to all instances of damage for 3 seconds";
+		public override string TraitDescription() => "Releasing a nail art adds flat damage to all instances of damage for 10 seconds";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()
@@ -26,32 +27,36 @@ namespace LostArtifacts.Artifacts
 			};
 		}
 
+		private int buffActive;
+		private PlayMakerFSM nartFSM;
+
 		public override void Activate()
 		{
 			base.Activate();
 
-			On.HealthManager.Hit += HealthManagerHit;
+			nartFSM = HeroController.instance.gameObject.LocateMyFSM("Nail Arts");
+			nartFSM.InsertCustomAction("Regain Control", () =>
+			{
+				StartCoroutine(BuffControl());
+			}, 0);
 		}
 
-		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
+		private IEnumerator BuffControl()
 		{
-			if(hitInstance.AttackType == AttackTypes.Nail || hitInstance.AttackType == AttackTypes.NailBeam)
+			buffActive++;
+			if(buffActive == 1)
 			{
-				StopAllCoroutines();
+				On.HealthManager.Hit += Buff1;
+				On.HealthManager.ApplyExtraDamage += Buff2;
+			}
+			yield return new WaitForSeconds(10f);
+			buffActive--;
+			if(buffActive == 0)
+			{
 				On.HealthManager.Hit -= Buff1;
 				On.HealthManager.ApplyExtraDamage -= Buff2;
-				StartCoroutine(DamageControl());
 			}
-			orig(self, hitInstance);
-		}
-
-		private IEnumerator DamageControl()
-		{
-			On.HealthManager.Hit += Buff1;
-			On.HealthManager.ApplyExtraDamage += Buff2;
-			yield return new WaitForSeconds(3f);
-			On.HealthManager.Hit -= Buff1;
-			On.HealthManager.ApplyExtraDamage -= Buff2;
+			yield break;
 		}
 
 		private void Buff1(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
@@ -69,10 +74,14 @@ namespace LostArtifacts.Artifacts
 		{
 			base.Deactivate();
 
-			On.HealthManager.Hit -= HealthManagerHit;
-			On.HealthManager.Hit -= Buff1;
-			On.HealthManager.ApplyExtraDamage -= Buff2;
+			nartFSM.RemoveAction("Regain Control", 0);
 			StopAllCoroutines();
+
+			if(buffActive > 0)
+			{
+				On.HealthManager.Hit -= Buff1;
+				On.HealthManager.ApplyExtraDamage -= Buff2;
+			}
 		}
 	}
 }

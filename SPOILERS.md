@@ -2,15 +2,15 @@
 - Traveler’s Garment (Dirtmouth)
 	- Resilience - Scales damage with the player’s velocity over the past second
 - Paving Stone (Forgotten Crossroads)
-	- Stagspeed - Decreases attack cooldown and nail art charge time
+	- Stagspeed - Decreases attack cooldown and nail art charge time for 3 seconds after a dash
 - Lush Moss (Greenpath)
 	- Regeneration - Heal a mask after a certain amount of hits
 - Noxious Shroom (Fungal Wastes)
 	- Toxic - Hitting an enemy has a 25% chance to release a spore cloud that can spread to nearby enemies
 - Crying Statue (City of Tears)
-	- Fallen - Take one extra damage, but deal more damage for 5 seconds after taking damage
+	- Fallen - Take one extra damage, but deal more damage for 10 seconds after taking damage
 - Totem Shard (Soul Sanctum)
-	- Soulful - Deal +15% damage for a short time after healing; Deep Focus gives +60% instead, Quick Focus doubles duration
+	- Soulful - Deal +20% damage for a short time after healing; Deep Focus gives +100% instead, Quick Focus doubles duration
 - Dung Ball (Royal Waterways)
 	- Stinky - Makes you odorous (also generates lag)
 - Tumbleweed (Howling Cliffs)
@@ -18,13 +18,13 @@
 - Charged Crystal (Crystal Peaks)
 	- Energized - Nail arts deal increased damage
 - Dreamwood (Resting Grounds)
-	- Enervating - Striking an enemy with the Dream Nail makes them take permanent bonus damage (cannot stack)
+	- Enervating - Striking an enemy with the Dream Nail makes them take bonus damage for 15 seconds (can stack)
 - Lumafly Essence (Fog Canyon)
 	- Shocking - Swinging the nail creates a chain of electric bursts (shorter each swing, resets when touching ground)
 - Thorned Leaf (Queen's Gardens)
 	- Lacerating - Striking an enemy inflicts a damage over time effect for 5 seconds (cannot stack)
 - Weaver Silk (Deepnest)
-	- Sealed - Striking an enemy adds flat damage to all instances of damage for 3 seconds
+	- Sealed - Releasing a nail art adds flat damage to all instances of damage for 10 seconds
 - Wyrm Ash (Kingdom’s Edge)
 	- Spawn a hatchling after a certain amount of hits
 - Beast Shell (Colosseum of Fools)
@@ -38,7 +38,7 @@
 - Voidstone (Abyss)
 	- Abyssal - Striking an enemy repeatedly builds up the damage of the next spell (max +50% increase)
 - Attuned Jewel (Godhome)
-	- Attuned - Casting Fireball, Dive, or Shriek grants bonus attack range, movement speed, or damage for 5 seconds, respectively
+	- Attuned - Casting Fireball, Dive, or Shriek grants bonus attack range, movement speed, or damage for 5 seconds
 - Hidden Memento (Path of Pain)
 	- Pogomaster - Pogoing makes the next attack deal increased damage
 

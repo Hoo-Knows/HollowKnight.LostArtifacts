@@ -12,7 +12,7 @@ namespace LostArtifacts.Artifacts
 		public override string Name() => "Thorned Leaf";
 		public override string Description() => "An extremely sharp and prickly leaf taken from the hostile foliage of the " +
 			"Queen’s Gardens. Even holding it by the stem is dangerous enough.";
-		public override string LevelInfo() => "0.75, 0.5, 0.25 seconds per damage tick";
+		public override string LevelInfo() => "3, 5, 8 ticks per second";
 		public override string TraitName() => "Lacerating";
 		public override string TraitDescription() => "Striking an enemy inflicts a damage over time effect " +
 			"for 5 seconds (cannot stack)";
@@ -88,7 +88,12 @@ namespace LostArtifacts.Artifacts
 					break;
 				}
 			}
-			damageInterval = 1f - 0.25f * level;
+			float tps = 1f;
+			if(level == 1) tps = 3f;
+			if(level == 2) tps = 5f;
+			if(level == 3) tps = 8f;
+
+			damageInterval = 1f / tps;
 
 			StartCoroutine(DealDamage());
 		}

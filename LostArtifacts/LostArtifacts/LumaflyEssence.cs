@@ -15,7 +15,7 @@ namespace LostArtifacts.Artifacts
 		public override string Name() => "Lumafly Essence";
 		public override string Description() => "Monomon the Teacher studied the Charged Lumaflies closely and extracted their " +
 			"essence to give Uumuu electrifying powers. Applying the essence to the nail may produce a similar effect.";
-		public override string LevelInfo() => "Maximum of 2, 3, 4 bursts";
+		public override string LevelInfo() => "Maximum of 1, 2, 3 bursts";
 		public override string TraitName() => "Shocking";
 		public override string TraitDescription() => "Swinging the nail creates a chain of electric bursts (shorter each swing, " +
 			"resets when touching ground)";
@@ -40,7 +40,7 @@ namespace LostArtifacts.Artifacts
 
 			zapGO = LostArtifacts.Preloads["GG_Uumuu"]["Mega Jellyfish GG"].LocateMyFSM("Mega Jellyfish").
 				GetAction<SpawnObjectFromGlobalPool>("Gen", 2).gameObject.Value;
-			numToSpawn = level + 1;
+			numToSpawn = level;
 
 			ModHooks.AttackHook += AttackHook;
 			On.HealthManager.Hit += HealthManagerHit;
@@ -108,7 +108,7 @@ namespace LostArtifacts.Artifacts
 
 		private void Update()
 		{
-			if(active && HeroController.instance.CheckTouchingGround()) numToSpawn = level + 1;
+			if(active && HeroController.instance.CheckTouchingGround()) numToSpawn = level;
 		}
 
 		public override void Deactivate()

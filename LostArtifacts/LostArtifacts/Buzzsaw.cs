@@ -10,7 +10,7 @@ namespace LostArtifacts.Artifacts
 		public override int ID() => 17;
 		public override string Name() => "Buzzsaw";
 		public override string Description() => "Shaw";
-		public override string LevelInfo() => "0%, 50%, 100% better scaling";
+		public override string LevelInfo() => "+0%, +50%, +100% bonus scaling";
 		public override string TraitName() => "Secluded";
 		public override string TraitDescription() => "Nail damage increases with distance from nearest enemy";
 		public override AbstractLocation Location()
@@ -44,7 +44,7 @@ namespace LostArtifacts.Artifacts
 		private float GetMultiplier()
 		{
 			float distance = FindDistanceToEnemy();
-			float multiplier = 20f / (1f + 50f * Mathf.Exp(-0.6f * distance));
+			float multiplier = 30f / (1f + 50f * Mathf.Exp(-0.6f * distance));
 
 			//Apply level multiplier
 			multiplier *= 0.5f + level * 0.5f;
