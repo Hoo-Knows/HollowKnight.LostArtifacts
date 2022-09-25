@@ -20,6 +20,11 @@ namespace LostArtifacts.UI
 		public ArtifactSlot slotBladeR;
 		public ArtifactSlot slotHead;
 
+		public Image traitOvercharge;
+		public Image slotOvercharge;
+		public int overchargeNum;
+		public bool canOvercharge;
+
 		public EventSystem eventSystem;
 
 		private Text artifactName;
@@ -33,8 +38,11 @@ namespace LostArtifacts.UI
 		public Sprite empty;
 		public Sprite locked;
 		public Sprite cursor;
+		public Sprite traitOverchargeSprite;
+		public Sprite slotOverchargeSprite;
 
 		private bool jumpWasPressed;
+		private bool attackWasPressed;
 		private bool upWasPressed;
 		private bool downWasPressed;
 		private bool leftWasPressed;
@@ -54,6 +62,11 @@ namespace LostArtifacts.UI
 			slotBladeL = parent.Find("Canvas/Nail Panel/Slot Blade L/Artifact Blade L").gameObject.GetComponent<ArtifactSlot>();
 			slotBladeR = parent.Find("Canvas/Nail Panel/Slot Blade R/Artifact Blade R").gameObject.GetComponent<ArtifactSlot>();
 			slotHead = parent.Find("Canvas/Nail Panel/Slot Head/Artifact Head").gameObject.GetComponent<ArtifactSlot>();
+
+			traitOvercharge = parent.Find("Canvas/Trait Overcharge").gameObject.GetComponent<Image>();
+			slotOvercharge = parent.Find("Canvas/Slot Overcharge").gameObject.GetComponent<Image>();
+			traitOverchargeSprite = traitOvercharge.sprite;
+			slotOverchargeSprite = slotOvercharge.sprite;
 
 			eventSystem = parent.Find("EventSystem").gameObject.GetComponent<EventSystem>();
 
@@ -97,15 +110,30 @@ namespace LostArtifacts.UI
 			}
 
 			//Update button movement for Hidden Memento
-			if(LostArtifacts.Settings.unlocked[20])
+			for(int i = 10; i < 20; i++)
 			{
-				for(int i = 10; i < 20; i++)
-				{
-					ArtifactButton button = parent.Find("Canvas/Artifacts/Artifact " + i).gameObject.GetComponent<ArtifactButton>();
-					Navigation nav = button.navigation;
-					nav.selectOnDown = schyButton;
-					button.navigation = nav;
-				}
+				ArtifactButton button = parent.Find("Canvas/Artifacts/Artifact " + i).gameObject.GetComponent<ArtifactButton>();
+				Navigation nav = button.navigation;
+				if(LostArtifacts.Settings.unlocked[20]) nav.selectOnDown = schyButton;
+				else nav.selectOnDown = null;
+				button.navigation = nav;
+			}
+			
+			//Update Overcharge
+			canOvercharge = PlayerData.instance.GetInt(nameof(PlayerData.nailSmithUpgrades)) == 4;
+			if(canOvercharge)
+			{
+				if(LostArtifacts.Settings.overchargedSlot == -1) LostArtifacts.Settings.overchargedSlot = 0;
+				overchargeNum = LostArtifacts.Settings.overchargedSlot;
+				traitOvercharge.sprite = traitOverchargeSprite;
+				slotOvercharge.sprite = slotOverchargeSprite;
+				SetOvercharge();
+			}
+			else
+			{
+				overchargeNum = -1;
+				traitOvercharge.sprite = empty;
+				slotOvercharge.sprite = empty;
 			}
 		}
 
@@ -139,6 +167,55 @@ namespace LostArtifacts.UI
 			artifactLevels.text = "";
 		}
 
+		public void SetOvercharge()
+		{
+			LostArtifacts.Instance.Log("Overcharging slot " + overchargeNum);
+			if(overchargeNum == 0)
+			{
+				traitOvercharge.transform.position = GameObject.Find("Handle Name").transform.position + new Vector3(30f, 0f, 0f);
+				slotOvercharge.transform.position = slotHandle.transform.position;
+				if(slotHandle.button != null)
+				{
+					slotHandle.button.artifact.Deactivate();
+					slotHandle.button.artifact.level = 2;
+					slotHandle.button.artifact.Activate();
+				}
+			}
+			if(overchargeNum == 1)
+			{
+				traitOvercharge.transform.position = GameObject.Find("Blade L Name").transform.position + new Vector3(30f, 0f, 0f);
+				slotOvercharge.transform.position = slotBladeL.transform.position;
+				if(slotBladeL.button != null)
+				{
+					slotBladeL.button.artifact.Deactivate();
+					slotBladeL.button.artifact.level = 3;
+					slotBladeL.button.artifact.Activate();
+				}
+			}
+			if(overchargeNum == 2)
+			{
+				traitOvercharge.transform.position = GameObject.Find("Blade R Name").transform.position + new Vector3(30f, 0f, 0f);
+				slotOvercharge.transform.position = slotBladeR.transform.position;
+				if(slotBladeR.button != null)
+				{
+					slotBladeR.button.artifact.Deactivate();
+					slotBladeR.button.artifact.level = 3;
+					slotBladeR.button.artifact.Activate();
+				}
+			}
+			if(overchargeNum == 3)
+			{
+				traitOvercharge.transform.position = GameObject.Find("Head Name").transform.position + new Vector3(30f, 0f, 0f);
+				slotOvercharge.transform.position = slotHead.transform.position;
+				if(slotHead.button != null)
+				{
+					slotHead.button.artifact.Deactivate();
+					slotHead.button.artifact.level = 4;
+					slotHead.button.artifact.Activate();
+				}
+			}
+		}
+
 		private void Update()
 		{
 			//Handle UI input
@@ -156,6 +233,40 @@ namespace LostArtifacts.UI
 				{
 					selected.GetComponent<ArrowButton>().Confirm();
 				}
+			}
+			if(InputHandler.Instance.inputActions.attack.IsPressed && !attackWasPressed && canOvercharge)
+			{
+				LostArtifacts.Instance.Log("De-overcharging slot " + overchargeNum);
+				if(overchargeNum == 0 && slotHandle.button != null)
+				{
+					slotHandle.button.artifact.Deactivate();
+					slotHandle.button.artifact.level = 1;
+					slotHandle.button.artifact.Activate();
+				}
+				if(overchargeNum == 1 && slotBladeL.button != null)
+				{
+					slotBladeL.button.artifact.Deactivate();
+					slotBladeL.button.artifact.level = 2;
+					slotBladeL.button.artifact.Activate();
+				}
+				if(overchargeNum == 2 && slotBladeR.button != null)
+				{
+					slotBladeR.button.artifact.Deactivate();
+					slotBladeR.button.artifact.level = 2;
+					slotBladeR.button.artifact.Activate();
+				}
+				if(overchargeNum == 3 && slotHead.button != null)
+				{
+					slotHead.button.artifact.Deactivate();
+					slotHead.button.artifact.level = 3;
+					slotHead.button.artifact.Activate();
+				}
+
+				overchargeNum++;
+				if(overchargeNum > 3) overchargeNum = 0;
+				LostArtifacts.Settings.overchargedSlot = overchargeNum;
+
+				SetOvercharge();
 			}
 			if(InputHandler.Instance.inputActions.up.IsPressed && !upWasPressed &&
 				selected.GetComponent<Button>().FindSelectableOnUp() != null)
@@ -179,6 +290,7 @@ namespace LostArtifacts.UI
 			}
 
 			jumpWasPressed = InputHandler.Instance.inputActions.jump.IsPressed;
+			attackWasPressed = InputHandler.Instance.inputActions.attack.IsPressed;
 			upWasPressed = InputHandler.Instance.inputActions.up.IsPressed;
 			downWasPressed = InputHandler.Instance.inputActions.down.IsPressed;
 			leftWasPressed = InputHandler.Instance.inputActions.left.IsPressed;

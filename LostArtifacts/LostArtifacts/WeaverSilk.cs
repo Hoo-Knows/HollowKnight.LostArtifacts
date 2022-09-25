@@ -34,6 +34,7 @@ namespace LostArtifacts.Artifacts
 		{
 			base.Activate();
 
+			buffActive = 0;
 			nartFSM = HeroController.instance.gameObject.LocateMyFSM("Nail Arts");
 			nartFSM.InsertCustomAction("Regain Control", () =>
 			{

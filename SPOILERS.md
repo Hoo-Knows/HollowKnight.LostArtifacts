@@ -26,7 +26,7 @@
 - Weaver Silk (Deepnest)
 	- Sealed - Releasing a nail art adds flat damage to all instances of damage for 10 seconds
 - Wyrm Ash (Kingdom’s Edge)
-	- Spawn a hatchling after a certain amount of hits
+	- Rebirth - Spawn a hatchling after a certain amount of hits
 - Beast Shell (Colosseum of Fools)
 	- Beast Tamer - Striking an enemy buffs minion damage for 5 seconds
 - Honeydrop (Hive)

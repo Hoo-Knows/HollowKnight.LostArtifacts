@@ -15,7 +15,7 @@ namespace LostArtifacts.Artifacts
 		public override string LevelInfo() => "2.5, 5, 7.5 second duration";
 		public override string TraitName() => "Soulful";
 		public override string TraitDescription() => "Deal +20% damage for a short time after healing; Deep Focus gives +100% " +
-			"instead, Quick Focus adds 5 seconds";
+			"instead, Quick Focus doubles duration";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()

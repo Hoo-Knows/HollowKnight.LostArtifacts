@@ -1,11 +1,16 @@
 # Lost Artifacts
 
-A mod that adds **lost artifacts** scattered all across Hallownest. Obtaining the Sharpened Nail unlocks the Artifacts inventory tab, where the nail can be imbued with an artifact's **trait** to give it powerful effects. Upgrading the nail grants more artifact slots, and different slots give traits different levels. Combine traits, discover synergies, and vanquish enemies using the power of these artifacts!
+A mod that adds **lost artifacts** scattered all across Hallownest. Obtaining an artifact unlocks the Artifacts inventory tab, where the nail can be imbued with an artifact's **trait** to give it powerful effects. Upgrading the nail grants more artifact slots, and different slots give traits different levels. With the Pure Nail, slots can even be overcharged to grant an increase in its level. Combine traits, discover synergies, and vanquish enemies using the power of these artifacts!
 
 ### Dependencies
 - SFCore
 - Satchel
 - ItemChanger
+
+### Inventory Controls
+- Jump - Equip and unequip artifacts
+- Attack - Switch overcharged slot
+- Directions - Move between artifacts or slots
 
 ## Integrations
 
@@ -20,14 +25,14 @@ If Randomizer 4 is installed alongside this mod, artifact locations can be rando
 - Toggle unlock all slots - toggles between automatically unlocking all slots and unlocking slots based on nail level
 
 ## Credits
-- Lots of trait ideas and balancing: BANANALOVAH
+- Lots of ideas and balancing feedback: BANANALOVAH, DDX2000
 - Artifact icons: Chrome, HBKit
 - Help with assetbundling and custom UI: RedFrog, SFGrenade
 - Help with Randomizer/ItemChanger: BadMagic, Flibber, pimpas
 - Other people whose code I referenced: Kaykao
 - HK Modding Discord for being cool
 
-Let me know if I forgot anyone!
+Let me know if you helped out somehow but are not listed here!
 
 ## Misc Info
 

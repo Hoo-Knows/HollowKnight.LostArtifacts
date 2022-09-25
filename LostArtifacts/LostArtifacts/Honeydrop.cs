@@ -43,6 +43,7 @@ namespace LostArtifacts.Artifacts
 			if(level == 1) damageNeeded = 50 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1);
 			if(level == 2) damageNeeded = 40 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1);
 			if(level == 3) damageNeeded = 30 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1);
+			if(level == 4) damageNeeded = 20 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1);
 
 			On.HealthManager.TakeDamage += HealthManagerTakeDamage;
 			ModHooks.AfterTakeDamageHook += AfterTakeDamageHook;

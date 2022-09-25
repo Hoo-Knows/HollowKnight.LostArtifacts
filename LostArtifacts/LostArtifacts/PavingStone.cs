@@ -45,6 +45,7 @@ namespace LostArtifacts.Artifacts
 			NAIL_CHARGE_TIME_DEFAULT = HeroController.instance.NAIL_CHARGE_TIME_DEFAULT;
 
 			multiplier = 1f - level * 0.1f;
+			buffActive = 0;
 
 			On.HeroController.Dash += HeroControllerDash;
 			ModHooks.AttackHook += AttackHook;

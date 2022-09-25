@@ -21,13 +21,13 @@ namespace LostArtifacts
 
 		public virtual void Activate()
 		{
-			LostArtifacts.Instance.Log("Activating " + TraitName() + " " + new string('I', level));
+			LostArtifacts.Instance.Log("Activating " + TraitName() + " " + (level == 4 ? "IV" : new string('I', level)));
 			active = true;
 		}
 
 		public virtual void Deactivate()
 		{
-			LostArtifacts.Instance.Log("Deactivating " + TraitName() + " " + new string('I', level));
+			LostArtifacts.Instance.Log("Deactivating " + TraitName() + " " + (level == 4 ? "IV" : new string('I', level)));
 			active = false;
 			level = 0;
 		}

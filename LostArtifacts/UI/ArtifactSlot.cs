@@ -40,7 +40,7 @@ namespace LostArtifacts.UI
 			else sprite = ArtifactManager.Instance.empty;
 
 			unlocked = LostArtifacts.Settings.unlockedSlots || 
-				PlayerData.instance.GetInt(nameof(PlayerData.nailSmithUpgrades)) > id;
+				PlayerData.instance.GetInt(nameof(PlayerData.nailSmithUpgrades)) >= id;
 			gameObject.GetComponent<Image>().sprite = unlocked ? sprite : ArtifactManager.Instance.locked;
 
 			SetTraits();

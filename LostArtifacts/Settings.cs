@@ -6,6 +6,7 @@
 		public int slotBladeL { get; set; } = -1;
 		public int slotBladeR { get; set; } = -1;
 		public int slotHead { get; set; } = -1;
+		public int overchargedSlot { get; set; } = -1;
 		public bool unlockedSlots { get; set; } = false;
 		public bool[] unlocked { get; set; } = new bool[21];
 	}

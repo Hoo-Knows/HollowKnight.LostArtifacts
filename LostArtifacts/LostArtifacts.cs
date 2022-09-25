@@ -184,10 +184,10 @@ namespace LostArtifacts
 
 				//Activate artifact
 				artifact.level = 0;
-				if(Settings.slotHandle == artifact.ID()) artifact.level = 1;
-				if(Settings.slotBladeL == artifact.ID()) artifact.level = 2;
-				if(Settings.slotBladeR == artifact.ID()) artifact.level = 2;
-				if(Settings.slotHead == artifact.ID()) artifact.level = 3;
+				if(Settings.slotHandle == artifact.ID()) artifact.level = Settings.overchargedSlot == 0 ? 2 : 1;
+				if(Settings.slotBladeL == artifact.ID()) artifact.level = Settings.overchargedSlot == 1 ? 3 : 2;
+				if(Settings.slotBladeR == artifact.ID()) artifact.level = Settings.overchargedSlot == 2 ? 3 : 2;
+				if(Settings.slotHead == artifact.ID()) artifact.level = Settings.overchargedSlot == 3 ? 4 : 3;
 				if(artifact.level > 0)
 				{
 					artifact.Activate();
@@ -316,7 +316,11 @@ namespace LostArtifacts
 		{
 			if(name == "artifactsUnlocked")
 			{
-				return Settings.unlockedSlots || PlayerData.instance.GetInt(nameof(PlayerData.nailSmithUpgrades)) > 0;
+				foreach(bool unlocked in Settings.unlocked)
+				{
+					if(unlocked) return true;
+				}
+				return false;
 			}
 			if(name.StartsWith("unlockedArtifact_"))
 			{

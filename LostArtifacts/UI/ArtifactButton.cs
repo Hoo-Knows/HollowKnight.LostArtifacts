@@ -118,7 +118,7 @@ namespace LostArtifacts.UI
 				nav.selectOnLeft = this;
 				FindSelectableOnRight().navigation = nav;
 			}
-			if(id >= 10 && id < 20)
+			if(id >= 10 && id < 20 && LostArtifacts.Settings.unlocked[20])
 			{
 				Navigation nav = FindSelectableOnDown().navigation;
 				nav.selectOnUp = this;
@@ -129,7 +129,6 @@ namespace LostArtifacts.UI
 		public void Confirm()
 		{
 			if(artifact == null) return;
-			if(!LostArtifacts.Settings.unlockedSlots && PlayerData.instance.GetInt(nameof(PlayerData.nailSmithUpgrades)) == 0) return;
 			if(!LostArtifacts.Settings.unlocked[artifact.ID()]) return;
 
 			ArtifactAudio.Instance.Play(ArtifactAudio.Instance.submit);
@@ -189,6 +188,7 @@ namespace LostArtifacts.UI
 						artifact.level = 3;
 						break;
 				}
+				if(slot.id == ArtifactManager.Instance.overchargeNum) artifact.level++;
 				artifact.Activate();
 			}
 

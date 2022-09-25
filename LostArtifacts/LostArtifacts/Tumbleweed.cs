@@ -11,7 +11,7 @@ namespace LostArtifacts.Artifacts
 		public override string Name() => "Tumbleweed";
 		public override string Description() => "These little weeds have been tumbling about the Howling Cliffs for as " +
 			"long as anyone can remember. Anything imbued with its power will become as swift as the wind itself.";
-		public override string LevelInfo() => "+10%, +20%, +30% speed";
+		public override string LevelInfo() => "+15%, +30%, +45% speed";
 		public override string TraitName() => "Windswept";
 		public override string TraitDescription() => "Striking an enemy increases movement speed for 5 seconds";
 		public override AbstractLocation Location()
@@ -33,7 +33,7 @@ namespace LostArtifacts.Artifacts
 		{
 			base.Activate();
 
-			multiplier = 0.1f * level + 1f;
+			multiplier = 0.15f * level + 1f;
 			buffActive = 0;
 
 			On.HealthManager.Hit += HealthManagerHit;

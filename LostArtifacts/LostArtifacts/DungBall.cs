@@ -1,5 +1,6 @@
 ﻿using ItemChanger;
 using ItemChanger.Locations;
+using System.Collections;
 using UnityEngine;
 
 namespace LostArtifacts.Artifacts
@@ -46,24 +47,33 @@ namespace LostArtifacts.Artifacts
 		{
 			if(hitInstance.AttackType == AttackTypes.Nail || hitInstance.AttackType == AttackTypes.NailBeam)
 			{
-				int numToSpawn = 1;
-				if(level == 2) numToSpawn = 10;
-				if(level == 3) numToSpawn = 75;
-
-				for(int i = 0; i < numToSpawn; i++)
-				{
-					GameObject stink = Instantiate(stinkGO, self.transform.position, Quaternion.identity);
-
-					Destroy(stink.GetComponent<DamageEnemies>());
-					Destroy(stink.GetComponent<DamageEffectTicker>());
-
-					if(level == 2) stink.transform.localScale *= 5f;
-					if(level == 3) stink.transform.localScale *= 25f;
-
-					stink.SetActive(true);
-				}
+				StartCoroutine(SpawnClouds(self.transform.position));
 			}
 			orig(self, hitInstance);
+		}
+
+		private IEnumerator SpawnClouds(Vector3 pos)
+		{
+			int numToSpawn = 1;
+			if(level == 2) numToSpawn = 10;
+			if(level == 3) numToSpawn = 75;
+			if(level == 4) numToSpawn = 200;
+
+			for(int i = 0; i < numToSpawn; i++)
+			{
+				GameObject stink = Instantiate(stinkGO, pos, Quaternion.identity);
+
+				Destroy(stink.GetComponent<DamageEnemies>());
+				Destroy(stink.GetComponent<DamageEffectTicker>());
+
+				if(level == 2) stink.transform.localScale *= 5f;
+				if(level == 3) stink.transform.localScale *= 25f;
+				if(level == 4) stink.transform.localScale *= 50f;
+
+				stink.SetActive(true);
+
+				if(i % 10 == 0) yield return new WaitForEndOfFrame();
+			}
 		}
 
 		public override void Deactivate()

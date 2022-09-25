@@ -58,8 +58,10 @@ namespace LostArtifacts.Artifacts
 					dir = new Vector3(0f, -1f);
 					break;
 				case AttackDirection.normal:
-					if(HeroController.instance.cState.facingRight) dir = new Vector3(1f, 0f);
-					else dir = new Vector3(-1f, 0f);
+					float d = 1f;
+					if(!HeroController.instance.cState.facingRight) d *= -1f;
+					if(HeroController.instance.cState.wallSliding) d *= -1f;
+					dir = new Vector3(d, 0f);
 					break;
 			}
 			dir *= 4f;
