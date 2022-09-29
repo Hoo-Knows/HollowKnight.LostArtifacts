@@ -10,7 +10,7 @@ namespace LostArtifacts.Artifacts
 		public override int ID() => 17;
 		public override string Name() => "Buzzsaw";
 		public override string Description() => "Shaw";
-		public override string LevelInfo() => "+0%, +50%, +100% bonus scaling";
+		public override string LevelInfo() => "100%, 150%, 200% damage scaling";
 		public override string TraitName() => "Secluded";
 		public override string TraitDescription() => "Nail damage increases with distance from nearest enemy";
 		public override AbstractLocation Location()

@@ -1,10 +1,10 @@
 ### Traits
 - Traveler’s Garment (Dirtmouth)
-	- Resilience - Scales damage with the player’s velocity over the past second
+	- Resilience - Scales damage with the player’s highest velocity over the past second
 - Paving Stone (Forgotten Crossroads)
 	- Stagspeed - Decreases attack cooldown and nail art charge time for 3 seconds after a dash
 - Lush Moss (Greenpath)
-	- Regeneration - Heal a mask after a certain amount of hits
+	- Regeneration - Heal a mask after a certain amount of nail hits
 - Noxious Shroom (Fungal Wastes)
 	- Toxic - Hitting an enemy has a 25% chance to release a spore cloud that can spread to nearby enemies
 - Crying Statue (City of Tears)
@@ -35,7 +35,7 @@
 	- Forgotten - Increases SOUL gain from striking enemies with the nail
 - Buzzsaw (White Palace)
 	- Secluded - Nail damage increases with distance from nearest enemy
-- Voidstone (Abyss)
+- Void Emblem (Abyss)
 	- Abyssal - Striking an enemy repeatedly builds up the damage of the next spell (max +50% increase)
 - Attuned Jewel (Godhome)
 	- Attuned - Casting Fireball, Dive, or Shriek grants bonus attack range, movement speed, or damage for 5 seconds
@@ -61,6 +61,6 @@
 - Honeydrop (Hive) - Next to the bench
 - Infected Rock (Ancient Basin) - Defeat Broken Vessel
 - Buzzsaw (White Palace) - Hidden in the Workshop
-- Voidstone (Abyss) - Next to the Void Tendril journal entry
+- Void Emblem (Abyss) - Next to the Void Tendril journal entry
 - Attuned Jewel (Godhome) - Next to the Void Idol
 - Hidden Memento (Path of Pain) - Outside the entrance to Path of Pain after completing it

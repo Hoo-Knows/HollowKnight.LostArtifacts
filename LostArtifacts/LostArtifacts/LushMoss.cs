@@ -11,7 +11,7 @@ namespace LostArtifacts.Artifacts
 			"healing power that allows the moss chargers to recover their moss no matter how many times it is destroyed.";
 		public override string LevelInfo() => "20, 15, 10 hits to heal";
 		public override string TraitName() => "Regeneration";
-		public override string TraitDescription() => "Heal a mask after a certain amount of hits";
+		public override string TraitDescription() => "Heal a mask after a certain amount of nail hits";
 		public override AbstractLocation Location()
 		{
 			return new DualLocation()

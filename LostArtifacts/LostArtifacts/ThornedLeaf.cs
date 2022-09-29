@@ -12,10 +12,9 @@ namespace LostArtifacts.Artifacts
 		public override string Name() => "Thorned Leaf";
 		public override string Description() => "An extremely sharp and prickly leaf taken from the hostile foliage of the " +
 			"Queen’s Gardens. Even holding it by the stem is dangerous enough.";
-		public override string LevelInfo() => "3, 5, 8 ticks per second";
+		public override string LevelInfo() => "3, 5, 8 damage ticks per second";
 		public override string TraitName() => "Lacerating";
-		public override string TraitDescription() => "Striking an enemy inflicts a damage over time effect " +
-			"for 5 seconds (cannot stack)";
+		public override string TraitDescription() => "Striking an enemy inflicts a damage over time effect for 5 seconds (cannot stack)";
 		public override AbstractLocation Location()
 		{
 			return new DualLocation()
