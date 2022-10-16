@@ -3,7 +3,10 @@ using RandomizerCore.LogicItems;
 using RandomizerMod.Menu;
 using RandomizerMod.RC;
 using RandomizerMod.Settings;
+using RandomizerMod.Logging;
 using System.IO;
+using System;
+using Newtonsoft.Json;
 
 namespace LostArtifacts.Rando
 {
@@ -15,11 +18,20 @@ namespace LostArtifacts.Rando
 			RequestBuilder.OnUpdate.Subscribe(-498f, DefineArtifacts);
 			RequestBuilder.OnUpdate.Subscribe(50f, AddArtifacts);
 			RandomizerMenuAPI.AddMenuPage(RandoMenu.ConstructMenu, RandoMenu.HandleButton);
+			SettingsLog.AfterLogSettings += AddSettingsToLog;
+		}
+
+		public static bool IsRandoActive()
+		{
+			RandomizerSettings rs = RandomizerMod.RandomizerMod.RS;
+			if(rs == null) return false;
+			if(rs.GenerationSettings == null) return false;
+			return true;
 		}
 
 		private static void DefineLogicItem(GenerationSettings gs, LogicManagerBuilder lmb)
 		{
-			if(!LostArtifacts.RandoSettings.RandomizeArtifacts) return;
+			if(!LostArtifacts.RandoSettings.Enabled || !LostArtifacts.RandoSettings.RandomizeArtifacts) return;
 
 			foreach(Artifact artifact in LostArtifacts.Instance.artifacts)
 			{
@@ -32,7 +44,7 @@ namespace LostArtifacts.Rando
 
 		private static void DefineArtifacts(RequestBuilder rb)
 		{
-			if(!LostArtifacts.RandoSettings.RandomizeArtifacts) return;
+			if(!LostArtifacts.RandoSettings.Enabled || !LostArtifacts.RandoSettings.RandomizeArtifacts) return;
 
 			foreach(Artifact artifact in LostArtifacts.Instance.artifacts)
 			{
@@ -81,13 +93,21 @@ namespace LostArtifacts.Rando
 
 		private static void AddArtifacts(RequestBuilder rb)
 		{
-			if(!LostArtifacts.RandoSettings.RandomizeArtifacts) return;
+			if(!LostArtifacts.RandoSettings.Enabled || !LostArtifacts.RandoSettings.RandomizeArtifacts) return;
 
 			foreach(Artifact artifact in LostArtifacts.Instance.artifacts)
 			{
 				rb.AddItemByName(artifact.InternalName());
 				rb.AddLocationByName(artifact.InternalName());
 			}
+		}
+
+		private static void AddSettingsToLog(LogArguments args, TextWriter tw)
+		{
+			tw.WriteLine("Logging LostArtifacts settings:");
+			using JsonTextWriter jtw = new(tw) { CloseOutput = false, };
+			RandomizerMod.RandomizerData.JsonUtil._js.Serialize(jtw, LostArtifacts.RandoSettings);
+			tw.WriteLine();
 		}
 	}
 }

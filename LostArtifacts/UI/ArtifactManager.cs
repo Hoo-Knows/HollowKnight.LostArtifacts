@@ -120,7 +120,7 @@ namespace LostArtifacts.UI
 			}
 			
 			//Update Overcharge
-			canOvercharge = PlayerData.instance.GetInt(nameof(PlayerData.nailSmithUpgrades)) == 4;
+			canOvercharge = PlayerData.instance.GetInt(nameof(PlayerData.nailSmithUpgrades)) == 4 || LostArtifacts.Settings.unlockedSlots;
 			if(canOvercharge)
 			{
 				if(LostArtifacts.Settings.overchargedSlot == -1) LostArtifacts.Settings.overchargedSlot = 0;

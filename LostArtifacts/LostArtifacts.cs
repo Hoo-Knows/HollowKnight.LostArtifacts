@@ -276,6 +276,8 @@ namespace LostArtifacts
 				}
 				return;
 			}
+
+			if(!RandoSettings.Enabled) return;
 			PlaceArtifacts();
 		}
 

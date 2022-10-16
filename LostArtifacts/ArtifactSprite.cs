@@ -2,13 +2,14 @@
 using UnityEngine;
 using System.IO;
 using Satchel;
+using Newtonsoft.Json;
 
 namespace LostArtifacts
 {
 	public class ArtifactSprite : ISprite
 	{
 		public string name;
-		public Sprite Value => GetArtifactSprite();
+		[JsonIgnore] public Sprite Value => GetArtifactSprite();
 
 		public ArtifactSprite(string name)
 		{

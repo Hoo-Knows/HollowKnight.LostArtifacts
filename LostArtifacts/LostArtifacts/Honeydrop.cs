@@ -11,9 +11,9 @@ namespace LostArtifacts.Artifacts
 		public override string Name() => "Honeydrop";
 		public override string Description() => "This honeydrop was made through the bees’ hard work. And you took it without " +
 			"permission. Unbeelievable.";
-		public override string LevelInfo() => (50 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1)) + ", " +
-			(40 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1)) + ", " +
-			(30 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1)) + " damage";
+		public override string LevelInfo() => (40 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1)) + ", " +
+			(30 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1)) + ", " +
+			(20 * (PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) - 1)) + " damage";
 		public override string TraitName() => "Honey Coating";
 		public override string TraitDescription() => "Dealing enough damage gives a honey coating that blocks one instance " +
 			"of non-hazard damage (cannot stack)";

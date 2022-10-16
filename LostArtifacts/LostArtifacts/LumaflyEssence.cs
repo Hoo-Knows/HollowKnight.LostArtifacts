@@ -38,8 +38,17 @@ namespace LostArtifacts.Artifacts
 		{
 			base.Activate();
 
-			zapGO = LostArtifacts.Preloads["GG_Uumuu"]["Mega Jellyfish GG"].LocateMyFSM("Mega Jellyfish").
+			GameObject prefab = LostArtifacts.Preloads["GG_Uumuu"]["Mega Jellyfish GG"].LocateMyFSM("Mega Jellyfish").
 				GetAction<SpawnObjectFromGlobalPool>("Gen", 2).gameObject.Value;
+			zapGO = Instantiate(prefab);
+			zapGO.SetActive(false);
+			DontDestroyOnLoad(zapGO);
+
+			zapGO.name = "LostArtifacts.LumaflyEssenceZap";
+			zapGO.layer = (int)PhysLayers.HERO_ATTACK;
+			Destroy(zapGO.GetComponent<DamageHero>());
+			LumaflyEssenceZap de = zapGO.AddComponent<LumaflyEssenceZap>();
+
 			numToSpawn = level;
 
 			ModHooks.AttackHook += AttackHook;
@@ -74,17 +83,6 @@ namespace LostArtifacts.Artifacts
 			for(int i = 1; i <= numToSpawn; i++)
 			{
 				GameObject zap = Instantiate(zapGO, pos + i * dir, Quaternion.identity);
-				zap.SetActive(false);
-
-				zap.name = "LostArtifacts.LumaflyEssenceZap";
-				zap.layer = (int)PhysLayers.HERO_ATTACK;
-				Destroy(zap.GetComponent<DamageHero>());
-
-				DamageEnemies de = zap.AddComponent<DamageEnemies>();
-				de.damageDealt = PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) / 2;
-				de.attackType = AttackTypes.NailBeam;
-				de.ignoreInvuln = true;
-
 				zap.SetActive(true);
 
 				yield return new WaitForSeconds(0.1f);
@@ -97,13 +95,12 @@ namespace LostArtifacts.Artifacts
 		{
 			if(hitInstance.Source.name != "LostArtifacts.LumaflyEssenceZap")
 			{
+				LostArtifacts.Instance.Log(hitInstance.Source.layer);
 				orig(self, hitInstance);
 				return;
 			}
 
 			//Override the iframes on hit so that it doesn't eat nail hits
-			GameObject.Destroy(hitInstance.Source.GetComponent<DamageEnemies>());
-			hitInstance.IsExtraDamage = true;
 			orig(self, hitInstance);
 			ReflectionHelper.SetField(self, "evasionByHitRemaining", 0f);
 		}
@@ -120,6 +117,26 @@ namespace LostArtifacts.Artifacts
 			ModHooks.AttackHook -= AttackHook;
 			On.HealthManager.Hit -= HealthManagerHit;
 			StopAllCoroutines();
+		}
+	}
+
+	internal class LumaflyEssenceZap : MonoBehaviour
+	{
+
+		private void OnTriggerEnter2D(Collider2D otherCollider)
+		{
+			if(otherCollider == null) return;
+			if(otherCollider.gameObject.layer != (int)PhysLayers.ENEMIES) return;
+
+			HitInstance hit = default(HitInstance);
+			hit.DamageDealt = PlayerData.instance.GetInt(nameof(PlayerData.nailDamage)) / 2;
+			hit.AttackType = AttackTypes.NailBeam;
+			hit.IgnoreInvulnerable = true;
+			hit.Source = gameObject;
+			hit.Multiplier = 1f;
+
+			HealthManager hm = otherCollider.gameObject.GetComponent<HealthManager>();
+			hm.Hit(hit);
 		}
 	}
 }

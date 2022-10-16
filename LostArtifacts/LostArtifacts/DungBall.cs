@@ -56,8 +56,8 @@ namespace LostArtifacts.Artifacts
 		{
 			int numToSpawn = 1;
 			if(level == 2) numToSpawn = 10;
-			if(level == 3) numToSpawn = 75;
-			if(level == 4) numToSpawn = 200;
+			if(level == 3) numToSpawn = 50;
+			if(level == 4) numToSpawn = 500;
 
 			for(int i = 0; i < numToSpawn; i++)
 			{
@@ -67,8 +67,8 @@ namespace LostArtifacts.Artifacts
 				Destroy(stink.GetComponent<DamageEffectTicker>());
 
 				if(level == 2) stink.transform.localScale *= 5f;
-				if(level == 3) stink.transform.localScale *= 25f;
-				if(level == 4) stink.transform.localScale *= 50f;
+				if(level == 3) stink.transform.localScale *= 10f;
+				if(level == 4) stink.transform.localScale *= 30f;
 
 				stink.SetActive(true);
 

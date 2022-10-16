@@ -54,7 +54,7 @@ namespace LostArtifacts.Artifacts
 				{
 					Destroy(self.gameObject.GetComponent<Laceration>());
 				}
-				if(!self.IsInvincible) self.gameObject.AddComponent<Laceration>();
+				self.gameObject.AddComponent<Laceration>();
 			}
 			orig(self, hitInstance);
 
@@ -72,7 +72,7 @@ namespace LostArtifacts.Artifacts
 		}
 	}
 
-	public class Laceration : MonoBehaviour
+	internal class Laceration : MonoBehaviour
 	{
 		private float damageInterval;
 
@@ -103,8 +103,7 @@ namespace LostArtifacts.Artifacts
 			{
 				if(gameObject.GetComponent<HealthManager>() != null)
 				{
-					if(gameObject.GetComponent<HealthManager>().hp <= 0 ||
-						gameObject.GetComponent<HealthManager>().IsInvincible) break;
+					if(gameObject.GetComponent<HealthManager>().hp <= 0) break;
 
 					gameObject.GetComponent<HealthManager>().ApplyExtraDamage(1);
 					gameObject.GetComponent<SpriteFlash>().flashWhiteQuick();

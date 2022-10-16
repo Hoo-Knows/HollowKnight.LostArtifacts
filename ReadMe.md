@@ -18,14 +18,14 @@ If Randomizer 4 is installed alongside this mod, artifact locations can be rando
 
 ### Randomizer Settings
 - Randomize artifacts - whether or not to randomize artifacts
-- Use main item group - whether or not to randomize the artifacts within themselves or with other items
+- Use main item group - whether or not to randomize the artifacts with other items
 
 ### Debug Options
 - Unlock all artifacts - unlocks all artifacts
 - Toggle unlock all slots - toggles between automatically unlocking all slots and unlocking slots based on nail level
 
 ## Credits
-- Lots of ideas and balancing feedback: BANANALOVAH, DDX2000
+- Ideas and balancing feedback: BANANALOVAH, DDX2000, 4djesus
 - Artifact icons: Chrome, HBKit
 - Help with assetbundling and custom UI: RedFrog, SFGrenade
 - Help with Randomizer/ItemChanger: BadMagic, Flibber, pimpas

@@ -23,13 +23,10 @@ namespace LostArtifacts.Artifacts
 				name = InternalName(),
 				sceneName = nameof(SceneNames.RestingGrounds_05),
 				Test = new PDBool(nameof(PlayerData.completedRGDreamPlant)),
-				falseLocation = new CoordinateLocation()
+				falseLocation = new DreamwoodLocation()
 				{
 					name = InternalName(),
-					sceneName = nameof(SceneNames.RestingGrounds_05),
-					x = 15.9f,
-					y = -100f,
-					elevation = 0f
+					sceneName = nameof(SceneNames.RestingGrounds_05)
 				},
 				trueLocation = new CoordinateLocation()
 				{
@@ -91,8 +88,37 @@ namespace LostArtifacts.Artifacts
 			base.Deactivate();
 
 			On.EnemyDreamnailReaction.RecieveDreamImpact -= EnemyDreamnailReactionRecieveDreamImpact;
-			On.HealthManager.Hit += HealthManagerHit;
+			On.HealthManager.Hit -= HealthManagerHit;
 			StopAllCoroutines();
+		}
+	}
+
+	internal class DreamwoodLocation : ContainerLocation
+	{
+		protected override void OnLoad()
+		{
+			On.DreamPlant.CheckOrbs += DreamPlantCheckOrbs;
+		}
+
+		private IEnumerator DreamPlantCheckOrbs(On.DreamPlant.orig_CheckOrbs orig, DreamPlant self)
+		{
+			yield return orig(self);
+			if(self.gameObject.scene.name == sceneName)
+			{
+				GameObject obj;
+				string containerType;
+				GetContainer(out obj, out containerType);
+				Container.GetContainer(containerType).ApplyTargetContext(obj, self.gameObject, 0f);
+				if(!obj.activeSelf)
+				{
+					obj.SetActive(true);
+				}
+			}
+		}
+
+		protected override void OnUnload()
+		{
+			On.DreamPlant.CheckOrbs -= DreamPlantCheckOrbs;
 		}
 	}
 }
