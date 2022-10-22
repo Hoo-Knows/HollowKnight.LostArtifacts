@@ -9,7 +9,7 @@ namespace LostArtifacts.Artifacts
 		public override int ID() => 20;
 		public override string Name() => "Hidden Memento";
 		public override string Description() => "In memory of Schy.";
-		public override string LevelInfo() => "+20%, +30%, +40% damage";
+		public override string LevelInfo() => "+10%, +20%, +30% damage after pogoing";
 		public override string TraitName() => "Pogomaster";
 		public override string TraitDescription() => "Pogoing makes the next attack deal increased damage";
 		public override AbstractLocation Location()
@@ -46,7 +46,7 @@ namespace LostArtifacts.Artifacts
 		{
 			base.Activate();
 
-			multiplier = 0.1f * level + 0.1f;
+			multiplier = 0.1f * level;
 			bouncing = false;
 			buffActive = false;
 

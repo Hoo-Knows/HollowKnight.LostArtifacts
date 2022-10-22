@@ -11,7 +11,7 @@ namespace LostArtifacts.Artifacts
 		public override string Name() => "Traveler's Garment";
 		public override string Description() => "A cloak from a traveler who braved the wasteland beyond to " +
 			"reach Hallownest. It carries the aura of its former owner.";
-		public override string LevelInfo() => "100%, 150%, 200% damage scaling";
+		public override string LevelInfo() => "Final damage buff is increased by 0%, 25%, 50%";
 		public override string TraitName() => "Resilience";
 		public override string TraitDescription() => "Scales damage with the player’s highest velocity over the past second";
 		public override AbstractLocation Location()
@@ -76,7 +76,7 @@ namespace LostArtifacts.Artifacts
 			float multiplier = 6.9f * Mathf.Exp(0.1f * vel) - 6.9f;
 
 			//Apply level multiplier
-			multiplier *= (level + 1) * 0.5f;
+			multiplier *= (level + 3) * 0.25f;
 			return multiplier / 100f;
 		}
 

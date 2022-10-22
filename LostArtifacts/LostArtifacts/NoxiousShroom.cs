@@ -96,13 +96,14 @@ namespace LostArtifacts.Artifacts
 			HealthManager next = hms[0];
 			foreach(HealthManager hm in hms)
 			{
+				if(hm.hp <= 0) continue;
 				if(Vector3.Distance(hm.transform.position, pos) < Vector3.Distance(next.transform.position, pos) &&
 					Vector3.Distance(hm.transform.position, pos) < 10f)
 				{
 					next = hm;
 				}
 			}
-			return next;
+			return next.hp > 0 ? next : null;
 		}
 
 		public override void Deactivate()

@@ -9,7 +9,7 @@ namespace LostArtifacts.Artifacts
 		public override string Name() => "Charged Crystal";
 		public override string Description() => "Though all crystals from the Peaks hold some amount of energy, this crystal is " +
 			"even more potent than usual. It pulses and glows with all of its might.";
-		public override string LevelInfo() => "+20%, +30%, +40% damage";
+		public override string LevelInfo() => "+10%, +20%, +30% damage";
 		public override string TraitName() => "Energized";
 		public override string TraitDescription() => "Nail arts deal increased damage";
 		public override AbstractLocation Location()
@@ -44,7 +44,7 @@ namespace LostArtifacts.Artifacts
 		{
 			base.Activate();
 
-			multiplier = 0.1f + level * 0.1f;
+			multiplier = level * 0.1f;
 
 			On.HealthManager.Hit += HealthManagerHit;
 		}

@@ -12,7 +12,7 @@ namespace LostArtifacts.Artifacts
 		public override string Name() => "Dreamwood";
 		public override string Description() => "A small piece of a Whispering Root. It enhances the Dream Nail, allowing it to " +
 			"weaken enemies’ defenses by draining their energy.";
-		public override string LevelInfo() => "+10%, +20%, +30% bonus damage";
+		public override string LevelInfo() => "+10%, +15%, +20% bonus damage";
 		public override string TraitName() => "Enervating";
 		public override string TraitDescription() => "Striking an enemy with the Dream Nail makes them take bonus " + 
 			"damage for 15 seconds (can stack)";
@@ -46,7 +46,7 @@ namespace LostArtifacts.Artifacts
 		{
 			base.Activate();
 
-			multiplier = 0.1f * level;
+			multiplier = 0.05f * (level + 1);
 			hmDict = new Dictionary<HealthManager, int>();
 
 			On.EnemyDreamnailReaction.RecieveDreamImpact += EnemyDreamnailReactionRecieveDreamImpact;

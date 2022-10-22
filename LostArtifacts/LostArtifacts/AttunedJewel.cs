@@ -13,7 +13,7 @@ namespace LostArtifacts.Artifacts
 		public override string Name() => "Attuned Jewel";
 		public override string Description() => "The Godseekers crafted this jewel through harnessing the power of the Gods of " +
 			"Thunder and Rain. It reveals the bearer’s inner nature and allows them to ascend ever higher.";
-		public override string LevelInfo() => "+15%, +30%, +45% to each stat";
+		public override string LevelInfo() => "+15%, +20%, +25% to each stat";
 		public override string TraitName() => "Attuned";
 		public override string TraitDescription() => "Casting Fireball, Dive, or Shriek grants bonus attack range, movement speed, " +
 			"or damage for 5 seconds";
@@ -53,7 +53,7 @@ namespace LostArtifacts.Artifacts
 				HeroController.instance.upSlash,
 				HeroController.instance.downSlash
 			};
-			multiplier = 1f + level * 0.15f;
+			multiplier = 1.1f + level * 0.05f;
 
 			On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += SendEventByNameOnEnter;
 			On.HutongGames.PlayMaker.Actions.SendMessage.OnEnter += SendMessageOnEnter;
