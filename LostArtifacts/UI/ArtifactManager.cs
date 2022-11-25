@@ -15,10 +15,7 @@ namespace LostArtifacts.UI
 		public ArtifactButton schyButton;
 		public GameObject selected;
 
-		public ArtifactSlot slotHandle;
-		public ArtifactSlot slotBladeL;
-		public ArtifactSlot slotBladeR;
-		public ArtifactSlot slotHead;
+		public ArtifactSlot[] slots;
 
 		public Image traitOvercharge;
 		public Image slotOvercharge;
@@ -30,8 +27,6 @@ namespace LostArtifacts.UI
 		private Text artifactName;
 		private Image artifactSprite;
 		private Text artifactDescription;
-		private Text levelsTitle;
-		private Text artifactLevels;
 
 		public Sprite[] nailSprites;
 
@@ -58,10 +53,11 @@ namespace LostArtifacts.UI
 			schyButton = parent.Find("Canvas/Artifacts/Artifact 20").gameObject.GetComponent<ArtifactButton>();
 			selected = selectedButton.gameObject;
 
-			slotHandle = parent.Find("Canvas/Nail Panel/Slot Handle/Artifact Handle").gameObject.GetComponent<ArtifactSlot>();
-			slotBladeL = parent.Find("Canvas/Nail Panel/Slot Blade L/Artifact Blade L").gameObject.GetComponent<ArtifactSlot>();
-			slotBladeR = parent.Find("Canvas/Nail Panel/Slot Blade R/Artifact Blade R").gameObject.GetComponent<ArtifactSlot>();
-			slotHead = parent.Find("Canvas/Nail Panel/Slot Head/Artifact Head").gameObject.GetComponent<ArtifactSlot>();
+			slots = new ArtifactSlot[4];
+			slots[0] = parent.Find("Canvas/Nail Panel/Slot Handle/Artifact Handle").gameObject.GetComponent<ArtifactSlot>();
+			slots[1] = parent.Find("Canvas/Nail Panel/Slot Blade L/Artifact Blade L").gameObject.GetComponent<ArtifactSlot>();
+			slots[2] = parent.Find("Canvas/Nail Panel/Slot Blade R/Artifact Blade R").gameObject.GetComponent<ArtifactSlot>();
+			slots[3] = parent.Find("Canvas/Nail Panel/Slot Head/Artifact Head").gameObject.GetComponent<ArtifactSlot>();
 
 			traitOvercharge = parent.Find("Canvas/Trait Overcharge").gameObject.GetComponent<Image>();
 			slotOvercharge = parent.Find("Canvas/Slot Overcharge").gameObject.GetComponent<Image>();
@@ -73,8 +69,6 @@ namespace LostArtifacts.UI
 			artifactName = parent.Find("Canvas/Artifact Panel/Artifact Name").gameObject.GetComponent<Text>();
 			artifactSprite = parent.Find("Canvas/Artifact Panel/Artifact Sprite").gameObject.GetComponent<Image>();
 			artifactDescription = parent.Find("Canvas/Artifact Panel/Artifact Description").gameObject.GetComponent<Text>();
-			levelsTitle = parent.Find("Canvas/Artifact Panel/Levels Title").gameObject.GetComponent<Text>();
-			artifactLevels = parent.Find("Canvas/Artifact Panel/Artifact Levels").gameObject.GetComponent<Text>();
 
 			foreach(Text text in parent.gameObject.GetComponentsInChildren<Text>())
 			{
@@ -99,10 +93,9 @@ namespace LostArtifacts.UI
 			selectedButton.Select();
 
 			//Update UI
-			LostArtifacts la = LostArtifacts.Instance;
-			if(la.artifacts[selectedButton.id] != null && LostArtifacts.Settings.unlocked[selectedButton.id])
+			if(LostArtifacts.Instance.artifacts[selectedButton.id] != null && LostArtifacts.Settings.unlocked[selectedButton.id])
 			{
-				SetArtifactPanel(la.artifacts[selectedButton.id]);
+				SetArtifactPanel(LostArtifacts.Instance.artifacts[selectedButton.id]);
 			}
 			else
 			{
@@ -154,8 +147,6 @@ namespace LostArtifacts.UI
 			artifactName.text = artifact.Name();
 			artifactSprite.sprite = artifact.sprite.Value;
 			artifactDescription.text = artifact.Description();
-			levelsTitle.text = "Levels";
-			artifactLevels.text = artifact.LevelInfo();
 		}
 
 		public void SetArtifactPanel()
@@ -163,56 +154,20 @@ namespace LostArtifacts.UI
 			artifactName.text = "";
 			artifactSprite.sprite = empty;
 			artifactDescription.text = "";
-			levelsTitle.text = "";
-			artifactLevels.text = "";
 		}
 
 		public void SetOvercharge()
 		{
-			LostArtifacts.Instance.Log("Overcharging slot " + overchargeNum);
-			if(overchargeNum == 0)
+			LostArtifacts.Instance.LogDebug("Overcharging slot " + overchargeNum);
+			string[] names = { "Handle", "Blade L", "Blade R", "Head" };
+			traitOvercharge.transform.position = GameObject.Find(names[overchargeNum] + " Name").transform.position + new Vector3(30f, 0f, 0f);
+			slotOvercharge.transform.position = slots[overchargeNum].transform.position;
+			if(slots[overchargeNum].button != null)
 			{
-				traitOvercharge.transform.position = GameObject.Find("Handle Name").transform.position + new Vector3(30f, 0f, 0f);
-				slotOvercharge.transform.position = slotHandle.transform.position;
-				if(slotHandle.button != null)
-				{
-					slotHandle.button.artifact.Deactivate();
-					slotHandle.button.artifact.level = 2;
-					slotHandle.button.artifact.Activate();
-				}
-			}
-			if(overchargeNum == 1)
-			{
-				traitOvercharge.transform.position = GameObject.Find("Blade L Name").transform.position + new Vector3(30f, 0f, 0f);
-				slotOvercharge.transform.position = slotBladeL.transform.position;
-				if(slotBladeL.button != null)
-				{
-					slotBladeL.button.artifact.Deactivate();
-					slotBladeL.button.artifact.level = 3;
-					slotBladeL.button.artifact.Activate();
-				}
-			}
-			if(overchargeNum == 2)
-			{
-				traitOvercharge.transform.position = GameObject.Find("Blade R Name").transform.position + new Vector3(30f, 0f, 0f);
-				slotOvercharge.transform.position = slotBladeR.transform.position;
-				if(slotBladeR.button != null)
-				{
-					slotBladeR.button.artifact.Deactivate();
-					slotBladeR.button.artifact.level = 3;
-					slotBladeR.button.artifact.Activate();
-				}
-			}
-			if(overchargeNum == 3)
-			{
-				traitOvercharge.transform.position = GameObject.Find("Head Name").transform.position + new Vector3(30f, 0f, 0f);
-				slotOvercharge.transform.position = slotHead.transform.position;
-				if(slotHead.button != null)
-				{
-					slotHead.button.artifact.Deactivate();
-					slotHead.button.artifact.level = 4;
-					slotHead.button.artifact.Activate();
-				}
+				slots[overchargeNum].button.artifact.Deactivate();
+				slots[overchargeNum].button.artifact.level = slots[overchargeNum].level + 1;
+				slots[overchargeNum].button.artifact.Activate();
+				slots[overchargeNum].SetTraits();
 			}
 		}
 
@@ -236,30 +191,16 @@ namespace LostArtifacts.UI
 			}
 			if(InputHandler.Instance.inputActions.attack.IsPressed && !attackWasPressed && canOvercharge)
 			{
-				LostArtifacts.Instance.Log("De-overcharging slot " + overchargeNum);
-				if(overchargeNum == 0 && slotHandle.button != null)
+				LostArtifacts.Instance.LogDebug("De-overcharging slot " + overchargeNum);
+				foreach(ArtifactSlot slot in slots)
 				{
-					slotHandle.button.artifact.Deactivate();
-					slotHandle.button.artifact.level = 1;
-					slotHandle.button.artifact.Activate();
-				}
-				if(overchargeNum == 1 && slotBladeL.button != null)
-				{
-					slotBladeL.button.artifact.Deactivate();
-					slotBladeL.button.artifact.level = 2;
-					slotBladeL.button.artifact.Activate();
-				}
-				if(overchargeNum == 2 && slotBladeR.button != null)
-				{
-					slotBladeR.button.artifact.Deactivate();
-					slotBladeR.button.artifact.level = 2;
-					slotBladeR.button.artifact.Activate();
-				}
-				if(overchargeNum == 3 && slotHead.button != null)
-				{
-					slotHead.button.artifact.Deactivate();
-					slotHead.button.artifact.level = 3;
-					slotHead.button.artifact.Activate();
+					if(slot.id == overchargeNum && slot.button != null)
+					{
+						slot.button.artifact.Deactivate();
+						slot.button.artifact.level = slot.level;
+						slot.button.artifact.Activate();
+						slot.SetTraits();
+					}
 				}
 
 				overchargeNum++;

@@ -10,11 +10,11 @@ namespace LostArtifacts.Artifacts
 	{
 		public override int ID() => 12;
 		public override string Name() => "Weaver Silk";
-		public override string Description() => "Before the Weavers left Hallownest, they left behind some spools of silk. " +
+		public override string LoreDescription() => "Before the Weavers left Hallownest, they left behind some spools of silk. " +
 			"Even when not woven into a Seal of Binding, they contain great power.";
-		public override string LevelInfo() => "1, 2, 3 extra damage";
+		public override string LevelInfo() => level + " extra damage per instance";
 		public override string TraitName() => "Sealed";
-		public override string TraitDescription() => "Releasing a nail art adds flat damage to all instances of damage for 10 seconds";
+		public override string TraitDescription() => "Releasing a nail art adds flat damage to all instances of damage for 10 seconds.";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()

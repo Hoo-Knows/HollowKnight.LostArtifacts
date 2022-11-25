@@ -9,10 +9,10 @@ namespace LostArtifacts.Artifacts
 	{
 		public override int ID() => 6;
 		public override string Name() => "Dung Ball";
-		public override string Description() => "A questionable gift from the Dung Defender.";
-		public override string LevelInfo() => "Stinky, Stinkier, Stinkiest";
+		public override string LoreDescription() => "A questionable gift from the Dung Defender.";
+		public override string LevelInfo() => GetLevelInfo();
 		public override string TraitName() => "Stinky";
-		public override string TraitDescription() => "Makes you odorous (also generates lag)";
+		public override string TraitDescription() => "Makes you odorous and generates lag.";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()
@@ -40,10 +40,10 @@ namespace LostArtifacts.Artifacts
 				}
 			}
 
-			On.HealthManager.Hit += HealthManagerHit;
+			On.HealthManager.TakeDamage += HealthManagerTakeDamage;
 		}
 
-		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
+		private void HealthManagerTakeDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
 		{
 			if(hitInstance.AttackType == AttackTypes.Nail || hitInstance.AttackType == AttackTypes.NailBeam)
 			{
@@ -76,11 +76,20 @@ namespace LostArtifacts.Artifacts
 			}
 		}
 
+		private string GetLevelInfo()
+		{
+			if(level == 1) return "Stink";
+			if(level == 2) return "Stinkier";
+			if(level == 3) return "Stinkiest";
+			if(level == 4) return "Stinkiestest";
+			return "";
+		}
+
 		public override void Deactivate()
 		{
 			base.Deactivate();
 
-			On.HealthManager.Hit -= HealthManagerHit;
+			On.HealthManager.TakeDamage -= HealthManagerTakeDamage;
 		}
 	}
 }

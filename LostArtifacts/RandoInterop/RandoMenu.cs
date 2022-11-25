@@ -2,7 +2,6 @@
 using MenuChanger.Extensions;
 using MenuChanger.MenuElements;
 using MenuChanger.MenuPanels;
-using System;
 using UnityEngine;
 
 namespace LostArtifacts.Rando
@@ -14,6 +13,7 @@ namespace LostArtifacts.Rando
 		private static ToggleButton enabledButton;
 		private static ToggleButton randomizedButton;
 		private static ToggleButton useMainItemGroupButton;
+		private static ToggleButton placeInWorldButton;
 
 		public static bool HandleButton(MenuPage landingPage, out SmallButton button)
 		{
@@ -35,9 +35,11 @@ namespace LostArtifacts.Rando
 			enabledButton = (ToggleButton)factory.ElementLookup[nameof(LostArtifacts.RandoSettings.Enabled)];
 			randomizedButton = (ToggleButton)factory.ElementLookup[nameof(LostArtifacts.RandoSettings.RandomizeArtifacts)];
 			useMainItemGroupButton = (ToggleButton)factory.ElementLookup[nameof(LostArtifacts.RandoSettings.UseMainItemGroup)];
+			placeInWorldButton = (ToggleButton)factory.ElementLookup[nameof(LostArtifacts.RandoSettings.UseCustomLocations)];
 			enabledButton.SelfChanged += EnabledChanged;
 			randomizedButton.SelfChanged += RandomizedChanged;
 			useMainItemGroupButton.SelfChanged += UseMainItemGroupChanged;
+			placeInWorldButton.SelfChanged += PlaceInWorldButtonChanged;
 		}
 
 		private static void EnabledChanged(IValueElement obj)
@@ -47,12 +49,21 @@ namespace LostArtifacts.Rando
 
 		private static void RandomizedChanged(IValueElement obj)
 		{
-			if(!(bool)obj.Value) useMainItemGroupButton.SetValue(false);
+			if(!(bool)obj.Value)
+			{
+				useMainItemGroupButton.SetValue(false);
+				placeInWorldButton.SetValue(false);
+			}
 			else enabledButton.SetValue(true);
 			ChangeTopLevelColor();
 		}
 
 		private static void UseMainItemGroupChanged(IValueElement obj)
+		{
+			if((bool)obj.Value) randomizedButton.SetValue(true);
+		}
+
+		private static void PlaceInWorldButtonChanged(IValueElement obj)
 		{
 			if((bool)obj.Value) randomizedButton.SetValue(true);
 		}

@@ -98,7 +98,7 @@ namespace LostArtifacts.Rando
 			foreach(Artifact artifact in LostArtifacts.Instance.artifacts)
 			{
 				rb.AddItemByName(artifact.InternalName());
-				rb.AddLocationByName(artifact.InternalName());
+				if(LostArtifacts.RandoSettings.UseCustomLocations) rb.AddLocationByName(artifact.InternalName());
 			}
 		}
 

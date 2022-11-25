@@ -11,12 +11,12 @@ namespace LostArtifacts.Artifacts
 	{
 		public override int ID() => 3;
 		public override string Name() => "Noxious Shroom";
-		public override string Description() => "Found only in the deepest recesses of the Fungal Wastes, these mushrooms " +
+		public override string LoreDescription() => "Found only in the deepest recesses of the Fungal Wastes, these mushrooms " +
 			"have highly concentrated toxins. Releasing them would be disastrous…for the enemy.";
-		public override string LevelInfo() => "Can spread to 1, 2, 3 other enemies";
+		public override string LevelInfo() => "Spore cloud can spread to " + level + " other enemies";
 		public override string TraitName() => "Toxic";
 		public override string TraitDescription() => "Hitting an enemy has a 25% chance to release a spore cloud that can " +
-			"spread to nearby enemies";
+			"spread to nearby enemies.";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()

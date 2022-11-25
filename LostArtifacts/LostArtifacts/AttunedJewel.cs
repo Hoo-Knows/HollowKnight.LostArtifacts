@@ -11,12 +11,12 @@ namespace LostArtifacts.Artifacts
 	{
 		public override int ID() => 19;
 		public override string Name() => "Attuned Jewel";
-		public override string Description() => "The Godseekers crafted this jewel through harnessing the power of the Gods of " +
+		public override string LoreDescription() => "The Godseekers crafted this jewel through harnessing the power of the Gods of " +
 			"Thunder and Rain. It reveals the bearer’s inner nature and allows them to ascend ever higher.";
-		public override string LevelInfo() => "+15%, +20%, +25% to each stat";
+		public override string LevelInfo() => string.Format("+{0}% range, movement speed, or damage after a spell", 10 + level * 5);
 		public override string TraitName() => "Attuned";
 		public override string TraitDescription() => "Casting Fireball, Dive, or Shriek grants bonus attack range, movement speed, " +
-			"or damage for 5 seconds";
+			"or damage for 5 seconds.";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()

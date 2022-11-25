@@ -10,11 +10,11 @@ namespace LostArtifacts.Artifacts
 	{
 		public override int ID() => 11;
 		public override string Name() => "Thorned Leaf";
-		public override string Description() => "An extremely sharp and prickly leaf taken from the hostile foliage of the " +
+		public override string LoreDescription() => "An extremely sharp and prickly leaf taken from the hostile foliage of the " +
 			"Queen’s Gardens. Even holding it by the stem is dangerous enough.";
-		public override string LevelInfo() => "3, 5, 8 damage ticks per second";
+		public override string LevelInfo() => level * 2 + " damage ticks per second";
 		public override string TraitName() => "Lacerating";
-		public override string TraitDescription() => "Striking an enemy inflicts a damage over time effect for 5 seconds (cannot stack)";
+		public override string TraitDescription() => "Striking an enemy inflicts a damage over time effect for 5 seconds (cannot stack).";
 		public override AbstractLocation Location()
 		{
 			return new DualLocation()
@@ -43,18 +43,22 @@ namespace LostArtifacts.Artifacts
 		{
 			base.Activate();
 
-			On.HealthManager.Hit += HealthManagerHit;
+			On.HealthManager.TakeDamage += HealthManagerTakeDamage;
 		}
 
-		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
+		private void HealthManagerTakeDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
 		{
 			if(hitInstance.AttackType == AttackTypes.Nail || hitInstance.AttackType == AttackTypes.NailBeam)
 			{
 				if(self.gameObject.GetComponent<Laceration>() != null)
 				{
-					Destroy(self.gameObject.GetComponent<Laceration>());
+					self.gameObject.GetComponent<Laceration>().numTicks = 0;
 				}
-				self.gameObject.AddComponent<Laceration>();
+				else
+				{
+					self.gameObject.AddComponent<Laceration>();
+				}
+				self.gameObject.GetComponent<Laceration>().level = level;
 			}
 			orig(self, hitInstance);
 
@@ -68,45 +72,36 @@ namespace LostArtifacts.Artifacts
 		{
 			base.Deactivate();
 
-			On.HealthManager.Hit -= HealthManagerHit;
+			On.HealthManager.TakeDamage -= HealthManagerTakeDamage;
 		}
 	}
 
 	internal class Laceration : MonoBehaviour
 	{
+		public int level;
+		public int numTicks = 0;
 		private float damageInterval;
+		private HealthManager hm;
+		private SpriteFlash flash;
 
 		private void Start()
 		{
-			int level = 1;
-			foreach(Artifact artifact in LostArtifacts.Instance.artifacts)
-			{
-				if(artifact != null && artifact.Name() == "Thorned Leaf")
-				{
-					level = artifact.level;
-					break;
-				}
-			}
-			float tps = 1f;
-			if(level == 1) tps = 3f;
-			if(level == 2) tps = 5f;
-			if(level == 3) tps = 8f;
-
+			float tps = level * 2f;
 			damageInterval = 1f / tps;
+			hm = GetComponent<HealthManager>();
+			flash = GetComponent<SpriteFlash>();
 
 			StartCoroutine(DealDamage());
 		}
 
 		private IEnumerator DealDamage()
 		{
-			for(int i = 0; i < 5f / damageInterval; i++)
+			for(; numTicks < 5f / damageInterval; numTicks++)
 			{
-				if(gameObject.GetComponent<HealthManager>() != null)
+				if(hm != null && hm.hp > 0 && !hm.IsInvincible)
 				{
-					if(gameObject.GetComponent<HealthManager>().hp <= 0) break;
-
-					gameObject.GetComponent<HealthManager>().ApplyExtraDamage(1);
-					gameObject.GetComponent<SpriteFlash>().flashWhiteQuick();
+					hm.ApplyExtraDamage(1);
+					flash.flash(Color.white, 0.5f, 0.001f, 0.05f, 0.001f);
 				}
 				yield return new WaitForSeconds(damageInterval);
 			}

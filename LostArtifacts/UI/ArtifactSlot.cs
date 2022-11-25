@@ -9,11 +9,12 @@ namespace LostArtifacts.UI
 		public ArtifactButton button;
 		public bool unlocked;
 		public int id;
+		public int level;
 
 		private Sprite sprite;
 		private bool equipped;
 		private readonly string[] names = new string[] { "Handle", "Blade L", "Blade R", "Head" };
-		private readonly string[] level = new string[] { "I", "II", "II", "III" };
+		private readonly string[] levelNames = new string[] { "I", "II", "II", "III" };
 
 		protected override void Start()
 		{
@@ -21,15 +22,19 @@ namespace LostArtifacts.UI
 			{
 				case "Artifact Handle":
 					id = 0;
+					level = 1;
 					break;
 				case "Artifact Blade L":
 					id = 1;
+					level = 2;
 					break;
 				case "Artifact Blade R":
 					id = 2;
+					level = 2;
 					break;
 				case "Artifact Head":
 					id = 3;
+					level = 3;
 					break;
 			}
 		}
@@ -84,10 +89,7 @@ namespace LostArtifacts.UI
 			SetTraits();
 
 			//Update settings
-			if(id == 0) LostArtifacts.Settings.slotHandle = button.id;
-			if(id == 1) LostArtifacts.Settings.slotBladeL = button.id;
-			if(id == 2) LostArtifacts.Settings.slotBladeR = button.id;
-			if(id == 3) LostArtifacts.Settings.slotHead = button.id;
+			LostArtifacts.Settings.slots[id] = button.id;
 
 			equipped = true;
 		}
@@ -104,21 +106,18 @@ namespace LostArtifacts.UI
 			SetTraits();
 
 			//Update settings
-			if(id == 0) LostArtifacts.Settings.slotHandle = -1;
-			if(id == 1) LostArtifacts.Settings.slotBladeL = -1;
-			if(id == 2) LostArtifacts.Settings.slotBladeR = -1;
-			if(id == 3) LostArtifacts.Settings.slotHead = -1;
+			LostArtifacts.Settings.slots[id] = -1;
 
 			equipped = false;
 		}
 
-		private void SetTraits()
+		public void SetTraits()
 		{
 			if(button != null)
 			{
 				GameObject.Find(names[id] + " Name").GetComponent<Text>().text =
-					names[id] + " - " + button.artifact.TraitName() + " " + level[id];
-				GameObject.Find(names[id] + " Description").GetComponent<Text>().text = button.artifact.TraitDescription();
+					names[id] + " - " + button.artifact.TraitName() + " " + levelNames[id];
+				GameObject.Find(names[id] + " Description").GetComponent<Text>().text = button.artifact.LevelInfo();
 			}
 			else
 			{

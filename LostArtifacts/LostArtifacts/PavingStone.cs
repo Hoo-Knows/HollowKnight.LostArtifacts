@@ -10,11 +10,12 @@ namespace LostArtifacts.Artifacts
 	{
 		public override int ID() => 1;
 		public override string Name() => "Paving Stone";
-		public override string Description() => "A stone from the interconnected crossroads beneath Dirtmouth. Through the Stags' " +
+		public override string LoreDescription() => "A stone from the interconnected crossroads beneath Dirtmouth. Through the Stags' " +
 			"repeated use, it is imbued with a trace amount of their power.";
-		public override string LevelInfo() => "-10%, -20%, -30% decrease";
+		public override string LevelInfo() => string.Format("-{0}% decrease in attack cooldown and nail art charge time after dashing", 
+			level * 10);
 		public override string TraitName() => "Stagspeed";
-		public override string TraitDescription() => "Decreases attack cooldown and nail art charge time for 3 seconds after a dash";
+		public override string TraitDescription() => "Dashing decreases attack cooldown and nail art charge time for 3 seconds.";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()

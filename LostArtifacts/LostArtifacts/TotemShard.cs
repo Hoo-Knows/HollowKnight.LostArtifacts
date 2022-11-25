@@ -10,12 +10,12 @@ namespace LostArtifacts.Artifacts
 	{
 		public override int ID() => 5;
 		public override string Name() => "Totem Shard";
-		public override string Description() => "The scholars of the Soul Sanctum were fascinated by a totem that released SOUL " +
+		public override string LoreDescription() => "The scholars of the Soul Sanctum were fascinated by a totem that released SOUL " +
 			"as pure destructive energy. Though it has shattered from overuse, the shards retain some of its original power.";
-		public override string LevelInfo() => "2.5, 5, 7.5 second duration";
+		public override string LevelInfo() => 2.5 * level + " second base duration after healing";
 		public override string TraitName() => "Soulful";
-		public override string TraitDescription() => "Deal +20% damage for a short time after healing; Deep Focus gives +100% " +
-			"instead, Quick Focus doubles duration";
+		public override string TraitDescription() => "Deal +20% damage after healing. Deep Focus gives +100% " +
+			"and Quick Focus doubles the duration.";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()
@@ -28,7 +28,10 @@ namespace LostArtifacts.Artifacts
 			};
 		}
 
+		private GameObject auraGO;
 		private bool buffActive;
+		private tk2dSpriteAnimator heroAnimator = null;
+		private tk2dSpriteAnimator HeroAnimator => heroAnimator ??= HeroController.instance.gameObject.GetComponent<tk2dSpriteAnimator>();
 
 		public override void Activate()
 		{
@@ -37,13 +40,11 @@ namespace LostArtifacts.Artifacts
 			buffActive = false;
 
 			On.HealthManager.Hit += HealthManagerHit;
-			On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter += SendEventByNameOnEnter;
 		}
 
-		private void SendEventByNameOnEnter(On.HutongGames.PlayMaker.Actions.SendEventByName.orig_OnEnter orig, SendEventByName self)
+		public void Update()
 		{
-			orig(self);
-			if(self.Fsm.Name == "Spell Control" && self.State.Name.Contains("Focus Get Finish") && self.sendEvent.Value == "FOCUS END")
+			if(active && HeroAnimator.IsPlaying("Focus Get Once"))
 			{
 				StopAllCoroutines();
 				StartCoroutine(DamageControl());
@@ -56,7 +57,7 @@ namespace LostArtifacts.Artifacts
 			{
 				if(buffActive)
 				{
-					float multiplier = PlayerData.instance.GetBool(nameof(PlayerData.equippedCharm_34)) ? 0.2f : 1f;
+					float multiplier = PlayerData.instance.GetBool(nameof(PlayerData.equippedCharm_34)) ? 1f : 0.2f;
 					hitInstance.Multiplier += multiplier;
 				}
 			}
@@ -67,12 +68,31 @@ namespace LostArtifacts.Artifacts
 		{
 			buffActive = true;
 
+			if(auraGO == null) FindAura();
+			auraGO.SetActive(true);
+			auraGO.GetComponent<MeshRenderer>().enabled = true;
+			auraGO.GetComponent<tk2dSpriteAnimator>().Play("Focus Effect");
+
 			float duration = level * 2.5f;
 			if(PlayerData.instance.GetBool(nameof(PlayerData.equippedCharm_7))) duration *= 2f;
 
 			yield return new WaitForSeconds(duration);
 
+			auraGO.GetComponent<tk2dSpriteAnimator>().Play("Focus Effect End");
+			yield return new WaitWhile(() => auraGO.GetComponent<tk2dSpriteAnimator>().IsPlaying("Focus Effect End"));
+			auraGO.GetComponent<MeshRenderer>().enabled = false;
+			auraGO.SetActive(false);
+
 			buffActive = false;
+		}
+
+		private void FindAura()
+		{
+			auraGO = Instantiate(HeroController.instance.spellControl.FsmVariables.FindFsmGameObject("Lines Anim").Value);
+			auraGO.transform.parent = HeroController.instance.spellControl.transform;
+			auraGO.transform.localPosition = new Vector3();
+			DontDestroyOnLoad(auraGO);
+			auraGO.SetActive(false);
 		}
 
 		public override void Deactivate()
@@ -80,9 +100,9 @@ namespace LostArtifacts.Artifacts
 			base.Deactivate();
 
 			On.HealthManager.Hit -= HealthManagerHit;
-			On.HutongGames.PlayMaker.Actions.SendEventByName.OnEnter -= SendEventByNameOnEnter;
 			StopAllCoroutines();
 
+			Destroy(auraGO);
 			buffActive = false;
 		}
 	}

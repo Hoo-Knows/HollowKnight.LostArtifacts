@@ -38,12 +38,12 @@ namespace LostArtifacts
 
 		public void OnLoadLocal(Settings s)
 		{
-			Log("Loading Lost Artifacts settings");
+			LogDebug("Loading Lost Artifacts settings");
 			Settings = s;
 		}
 		public Settings OnSaveLocal()
 		{
-			Log("Saving Lost Artifacts settings");
+			LogDebug("Saving Lost Artifacts settings");
 			return Settings;
 		}
 
@@ -105,11 +105,11 @@ namespace LostArtifacts
 			AddArtifact<WeaverSilk>();
 			AddArtifact<WyrmAsh>();
 			AddArtifact<BeastShell>();
-			AddArtifact<Honeydrop>(); //Yellow tint
+			AddArtifact<Honeydrop>();
 			AddArtifact<InfectedRock>();
 			AddArtifact<Buzzsaw>();
-			AddArtifact<VoidEmblem>(); //Void particles
-			AddArtifact<AttunedJewel>(); //Void particles
+			AddArtifact<VoidEmblem>();
+			AddArtifact<AttunedJewel>();
 			AddArtifact<HiddenMemento>();
 		}
 
@@ -117,7 +117,10 @@ namespace LostArtifacts
 		{
 			return new List<ValueTuple<string, string>>
 			{
-				new ValueTuple<string, string>("GG_Uumuu", "Mega Jellyfish GG")
+				new ValueTuple<string, string>("Mines_03", "Crystal Crawler"),
+				new ValueTuple<string, string>("RestingGrounds_08", "Ghost revek"),
+				new ValueTuple<string, string>("GG_Uumuu", "Mega Jellyfish GG"),
+				new ValueTuple<string, string>("Hive_01", "Hive Bench")
 			};
 		}
 
@@ -184,10 +187,11 @@ namespace LostArtifacts
 
 				//Activate artifact
 				artifact.level = 0;
-				if(Settings.slotHandle == artifact.ID()) artifact.level = Settings.overchargedSlot == 0 ? 2 : 1;
-				if(Settings.slotBladeL == artifact.ID()) artifact.level = Settings.overchargedSlot == 1 ? 3 : 2;
-				if(Settings.slotBladeR == artifact.ID()) artifact.level = Settings.overchargedSlot == 2 ? 3 : 2;
-				if(Settings.slotHead == artifact.ID()) artifact.level = Settings.overchargedSlot == 3 ? 4 : 3;
+				if(Settings.slots[0] == artifact.ID()) artifact.level = Settings.overchargedSlot == 0 ? 2 : 1;
+				if(Settings.slots[1] == artifact.ID()) artifact.level = Settings.overchargedSlot == 1 ? 3 : 2;
+				if(Settings.slots[2] == artifact.ID()) artifact.level = Settings.overchargedSlot == 2 ? 3 : 2;
+				if(Settings.slots[3] == artifact.ID()) artifact.level = Settings.overchargedSlot == 3 ? 4 : 3;
+
 				if(artifact.level > 0)
 				{
 					artifact.Activate();
@@ -307,7 +311,7 @@ namespace LostArtifacts
 					}
 					if(str == artifact.InternalName() + "Desc")
 					{
-						return artifact.Description();
+						return artifact.LoreDescription();
 					}
 				}
 			}

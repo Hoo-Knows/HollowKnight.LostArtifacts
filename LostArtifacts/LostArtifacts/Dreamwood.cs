@@ -10,12 +10,12 @@ namespace LostArtifacts.Artifacts
 	{
 		public override int ID() => 9;
 		public override string Name() => "Dreamwood";
-		public override string Description() => "A small piece of a Whispering Root. It enhances the Dream Nail, allowing it to " +
+		public override string LoreDescription() => "A small piece of a Whispering Root. It enhances the Dream Nail, allowing it to " +
 			"weaken enemies’ defenses by draining their energy.";
-		public override string LevelInfo() => "+10%, +15%, +20% bonus damage";
+		public override string LevelInfo() => string.Format("+{0}% bonus damage per Dream Nail", 5 * (level + 1));
 		public override string TraitName() => "Enervating";
 		public override string TraitDescription() => "Striking an enemy with the Dream Nail makes them take bonus " + 
-			"damage for 15 seconds (can stack)";
+			"damage for 15 seconds (can stack).";
 		public override AbstractLocation Location()
 		{
 			return new DualLocation()
@@ -39,12 +39,16 @@ namespace LostArtifacts.Artifacts
 			};
 		}
 
+		public GameObject dreamParticlesGO;
 		private float multiplier;
 		private Dictionary<HealthManager, int> hmDict;
 
 		public override void Activate()
 		{
 			base.Activate();
+
+			PlayMakerFSM revekFSM = LostArtifacts.Preloads["RestingGrounds_08"]["Ghost revek"].LocateMyFSM("Appear");
+			dreamParticlesGO = revekFSM.FsmVariables.FindFsmGameObject("Idle Pt").Value;
 
 			multiplier = 0.05f * (level + 1);
 			hmDict = new Dictionary<HealthManager, int>();
@@ -70,7 +74,14 @@ namespace LostArtifacts.Artifacts
 		private IEnumerator BuffControl(HealthManager hm)
 		{
 			hmDict[hm]++;
+			GameObject dreamParticles = Instantiate(dreamParticlesGO, hm.gameObject.transform);
+			dreamParticles.transform.position += new Vector3(0f, 0f, 1f);
+			// It's not obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
+			dreamParticles.GetComponent<ParticleSystem>().enableEmission = true;
+#pragma warning restore CS0618 // Type or member is obsolete
 			yield return new WaitForSeconds(15f);
+			Destroy(dreamParticles);
 			hmDict[hm]--;
 		}
 

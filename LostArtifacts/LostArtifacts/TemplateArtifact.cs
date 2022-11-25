@@ -7,7 +7,7 @@ namespace LostArtifacts.Artifacts
 	{
 		public override int ID() => 0;
 		public override string Name() => "";
-		public override string Description() => "";
+		public override string LoreDescription() => "";
 		public override string LevelInfo() => "";
 		public override string TraitName() => "";
 		public override string TraitDescription() => "";

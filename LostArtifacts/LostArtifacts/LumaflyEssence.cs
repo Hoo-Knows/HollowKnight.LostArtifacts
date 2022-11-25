@@ -13,12 +13,11 @@ namespace LostArtifacts.Artifacts
 	{
 		public override int ID() => 10;
 		public override string Name() => "Lumafly Essence";
-		public override string Description() => "Monomon the Teacher studied the Charged Lumaflies closely and extracted their " +
+		public override string LoreDescription() => "Monomon the Teacher studied the Charged Lumaflies closely and extracted their " +
 			"essence to give Uumuu electrifying powers. Applying the essence to the nail may produce a similar effect.";
-		public override string LevelInfo() => "Maximum of 1, 2, 3 bursts";
+		public override string LevelInfo() => "Maximum of " + level + " electric bursts";
 		public override string TraitName() => "Shocking";
-		public override string TraitDescription() => "Swinging the nail creates a chain of electric bursts (shorter each swing, " +
-			"resets when touching ground)";
+		public override string TraitDescription() => "Swinging the nail creates a chain of electric bursts.";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()
@@ -95,7 +94,6 @@ namespace LostArtifacts.Artifacts
 		{
 			if(hitInstance.Source.name != "LostArtifacts.LumaflyEssenceZap")
 			{
-				LostArtifacts.Instance.Log(hitInstance.Source.layer);
 				orig(self, hitInstance);
 				return;
 			}

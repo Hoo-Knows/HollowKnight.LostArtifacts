@@ -10,10 +10,10 @@ namespace LostArtifacts.Artifacts
 	{
 		public override int ID() => 14;
 		public override string Name() => "Beast Shell";
-		public override string Description() => "A trophy from the God Tamer’s beast. It was deeply loyal toward its owner.";
-		public override string LevelInfo() => "+100%, +150%, +200% minion damage";
+		public override string LoreDescription() => "A trophy from the God Tamer’s beast. It was deeply loyal toward its owner.";
+		public override string LevelInfo() => string.Format("+{0}% minion damage after striking an enemy", 50 * (level + 1));
 		public override string TraitName() => "Beast Tamer";
-		public override string TraitDescription() => "Striking an enemy buffs minion damage for 5 seconds";
+		public override string TraitDescription() => "Striking an enemy buffs minion damage for 5 seconds.";
 		public override AbstractLocation Location()
 		{
 			return new EnemyLocation()
@@ -35,17 +35,23 @@ namespace LostArtifacts.Artifacts
 			multiplier = 0.5f + 0.5f * level;
 			buffActive = false;
 
+			On.HealthManager.TakeDamage += HealthManagerTakeDamage;
 			On.HealthManager.Hit += HealthManagerHit;
 			On.HutongGames.PlayMaker.Actions.IntOperator.OnEnter += IntOperatorOnEnter;
 		}
 
-		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
+		private void HealthManagerTakeDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
 		{
 			if(hitInstance.AttackType == AttackTypes.Nail || hitInstance.AttackType == AttackTypes.NailBeam)
 			{
 				StopAllCoroutines();
 				StartCoroutine(DamageControl());
 			}
+			orig(self, hitInstance);
+		}
+
+		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
+		{
 			if(buffActive && hitInstance.Source.transform.parent != null && 
 				hitInstance.Source.transform.parent.name.Contains("Hatchling"))
 			{
@@ -85,6 +91,7 @@ namespace LostArtifacts.Artifacts
 		{
 			base.Deactivate();
 
+			On.HealthManager.TakeDamage -= HealthManagerTakeDamage;
 			On.HealthManager.Hit -= HealthManagerHit;
 			On.HutongGames.PlayMaker.Actions.IntOperator.OnEnter -= IntOperatorOnEnter;
 			StopAllCoroutines();

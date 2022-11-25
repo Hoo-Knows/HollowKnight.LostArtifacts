@@ -10,11 +10,11 @@ namespace LostArtifacts.Artifacts
 	{
 		public override int ID() => 13;
 		public override string Name() => "Wyrm Ash";
-		public override string Description() => "So great was the Wyrm's power, that even a small amount of its corpse's ashes " +
+		public override string LoreDescription() => "So great was the Wyrm's power, that even a small amount of its corpse's ashes " +
 			"carry noticeable power. Imbuing the nail with these ashes allows the wielder to harness the Wyrm's control over life.";
-		public override string LevelInfo() => "8, 6, 4 hits per minion";
+		public override string LevelInfo() => 10 - 2 * level + " hits per minion";
 		public override string TraitName() => "Rebirth";
-		public override string TraitDescription() => "Spawn a hatchling after a certain amount of hits";
+		public override string TraitDescription() => "Spawn a hatchling after a certain amount of hits.";
 		public override AbstractLocation Location()
 		{
 			return new DualLocation()

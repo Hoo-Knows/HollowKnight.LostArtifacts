@@ -9,10 +9,10 @@ namespace LostArtifacts.Artifacts
 	{
 		public override int ID() => 17;
 		public override string Name() => "Buzzsaw";
-		public override string Description() => "Shaw";
-		public override string LevelInfo() => "Buff scales up to +30%, +45%, +60%";
+		public override string LoreDescription() => "Shaw";
+		public override string LevelInfo() => string.Format("Buff scales up to +{0}%", 15 * (level + 1));
 		public override string TraitName() => "Secluded";
-		public override string TraitDescription() => "Nail damage increases with distance from nearest enemy";
+		public override string TraitDescription() => "Nail damage increases with distance from nearest enemy.";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()

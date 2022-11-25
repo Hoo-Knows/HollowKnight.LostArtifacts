@@ -33,46 +33,26 @@ namespace LostArtifacts.UI
 			pos = gameObject.transform.localPosition;
 
 			//Check if already equipped
-			if(LostArtifacts.Settings.slotHandle == id ||
-				LostArtifacts.Settings.slotBladeL == id ||
-				LostArtifacts.Settings.slotBladeR == id ||
-				LostArtifacts.Settings.slotHead == id)
+			for(int i = 0; i < 4; i++)
 			{
-				gameObject.GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f);
-			}
-			if(LostArtifacts.Settings.slotHead == id && !equipped)
-			{
-				slot = ArtifactManager.Instance.slotHead;
-				ArtifactManager.Instance.slotHead.button = this;
-				ArtifactManager.Instance.slotHead.Equip();
-				equipped = true;
-			}
-			if(LostArtifacts.Settings.slotBladeR == id && !equipped)
-			{
-				slot = ArtifactManager.Instance.slotBladeR;
-				ArtifactManager.Instance.slotBladeR.button = this;
-				ArtifactManager.Instance.slotBladeR.Equip();
-				equipped = true;
-			}
-			if(LostArtifacts.Settings.slotBladeL == id && !equipped)
-			{
-				slot = ArtifactManager.Instance.slotBladeL;
-				ArtifactManager.Instance.slotBladeL.button = this;
-				ArtifactManager.Instance.slotBladeL.Equip();
-				equipped = true;
-			}
-			if(LostArtifacts.Settings.slotHandle == id && !equipped)
-			{
-				slot = ArtifactManager.Instance.slotHandle;
-				ArtifactManager.Instance.slotHandle.button = this;
-				ArtifactManager.Instance.slotHandle.Equip();
-				equipped = true;
+				if(LostArtifacts.Settings.slots[i] == id)
+				{
+					gameObject.GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f);
+					if(!equipped)
+					{
+						slot = ArtifactManager.Instance.slots[i];
+						slot.button = this;
+						slot.Equip();
+						equipped = true;
+					}
+					break;
+				}
 			}
 		}
 
 		protected override void OnEnable()
 		{
-			if(artifact != null && LostArtifacts.Settings.unlocked[artifact.ID()])
+			if(artifact != null && LostArtifacts.Settings.unlocked[id])
 			{
 				gameObject.GetComponent<Image>().sprite = artifact.sprite.Value;
 			}
@@ -96,7 +76,7 @@ namespace LostArtifacts.UI
 			ArtifactManager.Instance.SetSelected(gameObject);
 
 			//Update artifact panel
-			if(artifact != null && LostArtifacts.Settings.unlocked[artifact.ID()])
+			if(artifact != null && LostArtifacts.Settings.unlocked[id])
 			{
 				ArtifactManager.Instance.SetArtifactPanel(artifact);
 			}
@@ -140,7 +120,7 @@ namespace LostArtifacts.UI
 				//Set default slot
 				if(slot == null)
 				{
-					slot = ArtifactManager.Instance.slotHandle;
+					slot = ArtifactManager.Instance.slots[0];
 				}
 
 				//Make cursor track slots

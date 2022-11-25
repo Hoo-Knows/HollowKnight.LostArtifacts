@@ -9,11 +9,11 @@ namespace LostArtifacts.Artifacts
 	{
 		public override int ID() => 7;
 		public override string Name() => "Tumbleweed";
-		public override string Description() => "These little weeds have been tumbling about the Howling Cliffs for as " +
+		public override string LoreDescription() => "These little weeds have been tumbling about the Howling Cliffs for as " +
 			"long as anyone can remember. Anything imbued with its power will become as swift as the wind itself.";
-		public override string LevelInfo() => "+15%, +30%, +45% speed";
+		public override string LevelInfo() => string.Format("+{0}% movement speed after striking an enemy", 15 * level);
 		public override string TraitName() => "Windswept";
-		public override string TraitDescription() => "Striking an enemy increases movement speed for 5 seconds";
+		public override string TraitDescription() => "Striking an enemy increases movement speed for 5 seconds.";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()
@@ -36,10 +36,10 @@ namespace LostArtifacts.Artifacts
 			multiplier = 0.15f * level + 1f;
 			buffActive = 0;
 
-			On.HealthManager.Hit += HealthManagerHit;
+			On.HealthManager.TakeDamage += HealthManagerTakeDamage;
 		}
 
-		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
+		private void HealthManagerTakeDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
 		{
 			if(hitInstance.AttackType == AttackTypes.Nail || hitInstance.AttackType == AttackTypes.NailBeam)
 			{
@@ -76,7 +76,7 @@ namespace LostArtifacts.Artifacts
 		{
 			base.Deactivate();
 
-			On.HealthManager.Hit -= HealthManagerHit;
+			On.HealthManager.TakeDamage -= HealthManagerTakeDamage;
 			StopAllCoroutines();
 
 			if(buffActive > 0)

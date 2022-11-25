@@ -8,10 +8,10 @@ namespace LostArtifacts.Artifacts
 	{
 		public override int ID() => 16;
 		public override string Name() => "Infected Rock";
-		public override string Description() => "The Broken Vessel had to make friends where it could.";
-		public override string LevelInfo() => "3, 6, 9 extra SOUL";
+		public override string LoreDescription() => "The Broken Vessel had to make friends where it could.";
+		public override string LevelInfo() => 3 * level + 1 + " extra SOUL per hit";
 		public override string TraitName() => "Forgotten";
-		public override string TraitDescription() => "Increases SOUL gain from striking enemies with the nail";
+		public override string TraitDescription() => "Increases SOUL gain from striking enemies with the nail.";
 		public override AbstractLocation Location()
 		{
 			return new DualLocation()
@@ -46,7 +46,7 @@ namespace LostArtifacts.Artifacts
 
 		private int SoulGainHook(int soul)
 		{
-			return soul + 3 * level + (level == 4 ? 1 : 0);
+			return soul + 3 * level + 1;
 		}
 
 		public override void Deactivate()

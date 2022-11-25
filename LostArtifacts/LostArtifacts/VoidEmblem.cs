@@ -2,6 +2,8 @@
 using ItemChanger;
 using ItemChanger.Locations;
 using UnityEngine;
+using Satchel;
+using System.Collections;
 
 namespace LostArtifacts.Artifacts
 {
@@ -9,12 +11,12 @@ namespace LostArtifacts.Artifacts
 	{
 		public override int ID() => 18;
 		public override string Name() => "Void Emblem";
-		public override string Description() => "An emblem crafted by the ancient civilization designed to contain void energy. " +
+		public override string LoreDescription() => "An emblem crafted by the ancient civilization designed to contain void energy. " +
 			"Holding it provides a strange sort of comfort.";
-		public override string LevelInfo() => "7, 5, 3 hits to reach max";
+		public override string LevelInfo() => 9 - 2 * level + " hits to reach maximum buff";
 		public override string TraitName() => "Abyssal";
 		public override string TraitDescription() => "Striking an enemy repeatedly builds up the damage of the next spell " +
-			"(max +50% increase)";
+			"with a maximum +50% increase.";
 		public override AbstractLocation Location()
 		{
 			return new CoordinateLocation()
@@ -27,27 +29,36 @@ namespace LostArtifacts.Artifacts
 			};
 		}
 
-		private float counter;
+		private int counter;
 		private float multiplier;
 
 		public override void Activate()
 		{
 			base.Activate();
 
-			counter = 0f;
+			counter = 0;
 			multiplier = 0f;
 
+			On.HealthManager.TakeDamage += HealthManagerTakeDamage;
 			On.HealthManager.Hit += HealthManagerHit;
 			On.HutongGames.PlayMaker.Actions.GetPlayerDataInt.OnEnter += GetPlayerDataIntOnEnter;
 			On.HutongGames.PlayMaker.Actions.SetVelocity2d.OnEnter += SetVelocity2dOnEnter;
 		}
 
-		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
+		private void HealthManagerTakeDamage(On.HealthManager.orig_TakeDamage orig, HealthManager self, HitInstance hitInstance)
 		{
 			if(hitInstance.AttackType == AttackTypes.Nail || hitInstance.AttackType == AttackTypes.NailBeam)
 			{
 				counter++;
+
+				HeroController.instance.shadowRechargePrefab.SetActive(true);
+				HeroController.instance.shadowRechargePrefab.LocateMyFSM("Recharge Effect").SetState("Play anim");
 			}
+			orig(self, hitInstance);
+		}
+
+		private void HealthManagerHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
+		{
 			if(hitInstance.AttackType == AttackTypes.Spell)
 			{
 				hitInstance.Multiplier += multiplier;
@@ -62,8 +73,13 @@ namespace LostArtifacts.Artifacts
 			if(self.Fsm.GameObjectName == "Knight" && self.Fsm.Name == "Spell Control" &&
 				(self.State.Name == "Has Fireball?" || self.State.Name == "Has Quake?" || self.State.Name == "Has Scream?"))
 			{
-				counter = Mathf.Min(counter, (4f - level) * 2f + 1f);
-				multiplier = 0.5f * counter / ((4f - level) * 2f + 1f);
+				multiplier = 0.5f * Mathf.Min(counter, 9f - 2f * level) / (9f - 2f * level);
+
+				if(counter > 0)
+				{
+					StartCoroutine(ShadowRing());
+					counter = 0;
+				}
 			}
 		}
 
@@ -76,10 +92,20 @@ namespace LostArtifacts.Artifacts
 			}
 		}
 
+		private IEnumerator ShadowRing()
+		{
+			yield return new WaitForSeconds(0.1f);
+			GameObject shadowRing = HeroController.instance.shadowRingPrefab.Spawn(HeroController.instance.transform);
+			iTweenScaleTo tweenAction = shadowRing.LocateMyFSM("Play Effect").GetAction<iTweenScaleTo>("Grow", 0);
+			tweenAction.easeType = iTween.EaseType.linear;
+			tweenAction.vectorScale = new Vector3(10f, 10f, 10f);
+		}
+
 		public override void Deactivate()
 		{
 			base.Deactivate();
 
+			On.HealthManager.TakeDamage -= HealthManagerTakeDamage;
 			On.HealthManager.Hit -= HealthManagerHit;
 			On.HutongGames.PlayMaker.Actions.GetPlayerDataInt.OnEnter -= GetPlayerDataIntOnEnter;
 			On.HutongGames.PlayMaker.Actions.SetVelocity2d.OnEnter -= SetVelocity2dOnEnter;
