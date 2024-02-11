@@ -42,7 +42,7 @@
 - Hidden Memento (Path of Pain)
 	- Pogomaster - Pogoing makes the next attack deal increased damage
 
-### Descriptions
+### Locations
 - Traveler’s Garment (Dirtmouth) - Next to the well
 - Paving Stone (Forgotten Crossroads) - Next to the Stag
 - Lush Moss (Greenpath) - Defeat the Massive Moss Charger

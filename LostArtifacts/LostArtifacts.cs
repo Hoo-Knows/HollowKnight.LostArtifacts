@@ -281,7 +281,15 @@ namespace LostArtifacts
 				return;
 			}
 
-			if(!RandoSettings.Enabled) return;
+			if(ModHooks.GetMod("Randomizer 4") is Mod)
+			{
+				// If the save is a rando save and artifacts are randomized, let ArtifactRando handle placing the artifacts instead
+				// If we are not randomizing the artifacts but still enabling them, place them with PlaceArtifacts
+				if(ArtifactRando.isRandoSave)
+				{
+					if(!RandoSettings.EnableArtifacts || RandoSettings.RandomizeArtifacts) return;
+				}
+			}
 			PlaceArtifacts();
 		}
 

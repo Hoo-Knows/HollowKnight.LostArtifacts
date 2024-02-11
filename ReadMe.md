@@ -14,11 +14,15 @@ A mod that adds **lost artifacts** scattered all across Hallownest. Obtaining an
 
 ## Integrations
 
-If Randomizer 4 is installed alongside this mod, artifact locations can be randomized through Randomizer's Connections tab. If DebugMod is installed alongside this mod, artifacts or slots can be unlocked through the keybinds menu.
+If Randomizer 4 is installed, artifact locations may be randomized through Randomizer's Connections tab. If DebugMod is installed alongside this mod, artifacts or slots can be unlocked through the keybinds menu.
 
 ### Randomizer Settings
-- Randomize artifacts - whether or not to randomize artifacts
-- Use main item group - whether or not to randomize the artifacts with other items
+- Enable artifacts - Places artifacts in the rando save (but does not randomize them)
+- Randomize artifacts - Randomizes the artifacts (requires enabling artifacts)
+- Use custom locations - Adds the locations listed in SPOILERS.md as custom locations
+- Artifact group - Determines which group the artifacts will be randomized into
+	- If -1 or 0, artifacts will be randomized with the main item group
+	- If above 1, requires using custom locations
 
 ### Debug Options
 - Unlock all artifacts - unlocks all artifacts

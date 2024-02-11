@@ -2,9 +2,11 @@
 {
 	public class RandoSettings
 	{
-		public bool Enabled { get; set; } = true;
+		public bool EnableArtifacts { get; set; } = true;
 		public bool RandomizeArtifacts { get; set; } = true;
-		public bool UseMainItemGroup { get; set; } = false;
-		public bool UseCustomLocations { get; set; } = false;
+		public bool UseCustomLocations { get; set; } = true;
+
+		[MenuChanger.Attributes.MenuRange(-1, 99)]
+		public int ArtifactGroup { get; set; } = -1;
 	}
 }

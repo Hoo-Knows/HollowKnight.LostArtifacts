@@ -10,10 +10,10 @@ namespace LostArtifacts.Rando
 	{
 		private static MenuPage SettingsPage;
 		private static SmallButton pageRootButton;
-		private static ToggleButton enabledButton;
-		private static ToggleButton randomizedButton;
-		private static ToggleButton useMainItemGroupButton;
-		private static ToggleButton placeInWorldButton;
+		private static ToggleButton enableArtifactsToggle;
+		private static ToggleButton randomizeArtifactsToggle;
+		private static ToggleButton useCustomLocations;
+		private static NumericEntryField<int> artifactGroupField;
 
 		public static bool HandleButton(MenuPage landingPage, out SmallButton button)
 		{
@@ -27,45 +27,72 @@ namespace LostArtifacts.Rando
 		public static void ConstructMenu(MenuPage landingPage)
 		{
 			SettingsPage = new MenuPage(LostArtifacts.Instance.GetName(), landingPage);
-			MenuElementFactory<RandoSettings> factory =
-				new MenuElementFactory<RandoSettings>(SettingsPage, LostArtifacts.RandoSettings);
+			MenuElementFactory<RandoSettings> factory = new MenuElementFactory<RandoSettings>(SettingsPage, LostArtifacts.RandoSettings);
 			IMenuElement[] elements = factory.Elements;
 			new VerticalItemPanel(SettingsPage, new Vector2(0f, 300f), 75f, true, elements);
 
-			enabledButton = (ToggleButton)factory.ElementLookup[nameof(LostArtifacts.RandoSettings.Enabled)];
-			randomizedButton = (ToggleButton)factory.ElementLookup[nameof(LostArtifacts.RandoSettings.RandomizeArtifacts)];
-			useMainItemGroupButton = (ToggleButton)factory.ElementLookup[nameof(LostArtifacts.RandoSettings.UseMainItemGroup)];
-			placeInWorldButton = (ToggleButton)factory.ElementLookup[nameof(LostArtifacts.RandoSettings.UseCustomLocations)];
-			enabledButton.SelfChanged += EnabledChanged;
-			randomizedButton.SelfChanged += RandomizedChanged;
-			useMainItemGroupButton.SelfChanged += UseMainItemGroupChanged;
-			placeInWorldButton.SelfChanged += PlaceInWorldButtonChanged;
+			enableArtifactsToggle = (ToggleButton)factory.ElementLookup[nameof(LostArtifacts.RandoSettings.EnableArtifacts)];
+			randomizeArtifactsToggle = (ToggleButton)factory.ElementLookup[nameof(LostArtifacts.RandoSettings.RandomizeArtifacts)];
+			artifactGroupField = (NumericEntryField<int>)factory.ElementLookup[nameof(LostArtifacts.RandoSettings.ArtifactGroup)];
+			useCustomLocations = (ToggleButton)factory.ElementLookup[nameof(LostArtifacts.RandoSettings.UseCustomLocations)];
+			enableArtifactsToggle.SelfChanged += EnableArtifactsChanged;
+			randomizeArtifactsToggle.SelfChanged += RandomizeArtifactsChanged;
+			artifactGroupField.SelfChanged += ArtifactGroupChanged;
+			useCustomLocations.SelfChanged += UseCustomLocationsChanged;
+
+			if(!LostArtifacts.RandoSettings.RandomizeArtifacts)
+			{
+				artifactGroupField.Hide();
+				useCustomLocations.Hide();
+			}
+			else
+			{
+				artifactGroupField.Show();
+				useCustomLocations.Show();
+			}
 		}
 
-		private static void EnabledChanged(IValueElement obj)
-		{
-			if(!(bool)obj.Value) randomizedButton.SetValue(false);
-		}
-
-		private static void RandomizedChanged(IValueElement obj)
+		private static void EnableArtifactsChanged(IValueElement obj)
 		{
 			if(!(bool)obj.Value)
 			{
-				useMainItemGroupButton.SetValue(false);
-				placeInWorldButton.SetValue(false);
+				randomizeArtifactsToggle.SetValue(false);
 			}
-			else enabledButton.SetValue(true);
 			ChangeTopLevelColor();
 		}
 
-		private static void UseMainItemGroupChanged(IValueElement obj)
+		private static void RandomizeArtifactsChanged(IValueElement obj)
 		{
-			if((bool)obj.Value) randomizedButton.SetValue(true);
+			if(!(bool)obj.Value)
+			{
+				artifactGroupField.Hide();
+				useCustomLocations.Hide();
+			}
+			else
+			{
+				enableArtifactsToggle.SetValue(true);
+				artifactGroupField.Show();
+				useCustomLocations.Show();
+			}
+			ChangeTopLevelColor();
 		}
 
-		private static void PlaceInWorldButtonChanged(IValueElement obj)
+		private static void ArtifactGroupChanged(IValueElement obj)
 		{
-			if((bool)obj.Value) randomizedButton.SetValue(true);
+			// Randomizing artifacts within their own group requires adding custom locations
+			if((int)obj.Value > 0)
+			{
+				useCustomLocations.SetValue(true);
+			}
+		}
+
+		private static void UseCustomLocationsChanged(IValueElement obj)
+		{
+			// Can't remove custom locations while still randomizing artifacts within their own group
+			if(!(bool)obj.Value)
+			{
+				artifactGroupField.SetValue(-1);
+			}
 		}
 
 		private static void ChangeTopLevelColor()
@@ -73,7 +100,7 @@ namespace LostArtifacts.Rando
 			if(pageRootButton != null)
 			{
 				pageRootButton.Text.color = Colors.FALSE_COLOR;
-				if(LostArtifacts.RandoSettings.Enabled) pageRootButton.Text.color = Colors.DEFAULT_COLOR;
+				if(LostArtifacts.RandoSettings.EnableArtifacts) pageRootButton.Text.color = Colors.DEFAULT_COLOR;
 				if(LostArtifacts.RandoSettings.RandomizeArtifacts) pageRootButton.Text.color = Colors.TRUE_COLOR;
 			}
 		}

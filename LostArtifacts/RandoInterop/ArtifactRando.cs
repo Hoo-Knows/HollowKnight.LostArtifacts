@@ -1,17 +1,19 @@
 ﻿using RandomizerCore.Logic;
 using RandomizerCore.LogicItems;
+using RandomizerCore.Json;
 using RandomizerMod.Menu;
 using RandomizerMod.RC;
 using RandomizerMod.Settings;
 using RandomizerMod.Logging;
 using System.IO;
-using System;
 using Newtonsoft.Json;
 
 namespace LostArtifacts.Rando
 {
 	public static class ArtifactRando
 	{
+		public static bool isRandoSave => RandomizerMod.RandomizerMod.IsRandoSave;
+
 		public static void HookRando()
 		{
 			RCData.RuntimeLogicOverride.Subscribe(-498f, DefineLogicItem);
@@ -21,17 +23,9 @@ namespace LostArtifacts.Rando
 			SettingsLog.AfterLogSettings += AddSettingsToLog;
 		}
 
-		public static bool IsRandoActive()
-		{
-			RandomizerSettings rs = RandomizerMod.RandomizerMod.RS;
-			if(rs == null) return false;
-			if(rs.GenerationSettings == null) return false;
-			return true;
-		}
-
 		private static void DefineLogicItem(GenerationSettings gs, LogicManagerBuilder lmb)
 		{
-			if(!LostArtifacts.RandoSettings.Enabled || !LostArtifacts.RandoSettings.RandomizeArtifacts) return;
+			if(!LostArtifacts.RandoSettings.EnableArtifacts) return;
 
 			foreach(Artifact artifact in LostArtifacts.Instance.artifacts)
 			{
@@ -39,12 +33,13 @@ namespace LostArtifacts.Rando
 			}
 
 			using Stream stream = typeof(LostArtifacts).Assembly.GetManifestResourceStream("LostArtifacts.Resources.logic.json");
-			lmb.DeserializeJson(LogicManagerBuilder.JsonType.Locations, stream);
+			JsonLogicFormat fmt = new();
+			lmb.DeserializeFile(LogicFileType.Locations, fmt, stream);
 		}
 
 		private static void DefineArtifacts(RequestBuilder rb)
 		{
-			if(!LostArtifacts.RandoSettings.Enabled || !LostArtifacts.RandoSettings.RandomizeArtifacts) return;
+			if(!LostArtifacts.RandoSettings.EnableArtifacts) return;
 
 			foreach(Artifact artifact in LostArtifacts.Instance.artifacts)
 			{
@@ -60,40 +55,39 @@ namespace LostArtifacts.Rando
 				});
 			}
 
-			ItemGroupBuilder artifactGroup = null;
-			foreach(ItemGroupBuilder igb in rb.EnumerateItemGroups())
+			// -1 or 0 means artifacts will be in the main item group, snippet from Flibber
+			if(LostArtifacts.RandoSettings.ArtifactGroup > 0)
 			{
-				if(igb.label == "Artifacts")
+				ItemGroupBuilder artifactGroup = null;
+				string label = RBConsts.SplitGroupPrefix + LostArtifacts.RandoSettings.ArtifactGroup;
+				foreach(ItemGroupBuilder igb in rb.EnumerateItemGroups())
 				{
-					artifactGroup = igb;
-					break;
+					if(igb.label == label)
+					{
+						artifactGroup = igb;
+						break;
+					}
 				}
-			}
-			artifactGroup ??= rb.MainItemStage.AddItemGroup("Artifacts");
+				artifactGroup ??= rb.MainItemStage.AddItemGroup("Artifacts");
 
-			rb.OnGetGroupFor.Subscribe(0.01f, ResolveGroup);
-			bool ResolveGroup(RequestBuilder rb, string item, RequestBuilder.ElementType type, out GroupBuilder gb)
-			{
-				if(type == RequestBuilder.ElementType.Transition)
+				rb.OnGetGroupFor.Subscribe(0.01f, ResolveGroup);
+				bool ResolveGroup(RequestBuilder rb, string item, RequestBuilder.ElementType type, out GroupBuilder gb)
 				{
-					gb = default;
-					return false;
-				}
+					if(!LostArtifacts.Instance.artifactNames.Contains(item))
+					{
+						gb = default;
+						return false;
+					}
 
-				if(!LostArtifacts.Instance.artifactNames.Contains(item) || LostArtifacts.RandoSettings.UseMainItemGroup)
-				{
-					gb = default;
-					return false;
+					gb = artifactGroup;
+					return true;
 				}
-
-				gb = artifactGroup;
-				return true;
 			}
 		}
 
 		private static void AddArtifacts(RequestBuilder rb)
 		{
-			if(!LostArtifacts.RandoSettings.Enabled || !LostArtifacts.RandoSettings.RandomizeArtifacts) return;
+			if(!LostArtifacts.RandoSettings.RandomizeArtifacts) return;
 
 			foreach(Artifact artifact in LostArtifacts.Instance.artifacts)
 			{
