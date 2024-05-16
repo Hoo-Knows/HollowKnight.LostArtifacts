@@ -165,6 +165,10 @@ namespace LostArtifacts
 			{
 				ArtifactDebug.AddToDebug();
 			}
+			if(ModHooks.GetMod("RandoSettingsManager") is Mod)
+			{
+				RSMInterop.Hook();
+			}
 
 			On.HeroController.Start += HeroControllerStart;
 			On.HeroController.OnDisable += HeroControllerOnDisable;

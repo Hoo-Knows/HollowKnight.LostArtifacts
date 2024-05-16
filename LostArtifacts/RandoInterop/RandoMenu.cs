@@ -1,4 +1,5 @@
-﻿using MenuChanger;
+﻿using ItemChanger;
+using MenuChanger;
 using MenuChanger.Extensions;
 using MenuChanger.MenuElements;
 using MenuChanger.MenuPanels;
@@ -33,12 +34,12 @@ namespace LostArtifacts.Rando
 
 			enableArtifactsToggle = (ToggleButton)factory.ElementLookup[nameof(LostArtifacts.RandoSettings.EnableArtifacts)];
 			randomizeArtifactsToggle = (ToggleButton)factory.ElementLookup[nameof(LostArtifacts.RandoSettings.RandomizeArtifacts)];
-			artifactGroupField = (NumericEntryField<int>)factory.ElementLookup[nameof(LostArtifacts.RandoSettings.ArtifactGroup)];
 			useCustomLocations = (ToggleButton)factory.ElementLookup[nameof(LostArtifacts.RandoSettings.UseCustomLocations)];
+			artifactGroupField = (NumericEntryField<int>)factory.ElementLookup[nameof(LostArtifacts.RandoSettings.ArtifactGroup)];
 			enableArtifactsToggle.SelfChanged += EnableArtifactsChanged;
 			randomizeArtifactsToggle.SelfChanged += RandomizeArtifactsChanged;
-			artifactGroupField.SelfChanged += ArtifactGroupChanged;
 			useCustomLocations.SelfChanged += UseCustomLocationsChanged;
+			artifactGroupField.SelfChanged += ArtifactGroupChanged;
 
 			if(!LostArtifacts.RandoSettings.RandomizeArtifacts)
 			{
@@ -103,6 +104,23 @@ namespace LostArtifacts.Rando
 				if(LostArtifacts.RandoSettings.EnableArtifacts) pageRootButton.Text.color = Colors.DEFAULT_COLOR;
 				if(LostArtifacts.RandoSettings.RandomizeArtifacts) pageRootButton.Text.color = Colors.TRUE_COLOR;
 			}
+		}
+
+		// RSM Interop
+		public static void Apply(RandoSettings settings)
+		{
+			enableArtifactsToggle.SetValue(settings.EnableArtifacts);
+			randomizeArtifactsToggle.SetValue(settings.RandomizeArtifacts);
+			useCustomLocations.SetValue(settings.UseCustomLocations);
+			artifactGroupField.SetValue(settings.ArtifactGroup);
+		}
+
+		public static void Disable()
+		{
+			enableArtifactsToggle.SetValue(false);
+			randomizeArtifactsToggle.SetValue(false);
+			useCustomLocations.SetValue(false);
+			artifactGroupField.SetValue(-1);
 		}
 	}
 }

@@ -77,7 +77,7 @@
     },
     {
         "name": "AttunedJewel",
-        "logic": "GG_Workshop + GG_Atrium + *Boss_Geo-Vengefly_King + Defeated_Gruz_Mother + Defeated_False_Knight + *Boss_Geo-Massive_Moss_Charger + Defeated_Hornet_1 + Defeated_Gorb + Defeated_Elegant_Warrior + Defeated_Brooding_Mawlek + Defeated_Xero + Defeated_Colosseum_2 + Defeated_Mantis_Lords + Defeated_Marmu + Defeated_Flukemarm + Defeated_Galien + Defeated_Hive_Knight + Defeated_Elder_Hu + Defeated_Collector + Defeated_Grimm + Defeated_Watcher_Knights + Defeated_Uumuu + Defeated_Nosk + Defeated_Hornet_2 + Defeated_Enraged_Guardian + Defeated_Lost_Kin + Defeated_No_Eyes + Defeated_Traitor_Lord + Defeated_White_Defender + Defeated_Soul_Tyrant + Defeated_Markoth + Defeated_Failed_Champion" 
+        "logic": "GG_Atrium + WINGS + LEFTCLAW + VOIDHEART + *Boss_Geo-Vengefly_King + Defeated_Gruz_Mother + Defeated_False_Knight + *Boss_Geo-Massive_Moss_Charger + Defeated_Hornet_1 + Defeated_Gorb + Defeated_Elegant_Warrior + Defeated_Brooding_Mawlek + Defeated_Xero + Defeated_Colosseum_2 + Defeated_Mantis_Lords + Defeated_Marmu + Defeated_Flukemarm + Defeated_Galien + Defeated_Hive_Knight + Defeated_Elder_Hu + Defeated_Collector + Defeated_Grimm + Defeated_Watcher_Knights + Defeated_Uumuu + Defeated_Nosk + Defeated_Hornet_2 + Defeated_Enraged_Guardian + Defeated_Lost_Kin + Defeated_No_Eyes + Defeated_Traitor_Lord + Defeated_White_Defender + Defeated_Soul_Tyrant + Defeated_Markoth + Defeated_Failed_Champion + Defeated_Grey_Prince_Zote" 
     },
     {
         "name": "HiddenMemento",
